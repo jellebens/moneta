@@ -15,11 +15,11 @@
                     AW
                 </div>
             </li>
-            <li class="@Html.IsSelected(page: "/Overview")">
-                <a asp-page="Overview"><i class="fa fa-bar-chart"></i><span class="nav-label">Vendors</span></a>
+            <li class="@Html.IsSelected(controller: "Home", action: "Index")">
+                    <a href="@Url.Action("Index", "Home")"><i class="fa fa-area-chart"></i><span class="nav-label">Overview</span></a>
                 </li>
-                <li class="@Html.IsSelected(page: "/Version")">
-                    <a asp-page="Version"><i class="fa fa-cog"></i><span class="nav-label">Version</span></a>
+                <li class="@Html.IsSelected(controller: "Transaction", action: "Index")">
+                    <a href="@Url.Action("Transaction", "Index")"><i class="fa fa-plus-circle"></i><span class="nav-label">Add Transaction</span></a>
                 </li>
         </ul>
     </div>

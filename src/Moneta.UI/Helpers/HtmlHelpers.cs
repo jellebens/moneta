@@ -10,19 +10,21 @@ namespace Moneta.UI
     public static class HtmlHelpers
     {
 
-        public static string IsSelected(this IHtmlHelper html, string page = null, string cssClass = null)
+        public static string IsSelected(this IHtmlHelper html, string controller = null, string action = null, string cssClass = null)
         {
             if (String.IsNullOrEmpty(cssClass))
                 cssClass = "active";
 
-            
-            string currentPage = (string)html.ViewContext.HttpContext.Request.Path;
+            string currentAction = (string)html.ViewContext.RouteData.Values["action"];
+            string currentController = (string)html.ViewContext.RouteData.Values["controller"];
 
-            if (String.IsNullOrEmpty(page))
-                page = currentPage;
+            if (String.IsNullOrEmpty(controller))
+                controller = currentController;
 
-            
-            return page == currentPage ?
+            if (String.IsNullOrEmpty(action))
+                action = currentAction;
+
+            return controller == currentController && action == currentAction ?
                 cssClass : String.Empty;
         }
 
