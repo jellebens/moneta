@@ -18,9 +18,9 @@ $tag = "$appVersion.$rev";
 
 Write-Host "Deploying frontend version $tag"
 
-#docker build -f "$project\Dockerfile" . -t "jellebens/moneta:$tag"
+docker build -f "$project\Dockerfile" . -t "jellebens/moneta:$tag"
 
-#docker push "jellebens/moneta:$tag"
+docker push "jellebens/moneta:$tag"
 
 Write-Host "Helm upgrade"
 
