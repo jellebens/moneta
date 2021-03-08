@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Moneta.UI.Controllers
+namespace Moneta.Frontend.WebControllers
 {
     public class TransactionController : Controller
     {

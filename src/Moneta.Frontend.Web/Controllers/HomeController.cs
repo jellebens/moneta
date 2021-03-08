@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moneta.UI.Models;
+using Moneta.Frontend.WebModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Moneta.UI.Controllers
+namespace Moneta.Frontend.WebControllers
 {
     public class HomeController : Controller
     {

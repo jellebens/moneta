@@ -1,6 +1,6 @@
 using System;
 
-namespace Moneta.UI.Models
+namespace Moneta.Frontend.WebModels
 {
     public class ErrorViewModel
     {

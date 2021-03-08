@@ -1,0 +1,45 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: Kafka
+metadata:
+  name:  {{ include "moneta.fullname" . }}
+spec:
+  kafka:
+    version: 2.7.0
+    replicas: {{.Values.replicas }}
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    {{- with .Values.kafkaResources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.kafkaConfig }}
+    config:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    storage:
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: {{  .Values.kafkaStorage.size  }}
+        deleteClaim: false
+  zookeeper:
+    replicas: {{.Values.replicas }}
+     {{- with .Values.zookeeperResources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    storage:
+      type: persistent-claim
+      size: {{  .Values.zookeeperStorage.size  }}
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

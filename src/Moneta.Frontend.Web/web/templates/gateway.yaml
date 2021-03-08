@@ -1,0 +1,18 @@
+{{- if .Values.ingress.enabled -}}
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: moneta
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: {{ $svcPort }}
+      name: http
+      protocol: HTTP
+    hosts:
+    {{- range .Values.ingress.hosts }}
+    - {{ .host | quote }}
+  {{- end }}

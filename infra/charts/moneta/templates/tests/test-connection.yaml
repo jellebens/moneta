@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "moneta-infra.fullname" . }}-test-connection"
+  labels:
+    {{- include "moneta-infra.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "moneta-infra.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
