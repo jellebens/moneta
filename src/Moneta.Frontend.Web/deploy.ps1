@@ -1,5 +1,5 @@
 $project="Moneta.Frontend.Web"
-$helmRelease="Frontend.Web"
+$helmRelease="frontend-web"
 
 $helmInstalls =  helm list -n moneta -o json | ConvertFrom-Json
 
@@ -18,9 +18,12 @@ $tag = "$appVersion.$rev";
 
 Write-Host "Deploying frontend version $tag"
 
-docker build -f "$project\Dockerfile" . -t "jellebens/moneta:$tag"
+$repository="jellebens/" + $helmRelease
+$image= $repository + ":" + $tag
 
-docker push "jellebens/moneta:$tag"
+docker build -f "$project\Dockerfile" . -t $image
+
+docker push $image
 
 Write-Host "Helm upgrade"
 
@@ -30,3 +33,5 @@ $line = Get-Content $chartYaml | Select-String appVersion | Select-Object -Expan
 
 $content = Get-Content $chartYaml 
 $content | ForEach-Object {$_ -replace $line,"appVersion: $tag"} | Set-Content $chartYaml
+
+helm upgrade --install $helmRelease "$project\web" --set image.repository=$repository -n moneta

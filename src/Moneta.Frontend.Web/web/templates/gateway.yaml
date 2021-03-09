@@ -15,4 +15,5 @@ spec:
     hosts:
     {{- range .Values.ingress.hosts }}
     - {{ .host | quote }}
-  {{- end }}
+    {{- end }}
+{{- end }}
