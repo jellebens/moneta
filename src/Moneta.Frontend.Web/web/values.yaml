@@ -47,7 +47,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: moneta.192.168.2.1.nip.io
+    - host: moneta.192.168.1.100.nip.io
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

@@ -1,0 +1,22 @@
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: reviews-route
+spec:
+  hosts:
+  {{- range .Values.ingress.hosts }}
+  - {{ .host | quote }}
+  {{- end }}
+  gateways:
+  - moneta
+  http:
+  http:    
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            port:
+              number: {{ $svcPort }}
+            host: {{ include "web.fullname" . }}
