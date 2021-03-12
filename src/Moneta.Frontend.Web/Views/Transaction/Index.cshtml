@@ -3,6 +3,7 @@
 *@
 @model Moneta.Frontend.Web.Models.ImportTransactionModel
 
+
 <div class="row">
     <div class="col-lg-6">
         <div class="ibox float-e-margins">
@@ -15,18 +16,45 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <div class="row">
-                    <div class="col-lg-12">
-                        @using (Html.BeginForm("Index", "Transaction", FormMethod.Post))
-                        {
-                            <div class="form-group"><label>Transactions</label>@Html.TextAreaFor(m => m.Lines, new {@class="form-control",rows="25" })</div>
+                @using (Html.BeginForm("Index", "Transaction", FormMethod.Post))
+                {
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Select an account</label>
+                                <select class="form-control m-b" name="SelectedAccount">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <div class="form-group"><label>Transactions</label>@Html.TextAreaFor(m => m.Lines, new { @class = "form-control", rows = "25" })</div>
                             <div>
                                 <button class="btn btn-sm btn-primary pull-left  m-t-n-xs" type="submit"><strong>Create</strong></button>
                             </div>
-                        }
+
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
 </div>
+@section scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            'url': "@Url.Action("GetAccounts")",
+            'method': "GET",
+            'contentType': 'application/json'
+        }).done(function (data) {
+            console.log(data);
+            $("SELECT[name='SelectedAccount']").append(
+                $("<option></option>").val(data.id).html(data.name)
+            );
+        });
+    });
+    </script>
+}

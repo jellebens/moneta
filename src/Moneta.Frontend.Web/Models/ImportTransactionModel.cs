@@ -10,5 +10,9 @@ namespace Moneta.Frontend.Web.Models
     {
         [Required]
         public string Lines { get; set; }
+
+        [Required]
+        public Guid SelectedAccount { get; set; }
+
     }
 }
