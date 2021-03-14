@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.WebControllers
 {
-    public class TransactionController : Controller
+    public class NewBuyOrderController : Controller
     {
-        private readonly ILogger<TransactionController> _Logger;
+        private readonly ILogger<NewBuyOrderController> _Logger;
         private readonly IConfiguration _Configuration;
 
-        public TransactionController(ILogger<TransactionController> logger, IConfiguration configuration)
+        public NewBuyOrderController(ILogger<NewBuyOrderController> logger, IConfiguration configuration)
         {
             _Logger = logger;
             _Configuration = configuration;
@@ -30,7 +30,7 @@ namespace Moneta.Frontend.WebControllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(ImportTransactionModel model)
+        public async Task<IActionResult> Index(TransactionModel model)
         {
             if (!this.ModelState.IsValid) {
                 return View(model);
@@ -39,8 +39,7 @@ namespace Moneta.Frontend.WebControllers
             var importTransactionCommand = new
             {
                 Id = Guid.NewGuid(),
-                Account = model.SelectedAccount,
-                Transactions = model.Lines
+                Account = model.SelectedAccount
             };
 
             HttpClient client = new HttpClient();
@@ -67,8 +66,10 @@ namespace Moneta.Frontend.WebControllers
         public IActionResult GetAccounts() {
             Thread.Sleep(100);
 
-            var accounts = new { Id = "A85D51A3-C86F-447D-B30A-C251134CBE27", Name = "Test Account" };
-
+            var accounts = new[] {
+                    new { Id = "A85D51A3-C86F-447D-B30A-C251134CBE27", Name = "Test Account", Currency = "EUR" },
+                    new { Id = "503E6486-6127-4EB4-B208-910C0DBD1796", Name = "Second Test Account", Currency = "USD" },
+        }   ;
             return new JsonResult(accounts);
         }
 

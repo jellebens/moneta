@@ -1,0 +1,167 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Moneta.Frontend.Web.Models.TransactionModel
+
+
+@{
+    ViewData["Title"] = "New  buy order";
+}
+
+@section styles{
+    <link href="~/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="~/css/plugins/iCheck/custom.css" rel="stylesheet">
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Create a new Buy order</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                @using (Html.BeginForm("Index", "NewBuyOrder", FormMethod.Post))
+                {
+                    @Html.HiddenFor(m => m.AccountCurrency, new { @class = "form-control m-b" })
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label">Select an account:</label>
+                        <div class="col-sm-11"><select class="form-control m-b" name="SelectedAccount"></select></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label">Transaction #:</label>
+                        <div class="col-sm-5">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                        <label class="col-sm-1 col-form-label">date:</label>
+
+                        <div class="col-sm-5" id="date">
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "", new { @class = "form-control m-b" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label">Quantity:</label>
+                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
+                        <label class="col-sm-1 col-form-label">Price:</label>
+                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
+                        <label class="col-sm-1 col-form-label">Currency:</label>
+                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
+                        <label class="col-sm-1 col-form-label">Total:</label>
+                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", disabled = "disabled" })</div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label">Exchangerate:</label>
+                        <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b " })</div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label">Fee:</label>
+                        <div class="col-sm-2">@Html.TextBoxFor(m => m.BrokerFee, new { @class = "form-control m-b price" })</div>
+                        <label class="col-sm-1 col-form-label">Tax:</label>
+                        <div class="col-sm-2">
+                            <div class="input-group m-b">
+                                @Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })
+                                <div class="input-group-append">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="col-sm-1 col-form-label exchange-rate-fee">Exchange Fee:</label>
+                        <div class="col-sm-2">@Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b exchange-rate-fee" })</div>
+                        <label class="col-sm-1 col-form-label sub-total">Total Costs:</label>
+                        <div class="col-sm-2">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", disabled = "disabled" })</div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/lib/iCheck/icheck.min.js"></script>
+
+    <script type="text/javascript">
+
+        function SetExhangeRate() {
+            var accountCurrency = $("#AccountCurrency").val();
+            var transactionCurrency = $("#Currency").val().toUpperCase();
+            if (accountCurrency == transactionCurrency) {
+                $("#ExchangeRate").val(1.00);
+                $(".exchange-rate-fee").hide();
+                $("#ExchangeRate").attr("readonly", "readonly");
+                $(".sub-total").addClass("offset-md-1")
+
+            } else {
+                $("#ExchangeRate").removeAttr("readonly");
+                $(".exchange-rate-fee").show();
+                $(".sub-total").removeClass("offset-md-1")
+            }
+        }
+
+        $(document).ready(function () {
+            $('#date .input-group.date').datepicker({
+                format: 'dd/mm/yyyy'
+            });
+
+            $.ajax({
+                'url': "@Url.Action("GetAccounts")",
+                'method': "GET",
+                'contentType': 'application/json'
+            }).done(function (dataList) {
+                $.each(dataList, function (index, data) {
+                    $("SELECT[name='SelectedAccount']").append(
+                        $("<option></option>").val(data.id).html(data.name + ' (' + data.currency + ')').attr('currency', data.currency)
+                    );
+                });
+
+
+                var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
+                $("#AccountCurrency").val(val);
+            });
+
+            $("SELECT[name='SelectedAccount']").change(function () {
+                var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
+                $("#AccountCurrency").val(val);
+                SetExhangeRate();
+            });
+
+
+            $(".price").change(function () {
+                var qty = parseInt($("#Quantity").val());
+                var price = $("#Price").val()
+
+                var subtotal = (qty * price).toFixed(2);
+
+                $("#Subtotal").val(subtotal);
+
+                if (isNaN(subtotal)) {
+                    $("#Subtotal").parent().addClass("has-error");
+                } else {
+                    $("#Subtotal").parent().removeClass("has-error");
+                }
+            });
+
+            $("#Currency").change(function () {
+                SetExhangeRate();
+                console.log("ddded");
+            });
+
+    });
+
+    </script>
+}
