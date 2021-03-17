@@ -35,14 +35,17 @@
                     <div class="hr-line-dashed"></div>
                     <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Transaction #:</label>
-                        <div class="col-sm-5">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                        <div class="col-sm-4">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
                         <label class="col-sm-1 col-form-label">date:</label>
-
-                        <div class="col-sm-5" id="date">
+                        <div class="col-sm-4" id="date">
                             <div class="input-group date">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "", new { @class = "form-control m-b" })
                             </div>
                         </div>
+
+                        <label class="col-sm-1 col-form-label">Symbol:</label>
+                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
+
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group row">
@@ -53,37 +56,45 @@
                         <label class="col-sm-1 col-form-label">Currency:</label>
                         <div class="col-sm-1">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
                         <label class="col-sm-1 col-form-label">Total:</label>
-                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", disabled = "disabled" })</div>
+                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
 
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Exchangerate:</label>
-                        <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b " })</div>
+                        <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b price" })</div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group row">
-                        <label class="col-sm-1 col-form-label">Fee:</label>
-                        <div class="col-sm-2">@Html.TextBoxFor(m => m.BrokerFee, new { @class = "form-control m-b price" })</div>
-                        <label class="col-sm-1 col-form-label">Tax:</label>
-                        <div class="col-sm-2">
+                        <label class="col-sm-1 col-form-label">Commission:</label>
+                        <div class="col-sm-2">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b costs" })</div>
+                        <label class="col-sm-1 col-form-label exchange-rate-fee">Exch. Fee:</label>
+                        <div class="col-sm-2 exchange-rate-fee">
                             <div class="input-group m-b">
-                                @Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })
-                                <div class="input-group-append">
-                                    <span class="input-group-addon">%</span>
-                                </div>
+                                @Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b costs" })
                             </div>
                         </div>
-                        <label class="col-sm-1 col-form-label exchange-rate-fee">Exchange Fee:</label>
-                        <div class="col-sm-2">@Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b exchange-rate-fee" })</div>
+                        <label class="col-sm-1 col-form-label">TOB:</label>
+                        <div class="col-sm-2">@Html.TextBoxFor(m => m.TOB, new { @class = "form-control m-b costs" })</div>
                         <label class="col-sm-1 col-form-label sub-total">Total Costs:</label>
-                        <div class="col-sm-2">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", disabled = "disabled" })</div>
+                        <div class="col-sm-2">@Html.TextBoxFor(m => m.TotalCosts, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <label class="col-sm-1 col-form-label">Total:</label>
+                        <div class="col-sm-2 input-group m-b">
+                            @Html.TextBoxFor(m => m.Total, new { @class = "form-control m-b ", @readonly = "readonly" })
+                            <div class="input-group-append">
+                                <span class="input-group-addon" id="total-currency"></span>
+                            </div>
+                        </div>
+
+
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group row">
                         <div class="col-sm-4 col-sm-offset-2">
                             <button class="btn btn-primary btn-sm" type="submit">Submit</button>
                         </div>
-
                     </div>
                 }
             </div>
@@ -111,7 +122,25 @@
                 $(".exchange-rate-fee").show();
                 $(".sub-total").removeClass("offset-md-1")
             }
+
+            $("#total-currency").html(accountCurrency);
+
         }
+
+        function UpdateTotal() {
+            var subtotal = $("#Subtotal").val() * 1.00;
+            var costs = $("#TotalCosts").val() * 1.00;
+            var exchangeRate = $("#ExchangeRate").val() * 1.00;
+
+            total = (subtotal / exchangeRate) + costs;
+
+            if(!isNaN(total)) {
+                $("#Total").val(total.toFixed(2));
+            } else {
+                $("#Total").val("-");
+            }
+        }
+
 
         $(document).ready(function () {
             $('#date .input-group.date').datepicker({
@@ -132,14 +161,36 @@
 
                 var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
                 $("#AccountCurrency").val(val);
+                $("#total-currency").html(val);
             });
 
             $("SELECT[name='SelectedAccount']").change(function () {
                 var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
                 $("#AccountCurrency").val(val);
+                $("#total-currency").html(val);
                 SetExhangeRate();
             });
 
+            $("#ExchangeRate").change(function () {
+                UpdateTotal();
+            });
+
+            $(".costs").change(function () {
+                var commission = $("#Commission").val();
+                var exchangeRateFee = $("#ExchangeRateFee").val()
+                var TOB = $("#TOB").val()
+
+                var totalCosts = commission * 1.00 + exchangeRateFee * 1.00 + TOB * 1.00;
+
+                $("#TotalCosts").val(totalCosts);
+
+                if (isNaN(totalCosts)) {
+                    $("#TotalCosts").parent().addClass("has-error");
+                } else {
+                    $("#TotalCosts").parent().removeClass("has-error");
+                }
+                UpdateTotal();
+            });
 
             $(".price").change(function () {
                 var qty = parseInt($("#Quantity").val());
@@ -154,11 +205,11 @@
                 } else {
                     $("#Subtotal").parent().removeClass("has-error");
                 }
+                UpdateTotal();
             });
 
             $("#Currency").change(function () {
                 SetExhangeRate();
-                console.log("ddded");
             });
 
     });

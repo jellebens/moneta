@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.Web.Models
+namespace TransactionService.Contracts.Data
 {
-    public class TransactionModel
+    public class CreateBuyOrderCommand
     {
         [Required]
         public int TransactionNumber { get; set; }
@@ -29,17 +29,17 @@ namespace Moneta.Frontend.Web.Models
         [Required]
         public decimal Subtotal { get; set; }
 
-        [Required]
+
         public decimal ExchangeRate { get; set; }
 
 
-        public decimal? Commission { get; set; }
+        public decimal Commission { get; set; }
 
 
-        public decimal? ExchangeRateFee { get; set; }
+        public decimal ExchangeRateFee { get; set; }
 
 
-        public decimal? TOB { get; set; }
+        public decimal TOB { get; set; }
 
         [Required]
         public decimal TotalCosts { get; set; }
@@ -49,9 +49,6 @@ namespace Moneta.Frontend.Web.Models
 
         [Required]
         public Guid SelectedAccount { get; set; }
-        
-        [Required]
-        public string AccountCurrency { get; set; }
-
+        public Guid Id { get; set; }
     }
 }
