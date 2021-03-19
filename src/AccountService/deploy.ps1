@@ -1,6 +1,6 @@
-$project="Moneta.Frontend.Web"
-$helmRelease="frontend-web"
-$chart="web"
+$project="AccountService"
+$helmRelease="accounts-service"
+$chart="accounts"
 
 $ScriptDirectory = Split-Path -Path $PSScriptRoot -Parent
 

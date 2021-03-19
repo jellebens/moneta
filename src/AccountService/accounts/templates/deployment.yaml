@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "web.fullname" . }}
+  name: {{ include "accounts.fullname" . }}
   labels:
-    {{- include "web.labels" . | nindent 4 }}
+    {{- include "accounts.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      {{- include "web.selectorLabels" . | nindent 6 }}
+      {{- include "accounts.selectorLabels" . | nindent 6 }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        {{- include "web.selectorLabels" . | nindent 8 }}
+        {{- include "accounts.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "web.serviceAccountName" . }}
+      serviceAccountName: {{ include "accounts.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -36,21 +36,17 @@ spec:
           env:
           - name: ASPNETCORE_URLS
             value: http://+:8080
-          - name: TRANSACTIONS_SERVICE
-            value: http://transactions.moneta.svc.cluster.local
-          - name: ACCOUNTS_SERVICE
-            value: http://accounts.moneta.svc.cluster.local
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /system/live
               port: 8080
           readinessProbe:
             httpGet:
-              path: /
+              path: /system/ready
               port: 8080
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

@@ -6,8 +6,13 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransactionService", "TransactionService\TransactionService.csproj", "{E7C12E3D-6A92-4342-A980-9E8A8186C597}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4310D67-88EE-49EE-92DF-F73720629CDA}"
+	ProjectSection(SolutionItems) = preProject
+		deploy.ps1 = deploy.ps1
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moneta.Frontend.Web", "Moneta.Frontend.Web\Moneta.Frontend.Web.csproj", "{27C0390B-307C-4C92-8E39-5433B1EA5764}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService", "AccountService\AccountService.csproj", "{148B9A79-7FC7-4A4A-B680-8CF39B9FFB09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +28,10 @@ Global
 		{27C0390B-307C-4C92-8E39-5433B1EA5764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27C0390B-307C-4C92-8E39-5433B1EA5764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27C0390B-307C-4C92-8E39-5433B1EA5764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{148B9A79-7FC7-4A4A-B680-8CF39B9FFB09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{148B9A79-7FC7-4A4A-B680-8CF39B9FFB09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{148B9A79-7FC7-4A4A-B680-8CF39B9FFB09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{148B9A79-7FC7-4A4A-B680-8CF39B9FFB09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Moneta.Frontend.Web.Clients;
 using Moneta.Frontend.Web.Models;
 using Newtonsoft.Json;
 using System;
@@ -17,12 +18,14 @@ namespace Moneta.Frontend.WebControllers
     public class NewBuyOrderController : Controller
     {
         private readonly ILogger<NewBuyOrderController> _Logger;
-        private readonly IConfiguration _Configuration;
+        private readonly ITransactionsService _TransactionService;
+        private readonly IAccountsService _AccountsService;
 
-        public NewBuyOrderController(ILogger<NewBuyOrderController> logger, IConfiguration configuration)
+        public NewBuyOrderController(ILogger<NewBuyOrderController> logger, ITransactionsService transactionService, IAccountsService accountsService)
         {
             _Logger = logger;
-            _Configuration = configuration;
+            _TransactionService = transactionService;
+            _AccountsService = accountsService;
         }
         [HttpGet]
         public IActionResult Index()
@@ -39,38 +42,13 @@ namespace Moneta.Frontend.WebControllers
                 return View(model);
             }
 
-            var importTransactionCommand = new
-            {
-                Id = Guid.NewGuid(),
-                TransactionNumber = model.TransactionNumber,
-                Symbol = model.Symbol,
-                TransactionDate = model.TransactionDate,
-                Price = model.Price,
-                Currency = model.Currency,
-                Quantity = model.Quantity,
-                Subtotal = model.Subtotal,
-                ExchangeRate = model.ExchangeRate,
-                Commission = model.Commission ?? 0,
-                ExchangeRateFee = model.ExchangeRateFee ??0,
-                TOB = model.TOB ?? 0,
-                TotalCosts = model.TotalCosts,
-                Total = model.Total,
-                SelectedAccount = model.SelectedAccount
-            };
-
-            
-
-            StringContent data = new StringContent(JsonConvert.SerializeObject(importTransactionCommand), Encoding.UTF8, "application/json");
             try
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri(_Configuration["TRANSACTIONS_SERVICE"]);
-
-                HttpResponseMessage response = await client.PostAsync("/buyorder/create", data);
+                HttpResponseMessage response = await _TransactionService.CreateAsync(model);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    //Post and redirect
+                    //redirect
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -88,14 +66,10 @@ namespace Moneta.Frontend.WebControllers
         }
 
         [HttpGet]
-        public IActionResult GetAccounts()
+        public async Task<IActionResult> GetAccounts()
         {
-            Thread.Sleep(100);
+            AccountInfo[] accounts = await _AccountsService.ListAsync();
 
-            var accounts = new[] {
-                    new { Id = "A85D51A3-C86F-447D-B30A-C251134CBE27", Name = "Test Account", Currency = "EUR" },
-                    new { Id = "503E6486-6127-4EB4-B208-910C0DBD1796", Name = "Second Test Account", Currency = "USD" },
-        };
             return new JsonResult(accounts);
         }
 
