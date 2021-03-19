@@ -1,0 +1,15 @@
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "accounts.fullname" . }}
+spec:
+  http:    
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            port:
+              number: {{ $svcPort }}
+            host: {{ include "accounts.fullname" . }}
