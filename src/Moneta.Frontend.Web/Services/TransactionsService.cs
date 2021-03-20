@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.Web.Clients
+namespace Moneta.Frontend.Web.Services
 {
     public interface ITransactionsService
     {

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moneta.Frontend.Web.Clients;
 using Moneta.Frontend.Web.Models;
+using Moneta.Frontend.Web.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1,17 +1,16 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Moneta.Frontend.Web.Clients;
+using Moneta.Frontend.Web.Services;
 using Polly;
 using Polly.Extensions.Http;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net.Http;
+
 
 namespace Moneta.UI
 {
@@ -36,6 +35,17 @@ namespace Moneta.UI
             services.AddHttpClient<ITransactionsService, TransactionsService>()
                         .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
                         .AddPolicyHandler(GetRetryPolicy());
+
+            
+            services.AddAuthentication(x => {
+                x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(options =>
+            {
+                options.LoginPath = "/auth/login"; // Must be lowercase
+            }).AddFacebook(facebookOptions => {
+                                                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                                                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+             });
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -65,13 +75,14 @@ namespace Moneta.UI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization();
             });
         }
     }

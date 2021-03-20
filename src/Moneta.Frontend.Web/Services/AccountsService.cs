@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.Web.Clients
+namespace Moneta.Frontend.Web.Services
 {
     public class AccountInfo {
         public Guid Id { get; set; }

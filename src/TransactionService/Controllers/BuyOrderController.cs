@@ -52,7 +52,7 @@ namespace TransactionService.Controllers
                     }
                 };
 
-                //var deliveryResult = await producer.ProduceAsync("transactions", msg, cancellationToken);
+                var deliveryResult = await producer.ProduceAsync("transactions", msg, cancellationToken);
             }
 
                 _Logger.LogInformation($"Finished creating Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
