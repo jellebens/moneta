@@ -33,5 +33,5 @@ Function deploy($project, $chart , $helmRelease){
     $content = Get-Content $chartYaml 
     $content | ForEach-Object {$_ -replace $line,"appVersion: $tag"} | Set-Content $chartYaml
 
-    return helm upgrade --install $helmRelease "$project\$chart" --set image.repository=$repository -n moneta
+    return helm upgrade --install $helmRelease "$project\$chart" --set image.repository=$repository -n moneta --wait
 }

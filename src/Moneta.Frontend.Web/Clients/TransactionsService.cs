@@ -34,7 +34,7 @@ namespace Moneta.Frontend.Web.Clients
                 Id = Guid.NewGuid(),
                 TransactionNumber = model.TransactionNumber,
                 Symbol = model.Symbol,
-                TransactionDate = model.TransactionDate,
+                TransactionDate = DateTime.ParseExact(model.TransactionDate, "dd/MM/yyyy", null),
                 Price = model.Price,
                 Currency = model.Currency,
                 Quantity = model.Quantity,

@@ -46,7 +46,7 @@ spec:
               port: 8080
           readinessProbe:
             httpGet:
-              path: /
+              path: /system/ready
               port: 8080
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

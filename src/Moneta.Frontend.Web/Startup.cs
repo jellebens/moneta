@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,6 +9,7 @@ using Polly;
 using Polly.Extensions.Http;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 
@@ -26,6 +28,7 @@ namespace Moneta.UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
             services.AddHttpClient<IAccountsService, AccountsService>()
                         .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
                         .AddPolicyHandler(GetRetryPolicy());

@@ -27,6 +27,7 @@
             <div class="ibox-content">
                 @using (Html.BeginForm("Index", "NewBuyOrder", FormMethod.Post))
                 {
+                    @Html.AntiForgeryToken();
                     @Html.HiddenFor(m => m.AccountCurrency, new { @class = "form-control m-b" })
                     <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Select an account:</label>
@@ -39,7 +40,7 @@
                         <label class="col-sm-1 col-form-label">date:</label>
                         <div class="col-sm-4" id="date">
                             <div class="input-group date">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "", new { @class = "form-control m-b" })
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class="form-control m-b",  })
                             </div>
                         </div>
 
@@ -101,6 +102,8 @@
         </div>
     </div>
 </div>
+
+@Html.ValidationSummary()
 
 @section scripts {
     <script src="~/lib/datapicker/bootstrap-datepicker.js"></script>

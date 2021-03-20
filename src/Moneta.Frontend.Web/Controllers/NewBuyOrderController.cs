@@ -34,6 +34,7 @@ namespace Moneta.Frontend.WebControllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(TransactionModel model)
         {
             if (!this.ModelState.IsValid)
