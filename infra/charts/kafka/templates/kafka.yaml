@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta1
 kind: Kafka
 metadata:
-  name:  {{ include "moneta.fullname" . }}
+  name:  {{ include "kafka.fullname" . }}
 spec:
   kafka:
     version: 2.7.0

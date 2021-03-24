@@ -40,17 +40,29 @@ spec:
             value: http://transactions.moneta.svc.cluster.local
           - name: ACCOUNTS_SERVICE
             value: http://accounts.moneta.svc.cluster.local
+          - name: "FACEBOOK_APPID"
+            valueFrom:
+              secretKeyRef:
+                name: facebook
+                key: AppId
+          - name: "FACEBOOK_APPSECRET"
+            valueFrom:
+              secretKeyRef:
+                name: facebook
+                key: AppSecret
+          - name: VERSION
+            value: {{ .Chart.AppVersion }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /sys/live
               port: 8080
           readinessProbe:
             httpGet:
-              path: /
+              path: /sys/ready
               port: 8080
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

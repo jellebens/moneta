@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -43,8 +42,8 @@ namespace Moneta.UI
             {
                 options.LoginPath = "/auth/login"; // Must be lowercase
             }).AddFacebook(facebookOptions => {
-                                                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                                                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                                                 facebookOptions.AppId = Configuration["FACEBOOK_APPID"];
+                                                 facebookOptions.AppSecret = Configuration["FACEBOOK_APPSECRET"];
              });
         }
 
