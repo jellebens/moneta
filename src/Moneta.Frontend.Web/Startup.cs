@@ -1,15 +1,23 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polly.Extensions.Http;
+using System.Net.Http;
 using Moneta.Frontend.Web.Services;
 using Polly;
-using Polly.Extensions.Http;
-using System;
-using System.Net.Http;
-
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Moneta.UI
 {
@@ -35,16 +43,42 @@ namespace Moneta.UI
                         .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
                         .AddPolicyHandler(GetRetryPolicy());
 
-            
-            services.AddAuthentication(x => {
-                x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(options =>
+
+
+
+            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApp(options =>
+                {
+                    options.ClientId = Configuration["CLIENT_ID"];
+                    options.ClientSecret = Configuration["CLIENT_SECRET"];
+                    options.Instance = "https://login.microsoftonline.com/";
+                    options.Domain = "jellebens.ddns.net";
+                    options.TenantId = "consumers";
+                    options.CallbackPath = "/auth/microsoft-signin";
+
+                    var redirectToIdpHandler = options.Events.OnRedirectToIdentityProvider;
+                    options.Events.OnRedirectToIdentityProvider = async context =>
+                    {
+                        // Call what Microsoft.Identity.Web is doing
+                        await redirectToIdpHandler(context);
+                        Console.WriteLine(context.ProtocolMessage.RedirectUri);
+
+                        if (context.ProtocolMessage.RedirectUri.Contains("ddns.net")) {
+                            context.ProtocolMessage.RedirectUri = context.ProtocolMessage.RedirectUri.Replace("http://", "https://");
+                        }
+                    };
+                });
+
+            services.AddControllersWithViews(options =>
             {
-                options.LoginPath = "/auth/login"; // Must be lowercase
-            }).AddFacebook(facebookOptions => {
-                                                 facebookOptions.AppId = Configuration["FACEBOOK_APPID"];
-                                                 facebookOptions.AppSecret = Configuration["FACEBOOK_APPSECRET"];
-             });
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+            services.AddRazorPages()
+                 .AddMicrosoftIdentityUI();
+
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -70,6 +104,8 @@ namespace Moneta.UI
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
             app.UseStaticFiles();
 
             app.UseRouting();

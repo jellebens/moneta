@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,20 +13,32 @@ namespace Moneta.Frontend.Web.Controllers
     [AllowAnonymous, Route("auth")]
     public class AuthController : Controller
     {
+        private readonly ILogger<AuthController> _logger;
+
+        public AuthController(ILogger<AuthController> logger)
+        {
+            _logger = logger;
+        }
+
         [Route("login")]
         public IActionResult Index()
         {
+            
             var properties = new AuthenticationProperties { RedirectUri = Url.Action("Index","Home") };
-            return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+            
+            _logger.LogInformation("Redirecting to: " + properties.RedirectUri);
+
+            //return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+            return Ok();
         }
 
         [Route("response")]
-        public async Task<IActionResult> FacebookResponse()
+        [Authorize]
+        public IActionResult FacebookResponse()
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var claims = result.Principal.Identities
-                .FirstOrDefault().Claims.Select(claim => new
+            try
+            {
+                var claims = User.Claims.Select(claim => new
                 {
                     claim.Issuer,
                     claim.OriginalIssuer,
@@ -34,7 +46,12 @@ namespace Moneta.Frontend.Web.Controllers
                     claim.Value
                 });
 
-            return Json(claims);
+                return Json(claims);
+            }
+            catch (Exception exc) {
+                return StatusCode(500, exc.Message);
+            }
+            
         }
     }
 }

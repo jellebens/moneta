@@ -40,16 +40,16 @@ spec:
             value: http://transactions.moneta.svc.cluster.local
           - name: ACCOUNTS_SERVICE
             value: http://accounts.moneta.svc.cluster.local
-          - name: "FACEBOOK_APPID"
+          - name: "CLIENT_ID"
             valueFrom:
               secretKeyRef:
-                name: facebook
-                key: AppId
-          - name: "FACEBOOK_APPSECRET"
+                name: azure
+                key: ClientId
+          - name: "CLIENT_SECRET"
             valueFrom:
               secretKeyRef:
-                name: facebook
-                key: AppSecret
+                name: azure
+                key: ClientSecret
           - name: VERSION
             value: {{ .Chart.AppVersion }}
           ports:
