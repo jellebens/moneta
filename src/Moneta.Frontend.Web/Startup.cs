@@ -61,9 +61,8 @@ namespace Moneta.UI
                     {
                         // Call what Microsoft.Identity.Web is doing
                         await redirectToIdpHandler(context);
-                        Console.WriteLine(context.ProtocolMessage.RedirectUri);
-
-                        if (context.ProtocolMessage.RedirectUri.Contains("ddns.net")) {
+                        
+                        if (context.ProtocolMessage.RedirectUri.Contains(Configuration["REDIRECT_URI_DOMAIN"])) {
                             context.ProtocolMessage.RedirectUri = context.ProtocolMessage.RedirectUri.Replace("http://", "https://");
                         }
                     };
