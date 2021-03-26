@@ -18,8 +18,89 @@
                 </div>
             </div>
             <div class="ibox-content">
-               
+
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newAccount">
+                    Create New Account
+                </button>
+                <div class="modal inmodal fade" id="newAccount" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title">Create a new account</h4>
+                                <small class="font-bold">Create a new  account to which your investments will be coupled</small>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <form role="form">
+                                            <div class="form-group"><label><b>Name</b></label><input type="text" id="name" placeholder="Name" class="form-control"></div>
+                                            <div class="form-group"><label><b>Currency</b></label><input type="text" id="currency" placeholder="Currency" maxlength="3" class="form-control"></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="Submit">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
+
+
+
+@section scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#Submit").click(function () {
+                var currency = $("#currency").val();
+                var name = $("#name").val();
+                var hasErrors = false;
+
+                if (!currency.trim() || currency.length != 3) {
+                    hasErrors = true;
+                    $("#currency").parent().addClass("has-error");
+                } else {
+                    $("#currency").parent().removeClass("has-error");
+                }
+
+                if (!name.trim()) {
+                    hasErrors = true;
+                    $("#name").parent().addClass("has-error");
+                } else {
+                    $("#name").parent().removeClass("has-error");
+                }
+
+
+
+                if (!hasErrors) {
+                    var model = new Object();
+                    model.Name = name;
+                    model.Currency = currency;
+
+                    $.ajax({
+                        url: '/accounts',
+                        type: 'POST',
+                        data: JSON.stringify(model),
+                        dataType: "json",  
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            $("#newAccount").modal('hide');
+                        }
+                    }); //end ajax
+
+                } //endif
+            });
+        });
+
+
+
+    </script>
+}
