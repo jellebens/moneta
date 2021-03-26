@@ -36,6 +36,11 @@ spec:
           env:
           - name: ASPNETCORE_URLS
             value: http://+:8080
+          - name: "JWT_SECRET"
+            valueFrom:
+              secretKeyRef:
+                name: jwt
+                key: Secret
           ports:
             - name: http
               containerPort: 8080

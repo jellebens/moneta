@@ -1,10 +1,11 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 8080
 ARG VERSION="dev"
 ENV VERSION=$VERSION
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS publish
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS publish
 WORKDIR /src
 COPY . .
 RUN dotnet restore Moneta.Frontend.Web/Moneta.Frontend.Web.csproj

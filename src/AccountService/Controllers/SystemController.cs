@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,13 +11,12 @@ namespace AccountService.Controllers
 {
     [Route("system")]
     [ApiController]
+    [AllowAnonymous]
     public class SystemController : ControllerBase
     {
-        private readonly ILogger<SystemController> _Logger;
-
-        public SystemController(ILogger<SystemController> logger)
+        public SystemController()
         {
-            this._Logger = logger;
+            
         }
 
         [HttpGet]

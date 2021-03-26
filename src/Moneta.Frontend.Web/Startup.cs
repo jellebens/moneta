@@ -36,13 +36,14 @@ namespace Moneta.UI
             services.AddControllersWithViews();
 
             services.AddHttpClient<IAccountsService, AccountsService>()
-                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
+                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))  
                         .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpClient<ITransactionsService, TransactionsService>()
-                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
+                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))  
                         .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
 
 
 

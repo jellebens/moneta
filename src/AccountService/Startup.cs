@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,9 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AccountService
@@ -25,6 +28,32 @@ namespace AccountService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                    .AddJwtBearer(jwt =>
+                    {
+                        byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
+
+                        jwt.SaveToken = true;
+                        jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
+                        jwt.Authority = "https://login.microsoftonline.com/common";
+                        jwt.RequireHttpsMetadata = false;
+
+                        jwt.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = false,
+                            IssuerSigningKey = new SymmetricSecurityKey(key),
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            RequireExpirationTime = false,
+                            ValidateLifetime = true
+                        };
+
+                    });
+
             services.AddControllers();
         }
 
@@ -40,6 +69,7 @@ namespace AccountService
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

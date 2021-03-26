@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,12 +22,14 @@ namespace Moneta.Frontend.WebControllers
         private readonly ILogger<BuyOrderController> _Logger;
         private readonly ITransactionsService _TransactionService;
         private readonly IAccountsService _AccountsService;
+        private readonly IJwtTokenBuilder _JwtTokenBuilder;
 
-        public BuyOrderController(ILogger<BuyOrderController> logger, ITransactionsService transactionService, IAccountsService accountsService)
+        public BuyOrderController(ILogger<BuyOrderController> logger, ITransactionsService transactionService, IAccountsService accountsService, IJwtTokenBuilder jwtTokenBuilder)
         {
             _Logger = logger;
             _TransactionService = transactionService;
             _AccountsService = accountsService;
+            _JwtTokenBuilder = jwtTokenBuilder;
         }
 
         [HttpGet]
@@ -73,10 +76,12 @@ namespace Moneta.Frontend.WebControllers
         [HttpGet]
         public async Task<IActionResult> GetAccounts()
         {
+
+            _AccountsService.AddBearer(_JwtTokenBuilder.Build(User));
+
             AccountInfo[] accounts = await _AccountsService.ListAsync();
 
             return new JsonResult(accounts);
         }
-
     }
 }

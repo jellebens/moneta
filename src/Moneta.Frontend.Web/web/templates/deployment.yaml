@@ -40,6 +40,11 @@ spec:
             value: http://transactions.moneta.svc.cluster.local
           - name: ACCOUNTS_SERVICE
             value: http://accounts.moneta.svc.cluster.local
+          - name: "JWT_SECRET"
+            valueFrom:
+              secretKeyRef:
+                name: jwt
+                key: Secret
           - name: "CLIENT_ID"
             valueFrom:
               secretKeyRef:

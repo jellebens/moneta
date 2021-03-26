@@ -1,20 +1,15 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
+ARG VERSION="dev"
+ENV VERSION=$VERSION
 
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS publish
 WORKDIR /src
-COPY ["TransactionService/TransactionService.csproj", "TransactionService/"]
-RUN dotnet restore "TransactionService/TransactionService.csproj"
 COPY . .
-WORKDIR "/src/TransactionService"
-RUN dotnet build "TransactionService.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "TransactionService.csproj" -c Release -o /app/publish
+RUN dotnet restore TransactionService/TransactionService.csproj
+RUN dotnet publish TransactionService/TransactionService.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
