@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="ibox-content">
-                @using (Html.BeginForm("Index", "NewBuyOrder", FormMethod.Post))
+                @using (Html.BeginForm("Index", "BuyOrder", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken();
                     @Html.HiddenFor(m => m.AccountCurrency, new { @class = "form-control m-b" })
@@ -40,7 +40,7 @@
                         <label class="col-sm-1 col-form-label">date:</label>
                         <div class="col-sm-4" id="date">
                             <div class="input-group date">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class="form-control m-b",  })
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
                             </div>
                         </div>
 
@@ -103,13 +103,24 @@
     </div>
 </div>
 
-@Html.ValidationSummary()
+
+@if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
+{
+<div class="alert alert-danger">
+    @Html.ValidationSummary(false, "")
+</div>
+}
+
+
 
 @section scripts {
     <script src="~/lib/datapicker/bootstrap-datepicker.js"></script>
     <script src="~/lib/iCheck/icheck.min.js"></script>
 
     <script type="text/javascript">
+
+        $('.input-validation-error').parents('.form-group').addClass('has-error');
+        $('.field-validation-error').addClass('text-danger');
 
         function SetExhangeRate() {
             var accountCurrency = $("#AccountCurrency").val();

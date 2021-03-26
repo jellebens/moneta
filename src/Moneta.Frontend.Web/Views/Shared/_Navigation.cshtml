@@ -18,8 +18,11 @@
             <li class="@Html.IsSelected(controller: "Home", action: "Index")">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-area-chart"></i><span class="nav-label">Overview</span></a>
                 </li>
-                <li class="@Html.IsSelected(controller: "NewBuyOrder", action: "Index")">
-                    <a href="@Url.Action("Index", "NewBuyOrder")"><i class="fa fa-plus-circle"></i><span class="nav-label">Add Transaction</span></a>
+            <li class="@Html.IsSelected(controller: "accounts", action: "Index")">
+                <a href="@Url.Action("Index", "Accounts")"><i class="fa fa-credit-card"></i><span class="nav-label">Accounts</span></a>
+            </li>
+                <li class="@Html.IsSelected(controller: "buyorder", action: "new")">
+                    <a href="@Url.Action("Index", "BuyOrder")"><i class="fa fa-plus-circle"></i><span class="nav-label">Add Transaction</span></a>
                 </li>
         </ul>
     </div>

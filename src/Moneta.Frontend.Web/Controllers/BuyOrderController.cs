@@ -15,19 +15,22 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.WebControllers
 {
-    public class NewBuyOrderController : Controller
+    [Route("buyorder")]
+    public class BuyOrderController : Controller
     {
-        private readonly ILogger<NewBuyOrderController> _Logger;
+        private readonly ILogger<BuyOrderController> _Logger;
         private readonly ITransactionsService _TransactionService;
         private readonly IAccountsService _AccountsService;
 
-        public NewBuyOrderController(ILogger<NewBuyOrderController> logger, ITransactionsService transactionService, IAccountsService accountsService)
+        public BuyOrderController(ILogger<BuyOrderController> logger, ITransactionsService transactionService, IAccountsService accountsService)
         {
             _Logger = logger;
             _TransactionService = transactionService;
             _AccountsService = accountsService;
         }
+
         [HttpGet]
+        [Route("new")]
         public IActionResult Index()
         {
             return View();
@@ -35,6 +38,7 @@ namespace Moneta.Frontend.WebControllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("new")]
         public async Task<IActionResult> Index(TransactionModel model)
         {
             if (!this.ModelState.IsValid)
