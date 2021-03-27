@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AccountService.Sql;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,9 +15,13 @@ namespace AccountService.Controllers
     [AllowAnonymous]
     public class SystemController : ControllerBase
     {
-        public SystemController()
+        private readonly ILogger<SystemController> _Logger;
+        private readonly AccountsDbContext _AccountsDb;
+
+        public SystemController(ILogger<SystemController> logger, AccountsDbContext accountsDb)
         {
-            
+            _Logger = logger;
+            _AccountsDb = accountsDb;
         }
 
         [HttpGet]
@@ -30,6 +35,11 @@ namespace AccountService.Controllers
         [Route("ready")]
         public ActionResult IsReady()
         {
+            if (!_AccountsDb.Database.CanConnect()) {
+                _Logger.LogCritical("Cant connect to database");
+
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, "Can't Connect to database");
+            };
             return Ok();
         }
     }

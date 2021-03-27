@@ -1,3 +1,4 @@
+using AccountService.Sql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountService
 {
@@ -28,6 +30,15 @@ namespace AccountService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AccountsDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetValue<string>("Accounts")
+                                   , provideroptions => {
+                                        provideroptions.EnableRetryOnFailure(5);
+                                    });
+               
+            });
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,6 +67,9 @@ namespace AccountService
                     });
 
             services.AddControllers();
+
+            
+            services.AddTransient<IStartupFilter, DatabaseUpgradeFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

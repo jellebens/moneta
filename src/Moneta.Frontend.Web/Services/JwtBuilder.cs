@@ -25,8 +25,6 @@ namespace Moneta.Frontend.Web.Services
         }
         public string Build(ClaimsPrincipal principal)
         {
-
-            //string name = principal.Claims.FirstOrDefault(c => );
             string name = principal.Claims.FirstOrDefault(c => c.Type.Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value;
             string id = principal.Claims.FirstOrDefault(c => c.Type.Equals("preferred_username", StringComparison.CurrentCultureIgnoreCase)).Value; ;
 
