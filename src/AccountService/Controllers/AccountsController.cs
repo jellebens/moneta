@@ -1,4 +1,6 @@
 ﻿using AccountService.Contracts.Data;
+using AccountService.Domain;
+using AccountService.Sql;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,10 +18,12 @@ namespace AccountService.Controllers
     {
 
         private readonly ILogger<AccountsController> _Logger;
+        private readonly AccountsDbContext _AccountsDbContext;
 
-        public AccountsController(ILogger<AccountsController> logger)
+        public AccountsController(ILogger<AccountsController> logger, AccountsDbContext accountsDbContext)
         {
             _Logger = logger;
+            _AccountsDbContext = accountsDbContext;
         }
 
         [HttpGet]
@@ -36,8 +40,22 @@ namespace AccountService.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CreateAccountCommand command) {
             Claim nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+            Claim id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
             _Logger.LogInformation($"Creating account {command.Name} for {nameClaim.Value}");
+
+            Account account = new Account(Guid.NewGuid(), command.Name, command.Currency, id.Value);
+
+            bool accountExists =  _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency == account.Currency && a.Owner == account.Owner);
+
+            if (!accountExists) {
+                await _AccountsDbContext.Accounts.AddAsync(account);
+                await _AccountsDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                _Logger.LogInformation("Account allready exists, not creating a new one");
+            }
 
             return Ok();
         }

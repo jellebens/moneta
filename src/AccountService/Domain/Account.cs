@@ -7,13 +7,24 @@ namespace AccountService.Domain
 {
     public class Account
     {
-        public Guid Id { get; set; }
+        private Account() { 
+        
+        }
 
-        public string Name { get; set; }
+        public Account(Guid id, string name, string currency, string owner) { 
+            Id = id;
+            Name = name;
+            Currency = currency;
+            Owner = owner;
+        }
 
-        public string Currency { get; set; }
+        public Guid Id { get; protected set; }
 
-        public string Owner { get; set; }
+        public string Name { get; protected set; }
+
+        public string Currency { get; protected  set; }
+
+        public string Owner { get; protected set; }
 
     }
 }
