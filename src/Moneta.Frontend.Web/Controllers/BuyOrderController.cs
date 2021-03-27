@@ -77,7 +77,7 @@ namespace Moneta.Frontend.WebControllers
         public async Task<IActionResult> GetAccounts()
         {
 
-            _AccountsService.AddBearer(_JwtTokenBuilder.Build(User));
+            _AccountsService.Authenticate(_JwtTokenBuilder.Build(User));
 
             AccountInfo[] accounts = await _AccountsService.ListAsync();
 

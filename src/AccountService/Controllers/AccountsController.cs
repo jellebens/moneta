@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AccountService.Controllers
@@ -22,8 +23,7 @@ namespace AccountService.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public IActionResult Get()
+        public IActionResult Index()
         {
             AccountInfo[] accounts = new AccountInfo[] {
                     new AccountInfo { Id = new Guid("A85D51A3-C86F-447D-B30A-C251134CBE27"), Name = "Test Account", Currency = "EUR" },
@@ -31,6 +31,15 @@ namespace AccountService.Controllers
             };
 
             return Ok(accounts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(CreateAccountCommand command) {
+            Claim nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+
+            _Logger.LogInformation($"Creating account {command.Name} for {nameClaim.Value}");
+
+            return Ok();
         }
     }
 }

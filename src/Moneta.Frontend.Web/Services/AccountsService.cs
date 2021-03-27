@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
+using Moneta.Frontend.Web.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,9 @@ namespace Moneta.Frontend.Web.Services
     public interface IAccountsService
     {
         Task<AccountInfo[]> ListAsync();
-        void AddBearer(string jwtToken);
+        void Authenticate(string jwtToken);
+
+        Task<HttpResponseMessage> CreateAccountAsync(NewAccountModel model); 
     }
     public class AccountsService : IAccountsService
     {
@@ -43,9 +46,22 @@ namespace Moneta.Frontend.Web.Services
             _Client.BaseAddress = new Uri(configuration["ACCOUNTS_SERVICE"]);
         }
 
-        public void AddBearer(string jwtToken)
+        public void Authenticate(string jwtToken)
         {
             _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, jwtToken);
+        }
+
+        public async Task<HttpResponseMessage> CreateAccountAsync(NewAccountModel model) {
+            var createAccountCommand = new
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Name,
+                Currency = model.Currency
+            };
+
+            StringContent data = new StringContent(JsonConvert.SerializeObject(createAccountCommand), Encoding.UTF8, "application/json");
+
+            return await _Client.PostAsync("/accounts", data);
         }
 
         public async Task<AccountInfo[]> ListAsync()
