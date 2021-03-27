@@ -57,9 +57,9 @@ namespace AccountService
                         {
                             ValidateIssuerSigningKey = true,
                             IssuerSigningKey = new SymmetricSecurityKey(key),
-                            ValidateIssuer = true,
+                            ValidateIssuer = true, 
                             ValidIssuer = "https://login.microsoftonline.com/common",
-                            ValidateAudience = true,
+                            ValidateAudience = true, 
                             RequireExpirationTime = false,
                             ValidateLifetime = true
                         };

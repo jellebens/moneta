@@ -16,7 +16,13 @@
 #kubectl delete secret azure -n moneta
 #kubectl create secret generic azure --from-literal=ClientId=$CLIENT_ID --from-literal=ClientSecret=$CLIENT_SECRET -n moneta
 
-$SECRET=(Read-Host "Enter JWT Secret" -AsSecureString)
-$JWT_SECRET=ConvertFrom-SecureString -SecureString $SECRET -AsPlainText
-kubectl delete secret jwt -n moneta
-kubectl create secret generic jwt --from-literal=Secret=$JWT_SECRET -n moneta
+# $SECRET=(Read-Host "Enter JWT Secret" -AsSecureString)
+# $JWT_SECRET=ConvertFrom-SecureString -SecureString $SECRET -AsPlainText
+# kubectl delete secret jwt -n moneta
+# kubectl create secret generic jwt --from-literal=Secret=$JWT_SECRET -n moneta
+
+$PASSWORD=(Read-Host "Enter Microsoft SQL SA password" -AsSecureString)
+$SA_PWD=ConvertFrom-SecureString -SecureString $PASSWORD -AsPlainText
+$AccountsDb="Data Source=tcp:mssql,1433;Initial Catalog=AccountsDb;User Id=sa;Password=$SA_PWD"
+kubectl delete secret mssql -n moneta
+kubectl create secret generic mssql --from-literal=SA_PWD=$SA_PWD --from-literal=AccountsDb=$AccountsDb -n moneta

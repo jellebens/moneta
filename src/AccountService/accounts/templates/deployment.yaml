@@ -36,6 +36,16 @@ spec:
           env:
           - name: ASPNETCORE_URLS
             value: http://+:8080
+          - name: "Accounts"
+            valueFrom:
+              secretKeyRef:
+                name: mssql
+                key: AccountsDb
+          - name: "CLIENT_ID"
+            valueFrom:
+              secretKeyRef:
+                name: azure
+                key: ClientId
           - name: "JWT_SECRET"
             valueFrom:
               secretKeyRef:

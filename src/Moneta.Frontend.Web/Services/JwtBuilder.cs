@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace Moneta.Frontend.Web.Services
     public class JwtTokenBuilder : IJwtTokenBuilder
     {
         private readonly IConfiguration _Configuration;
+        private readonly ILogger<JwtTokenBuilder> _Logger;
 
-        public JwtTokenBuilder(IConfiguration configuration)
+        public JwtTokenBuilder(IConfiguration configuration, ILogger<JwtTokenBuilder> logger)
         {
             this._Configuration = configuration;
+            this._Logger = logger;
         }
         public string Build(ClaimsPrincipal principal)
         {
@@ -44,8 +47,11 @@ namespace Moneta.Frontend.Web.Services
                 SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+            
+            string jwtToken = tokenHandler.WriteToken(token);
+
+            return jwtToken;
         }
     }
 }
