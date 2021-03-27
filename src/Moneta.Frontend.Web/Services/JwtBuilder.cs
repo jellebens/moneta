@@ -32,9 +32,6 @@ namespace Moneta.Frontend.Web.Services
 
             var mySecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Configuration["JWT_SECRET"]));
 
-            var myIssuer = "jellebens.ddns.net";
-            var myAudience = "https://jellebens.ddns.net";
-
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -44,8 +41,8 @@ namespace Moneta.Frontend.Web.Services
                 }),
                 NotBefore = DateTime.UtcNow.AddMinutes(-15),
                 Expires = DateTime.UtcNow.AddDays(30),
-                Issuer = myIssuer,
-                Audience = myAudience,
+                Issuer = "https://login.microsoftonline.com/common",
+                Audience = _Configuration.GetValue<string>("CLIENT_ID"),
                 SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
             };
 

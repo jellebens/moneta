@@ -44,10 +44,11 @@ namespace AccountService
 
                         jwt.TokenValidationParameters = new TokenValidationParameters
                         {
-                            ValidateIssuerSigningKey = false,
+                            ValidateIssuerSigningKey = true,
                             IssuerSigningKey = new SymmetricSecurityKey(key),
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
+                            ValidateIssuer = true,
+                            ValidIssuer = "https://login.microsoftonline.com/common",
+                            ValidateAudience = true,
                             RequireExpirationTime = false,
                             ValidateLifetime = true
                         };
