@@ -29,12 +29,16 @@ namespace AccountService.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            AccountInfo[] accounts = new AccountInfo[] {
-                    new AccountInfo { Id = new Guid("A85D51A3-C86F-447D-B30A-C251134CBE27"), Name = "Test Account", Currency = "EUR" },
-                    new AccountInfo { Id = new Guid("503E6486-6127-4EB4-B208-910C0DBD1796"), Name = "Second Test Account", Currency = "USD" },
-            };
+            Claim id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(accounts);
+            var accounts = _AccountsDbContext.Accounts.Where(a => a.Owner == id.Value).Select(a => new AccountInfo()
+            {
+                Currency = a.Currency,
+                Id = a.Id,
+                Name = a.Name
+            }).OrderBy(a => a.Name); 
+
+            return Ok(accounts.ToList());
         }
 
         [HttpPost]
@@ -44,7 +48,7 @@ namespace AccountService.Controllers
 
             _Logger.LogInformation($"Creating account {command.Name} for {nameClaim.Value}");
 
-            Account account = new Account(Guid.NewGuid(), command.Name, command.Currency, id.Value);
+            Account account = new Account(Guid.NewGuid(), command.Name, command.Currency.ToUpper(), id.Value);
 
             bool accountExists =  _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency == account.Currency && a.Owner == account.Owner);
 
