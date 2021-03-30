@@ -24,31 +24,22 @@ namespace Moneta.Frontend.Web.Services
         public string Currency { get; set; }
     }
 
-    public interface IAccountsService
+    public interface IAccountsService: IService
     {
         Task<AccountInfo[]> ListAsync();
-        void Authenticate(string jwtToken);
-
+        
         Task<HttpResponseMessage> CreateAccountAsync(NewAccountModel model); 
     }
-    public class AccountsService : IAccountsService
+    public class AccountsService : ServiceBase, IAccountsService
     {
-        private readonly IConfiguration _Configuration;
-        private readonly HttpClient _Client;
+        
         private readonly ILogger<AccountsService> _Logger;
 
-        public AccountsService(IConfiguration configuration, HttpClient client, ILogger<AccountsService> logger)
+        public AccountsService(IConfiguration configuration, HttpClient client, ILogger<AccountsService> logger): base(configuration, client)
         {
-            _Client = client;
             _Logger = logger;
-            _Configuration = configuration;
-
+            
             _Client.BaseAddress = new Uri(configuration["ACCOUNTS_SERVICE"]);
-        }
-
-        public void Authenticate(string jwtToken)
-        {
-            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, jwtToken);
         }
 
         public async Task<HttpResponseMessage> CreateAccountAsync(NewAccountModel model) {

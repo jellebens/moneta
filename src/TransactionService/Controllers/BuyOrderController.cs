@@ -7,10 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using TransactionService.Contracts.Data;
+using TransactionService.Domain;
 using TransactionService.Events;
+using TransactionService.Sql;
 using static Confluent.Kafka.ConfigPropertyNames;
 
 namespace TransactionService.Controllers
@@ -21,42 +24,29 @@ namespace TransactionService.Controllers
     {
         private readonly ILogger<BuyOrderController> _Logger;
         private readonly IConfiguration _Configuration;
+        private readonly TransactionsDbContext _TransactionsDbContext;
 
-        public BuyOrderController(ILogger<BuyOrderController> logger, IConfiguration configuration)
+        public BuyOrderController(ILogger<BuyOrderController> logger, IConfiguration configuration, TransactionsDbContext transactionsDbContext)
         {
             _Logger = logger;
             _Configuration = configuration;
+            _TransactionsDbContext = transactionsDbContext;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody]CreateBuyOrderCommand createBuyOrder, CancellationToken cancellationToken) {
-            _Logger.LogInformation($"Creating Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
+        [HttpPost("start")]
+        public async Task<IActionResult> Start([FromBody]StartBuyOrderCommand createBuyOrder, CancellationToken cancellationToken) {
+            Guid id = Guid.NewGuid();
+            _Logger.LogInformation($"Creating Buy Order with Id: {id} and number {createBuyOrder.TransactionNumber}");
 
-            
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            ProducerConfig config = new ProducerConfig
-            {
-                BootstrapServers = _Configuration["BOOTSTRAP_SERVERS"],
-                ClientId = Dns.GetHostName()
-            };
+            BuyOrder buyOrder = new BuyOrder(id, createBuyOrder.AccountId, createBuyOrder.Currency.ToUpper(), createBuyOrder.Symbol, createBuyOrder.TransactionDate, createBuyOrder.TransactionNumber, userId.Value);
 
+            await _TransactionsDbContext.BuyOrders.AddAsync(buyOrder);
 
+            await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
 
-
-            using (var producer = new ProducerBuilder<Guid, BuyOrderCreated>(config).Build()) {
-                Message<Guid, BuyOrderCreated> msg =  new Message<Guid, BuyOrderCreated>()
-                {
-                    Key = createBuyOrder.SelectedAccount,
-                    Value = new BuyOrderCreated {
-
-                    }
-                };
-
-                var deliveryResult = await producer.ProduceAsync("transactions", msg, cancellationToken);
-            }
-
-                _Logger.LogInformation($"Finished creating Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
-
+            _Logger.LogInformation($"Created Buy Order with Id: {id} and number {createBuyOrder.TransactionNumber}");
             return Ok();
         }
     }

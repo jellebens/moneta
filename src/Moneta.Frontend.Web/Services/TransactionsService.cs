@@ -1,57 +1,48 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Web;
 using Moneta.Frontend.Web.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Moneta.Frontend.Web.Services
 {
-    public interface ITransactionsService
+    public interface ITransactionsService: IService
     {
-        Task<HttpResponseMessage> CreateAsync(TransactionModel model);
-     }
+       
+        Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model);
+        
+    }
 
-    public class TransactionsService: ITransactionsService
+    public class TransactionsService: ServiceBase, ITransactionsService
     {
-        private readonly IConfiguration _Configuration;
-        private readonly HttpClient _Client;
-
-        public TransactionsService(IConfiguration configuration, HttpClient client)
+        public TransactionsService(IConfiguration configuration, HttpClient client): base(configuration, client)
         {
-            this._Configuration = configuration;
-            this._Client = client;
             _Client.BaseAddress = new Uri(_Configuration["TRANSACTIONS_SERVICE"]);
         }
 
-        public async Task<HttpResponseMessage> CreateAsync(TransactionModel model) {
-            
-            var importTransactionCommand = new
+        
+
+        public async Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model) {
+
+            var startTransactionCommand = new
             {
                 Id = Guid.NewGuid(),
+                AccountId = model.SelectedAccount,
+                Currency = model.Currency,
                 TransactionNumber = model.TransactionNumber,
                 Symbol = model.Symbol,
-                TransactionDate = DateTime.ParseExact(model.TransactionDate, "dd/MM/yyyy", null),
-                Price = model.Price,
-                Currency = model.Currency,
-                Quantity = model.Quantity,
-                Subtotal = model.Subtotal,
-                ExchangeRate = model.ExchangeRate,
-                Commission = model.Commission ?? 0,
-                ExchangeRateFee = model.ExchangeRateFee ?? 0,
-                TOB = model.TOB ?? 0,
-                TotalCosts = model.TotalCosts,
-                Total = model.Total,
-                SelectedAccount = model.SelectedAccount
+                TransactionDate = DateTime.ParseExact(model.TransactionDate, "dd/MM/yyyy", null)
             };
 
+            StringContent data = new StringContent(JsonConvert.SerializeObject(startTransactionCommand), Encoding.UTF8, "application/json");
 
-            StringContent data = new StringContent(JsonConvert.SerializeObject(importTransactionCommand), Encoding.UTF8, "application/json");
-
-            return await _Client.PostAsync("/buyorder/create", data);
+            return await _Client.PostAsync("/buyorder/start", data);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Moneta.Frontend.WebControllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("new")]
-        public async Task<IActionResult> Index(TransactionModel model)
+        public async Task<IActionResult> Index(TransactionHeaderModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -52,12 +52,12 @@ namespace Moneta.Frontend.WebControllers
 
             try
             {
-                HttpResponseMessage response = await _TransactionService.CreateAsync(model);
+                _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+                HttpResponseMessage response = await _TransactionService.StartAsync(model);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    //redirect
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Amount");
                 }
                 else
                 {
@@ -74,6 +74,24 @@ namespace Moneta.Frontend.WebControllers
         }
 
         [HttpGet]
+        public IActionResult Amount() {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Amount(TransactionAmountModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                _Logger.LogWarning("Model Invalid");
+                return View(model);
+            }
+
+            return RedirectToAction("Costs");
+        }
+
+        [HttpGet]
+        [Route("accounts")]
         public async Task<IActionResult> GetAccounts()
         {
 

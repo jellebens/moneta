@@ -33,42 +33,42 @@ namespace AccountService
             services.AddDbContext<AccountsDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetValue<string>("Accounts")
-                                   , provideroptions => {
-                                        provideroptions.EnableRetryOnFailure(5);
-                                    });
-               
+                                   , provideroptions =>
+                                   {
+                                       provideroptions.EnableRetryOnFailure(5);
+                                   });
+
             });
 
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                    .AddJwtBearer(jwt =>
-                    {
-                        byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
+            }).AddJwtBearer(jwt =>
+            {
+                byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
 
-                        jwt.SaveToken = true;
-                        jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
-                        jwt.Authority = "https://login.microsoftonline.com/common";
-                        jwt.RequireHttpsMetadata = false;
+                jwt.SaveToken = true;
+                jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
+                jwt.Authority = "https://login.microsoftonline.com/common";
+                jwt.RequireHttpsMetadata = false;
 
-                        jwt.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(key),
-                            ValidateIssuer = true, 
-                            ValidIssuer = "https://login.microsoftonline.com/common",
-                            ValidateAudience = true, 
-                            RequireExpirationTime = false,
-                            ValidateLifetime = true
-                        };
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = "https://login.microsoftonline.com/common",
+                    ValidateAudience = true,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+                };
 
-                    });
+            });
 
             services.AddControllers();
 
-            
+
             services.AddTransient<IStartupFilter, DatabaseUpgradeFilter>();
         }
 

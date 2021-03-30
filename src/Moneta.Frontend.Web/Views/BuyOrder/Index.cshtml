@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model Moneta.Frontend.Web.Models.TransactionModel
+@model Moneta.Frontend.Web.Models.TransactionHeaderModel
 
 
 @{
@@ -28,73 +28,31 @@
                 @using (Html.BeginForm("Index", "BuyOrder", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken();
-                    @Html.HiddenFor(m => m.AccountCurrency, new { @class = "form-control m-b" })
+                    @Html.HiddenFor(m => m.Currency);
                     <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Select an account:</label>
                         <div class="col-sm-11"><select class="form-control m-b" name="SelectedAccount"></select></div>
                     </div>
-                    <div class="hr-line-dashed"></div>
                     <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Transaction #:</label>
-                        <div class="col-sm-4">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                        <div class="col-sm-11">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-1 col-form-label">date:</label>
-                        <div class="col-sm-4" id="date">
+                        <div class="col-sm-11" id="date">
                             <div class="input-group date">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
                             </div>
                         </div>
-
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Symbol:</label>
-                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
-
+                        <div class="col-sm-11">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group row">
-                        <label class="col-sm-1 col-form-label">Quantity:</label>
-                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
-                        <label class="col-sm-1 col-form-label">Price:</label>
-                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
-                        <label class="col-sm-1 col-form-label">Currency:</label>
-                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
-                        <label class="col-sm-1 col-form-label">Total:</label>
-                        <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
-
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-1 col-form-label">Exchangerate:</label>
-                        <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b price" })</div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-                    <div class="form-group row">
-                        <label class="col-sm-1 col-form-label">Commission:</label>
-                        <div class="col-sm-2">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b costs" })</div>
-                        <label class="col-sm-1 col-form-label exchange-rate-fee">Exch. Fee:</label>
-                        <div class="col-sm-2 exchange-rate-fee">
-                            <div class="input-group m-b">
-                                @Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b costs" })
-                            </div>
-                        </div>
-                        <label class="col-sm-1 col-form-label">TOB:</label>
-                        <div class="col-sm-2">@Html.TextBoxFor(m => m.TOB, new { @class = "form-control m-b costs" })</div>
-                        <label class="col-sm-1 col-form-label sub-total">Total Costs:</label>
-                        <div class="col-sm-2">@Html.TextBoxFor(m => m.TotalCosts, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-                    <div class="form-group row">
-                        <label class="col-sm-1 col-form-label">Total:</label>
-                        <div class="col-sm-2 input-group m-b">
-                            @Html.TextBoxFor(m => m.Total, new { @class = "form-control m-b ", @readonly = "readonly" })
-                            <div class="input-group-append">
-                                <span class="input-group-addon" id="total-currency"></span>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="hr-line-dashed"></div>
-                    <div class="form-group row">
-                        <div class="col-sm-4 col-sm-offset-2">
-                            <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary float-right" type="submit">Next</button>
                         </div>
                     </div>
                 }
@@ -102,13 +60,67 @@
         </div>
     </div>
 </div>
+@*<div class="hr-line-dashed"></div>
+    <div class="form-group row">
+        <label class="col-sm-1 col-form-label">Quantity:</label>
+        <div class="col-sm-1">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
+        <label class="col-sm-1 col-form-label">Price:</label>
+        <div class="col-sm-1">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
+        <label class="col-sm-1 col-form-label">Currency:</label>
+        <div class="col-sm-1">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
+        <label class="col-sm-1 col-form-label">Total:</label>
+        <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
+
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-1 col-form-label">Exchangerate:</label>
+        <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b price" })</div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="form-group row">
+        <label class="col-sm-1 col-form-label">Commission:</label>
+        <div class="col-sm-2">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b costs" })</div>
+        <label class="col-sm-1 col-form-label exchange-rate-fee">Exch. Fee:</label>
+        <div class="col-sm-2 exchange-rate-fee">
+            <div class="input-group m-b">
+                @Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b costs" })
+            </div>
+        </div>
+        <label class="col-sm-1 col-form-label">TOB:</label>
+        <div class="col-sm-2">@Html.TextBoxFor(m => m.TOB, new { @class = "form-control m-b costs" })</div>
+        <label class="col-sm-1 col-form-label sub-total">Total Costs:</label>
+        <div class="col-sm-2">@Html.TextBoxFor(m => m.TotalCosts, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="form-group row">
+        <label class="col-sm-1 col-form-label">Total:</label>
+        <div class="col-sm-2 input-group m-b">
+            @Html.TextBoxFor(m => m.Total, new { @class = "form-control m-b ", @readonly = "readonly" })
+            <div class="input-group-append">
+                <span class="input-group-addon" id="total-currency"></span>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="form-group row">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+        </div>
+    </div>*@
+
+            @*</div>
+        </div>
+    </div>
+</div>*@
 
 
 @if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
 {
-<div class="alert alert-danger">
-    @Html.ValidationSummary(false, "")
-</div>
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false, "")
+    </div>
 }
 
 
@@ -122,38 +134,38 @@
         $('.input-validation-error').parents('.form-group').addClass('has-error');
         $('.field-validation-error').addClass('text-danger');
 
-        function SetExhangeRate() {
-            var accountCurrency = $("#AccountCurrency").val();
-            var transactionCurrency = $("#Currency").val().toUpperCase();
-            if (accountCurrency == transactionCurrency) {
-                $("#ExchangeRate").val(1.00);
-                $(".exchange-rate-fee").hide();
-                $("#ExchangeRate").attr("readonly", "readonly");
-                $(".sub-total").addClass("offset-md-1")
+        //function SetExhangeRate() {
+        //    var accountCurrency = $("#AccountCurrency").val();
+        //    var transactionCurrency = $("#Currency").val().toUpperCase();
+        //    if (accountCurrency == transactionCurrency) {
+        //        $("#ExchangeRate").val(1.00);
+        //        $(".exchange-rate-fee").hide();
+        //        $("#ExchangeRate").attr("readonly", "readonly");
+        //        $(".sub-total").addClass("offset-md-1")
 
-            } else {
-                $("#ExchangeRate").removeAttr("readonly");
-                $(".exchange-rate-fee").show();
-                $(".sub-total").removeClass("offset-md-1")
-            }
+        //    } else {
+        //        $("#ExchangeRate").removeAttr("readonly");
+        //        $(".exchange-rate-fee").show();
+        //        $(".sub-total").removeClass("offset-md-1")
+        //    }
 
-            $("#total-currency").html(accountCurrency);
+        //    $("#total-currency").html(accountCurrency);
 
-        }
+        //}
 
-        function UpdateTotal() {
-            var subtotal = $("#Subtotal").val() * 1.00;
-            var costs = $("#TotalCosts").val() * 1.00;
-            var exchangeRate = $("#ExchangeRate").val() * 1.00;
+        //function UpdateTotal() {
+        //    var subtotal = $("#Subtotal").val() * 1.00;
+        //    var costs = $("#TotalCosts").val() * 1.00;
+        //    var exchangeRate = $("#ExchangeRate").val() * 1.00;
 
-            total = (subtotal / exchangeRate) + costs;
+        //    total = (subtotal / exchangeRate) + costs;
 
-            if(!isNaN(total)) {
-                $("#Total").val(total.toFixed(2));
-            } else {
-                $("#Total").val("-");
-            }
-        }
+        //    if(!isNaN(total)) {
+        //        $("#Total").val(total.toFixed(2));
+        //    } else {
+        //        $("#Total").val("-");
+        //    }
+        //}
 
 
         $(document).ready(function () {
@@ -162,7 +174,7 @@
             });
 
             $.ajax({
-                'url': "@Url.Action("GetAccounts")",
+                'url': "/buyorder/accounts",
                 'method': "GET",
                 'contentType': 'application/json'
             }).done(function (dataList) {
@@ -172,61 +184,62 @@
                     );
                 });
 
-
                 var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
-                $("#AccountCurrency").val(val);
-                $("#total-currency").html(val);
+                
+                $("#Currency").val(val);
             });
 
             $("SELECT[name='SelectedAccount']").change(function () {
                 var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
-                $("#AccountCurrency").val(val);
-                $("#total-currency").html(val);
-                SetExhangeRate();
+                
+                $("#Currency").val(val);
             });
+            //    $("#total-currency").html(val);
+            //    SetExhangeRate();
+            //});
 
-            $("#ExchangeRate").change(function () {
-                UpdateTotal();
-            });
+            //$("#ExchangeRate").change(function () {
+            //    UpdateTotal();
+            //});
 
-            $(".costs").change(function () {
-                var commission = $("#Commission").val();
-                var exchangeRateFee = $("#ExchangeRateFee").val()
-                var TOB = $("#TOB").val()
+            //$(".costs").change(function () {
+            //    var commission = $("#Commission").val();
+            //    var exchangeRateFee = $("#ExchangeRateFee").val()
+            //    var TOB = $("#TOB").val()
 
-                var totalCosts = commission * 1.00 + exchangeRateFee * 1.00 + TOB * 1.00;
+            //    var totalCosts = commission * 1.00 + exchangeRateFee * 1.00 + TOB * 1.00;
 
-                $("#TotalCosts").val(totalCosts);
+            //    $("#TotalCosts").val(totalCosts);
 
-                if (isNaN(totalCosts)) {
-                    $("#TotalCosts").parent().addClass("has-error");
-                } else {
-                    $("#TotalCosts").parent().removeClass("has-error");
-                }
-                UpdateTotal();
-            });
+            //    if (isNaN(totalCosts)) {
+            //        $("#TotalCosts").parent().addClass("has-error");
+            //    } else {
+            //        $("#TotalCosts").parent().removeClass("has-error");
+            //    }
+            //    UpdateTotal();
+            //});
 
-            $(".price").change(function () {
-                var qty = parseInt($("#Quantity").val());
-                var price = $("#Price").val()
+            //$(".price").change(function () {
+            //    var qty = parseInt($("#Quantity").val());
+            //    var price = $("#Price").val()
 
-                var subtotal = (qty * price).toFixed(2);
+            //    var subtotal = (qty * price).toFixed(2);
 
-                $("#Subtotal").val(subtotal);
+            //    $("#Subtotal").val(subtotal);
 
-                if (isNaN(subtotal)) {
-                    $("#Subtotal").parent().addClass("has-error");
-                } else {
-                    $("#Subtotal").parent().removeClass("has-error");
-                }
-                UpdateTotal();
-            });
+            //    if (isNaN(subtotal)) {
+            //        $("#Subtotal").parent().addClass("has-error");
+            //    } else {
+            //        $("#Subtotal").parent().removeClass("has-error");
+            //    }
+            //    UpdateTotal();
+            //});
 
-            $("#Currency").change(function () {
-                SetExhangeRate();
-            });
+            //$("#Currency").change(function () {
+            //    SetExhangeRate();
+            //});
 
-    });
+        });
 
     </script>
 }
