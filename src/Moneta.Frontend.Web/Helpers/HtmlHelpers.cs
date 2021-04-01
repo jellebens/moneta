@@ -18,13 +18,17 @@ namespace Moneta.UI
             string currentAction = (string)html.ViewContext.RouteData.Values["action"];
             string currentController = (string)html.ViewContext.RouteData.Values["controller"];
 
-            if (String.IsNullOrEmpty(controller))
+            if (String.IsNullOrEmpty(controller)) {
                 controller = currentController;
+            }
 
-            if (String.IsNullOrEmpty(action))
+
+            if (String.IsNullOrEmpty(action)) {
                 action = currentAction;
+            }
+                
 
-            return controller == currentController && action == currentAction ?
+            return string.Equals(controller, currentController, StringComparison.InvariantCultureIgnoreCase) && string.Equals(action, currentAction, StringComparison.InvariantCultureIgnoreCase) ?
                 cssClass : String.Empty;
         }
 

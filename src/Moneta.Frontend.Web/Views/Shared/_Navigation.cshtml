@@ -21,7 +21,7 @@
             <li class="@Html.IsSelected(controller: "accounts", action: "Index")">
                 <a href="@Url.Action("Index", "Accounts")"><i class="fa fa-credit-card"></i><span class="nav-label">Accounts</span></a>
             </li>
-                <li class="@Html.IsSelected(controller: "buyorder", action: "new")">
+                <li class="@Html.IsSelected(controller: "buyorder")">
                     <a href="@Url.Action("Index", "BuyOrder")"><i class="fa fa-plus-circle"></i><span class="nav-label">Add Transaction</span></a>
                 </li>
         </ul>

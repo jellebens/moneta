@@ -43,17 +43,18 @@ namespace Moneta.Core.Logging
         {
             ConsoleColor originalColor = Console.ForegroundColor;
 
+            Console.Write($"[{DateTime.UtcNow:HH:mm:ss}] ");
 
             switch (logLevel)
             {
                 case LogLevel.Trace:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case LogLevel.Debug:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case LogLevel.Information:
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     break;
                 case LogLevel.Warning:
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -68,7 +69,7 @@ namespace Moneta.Core.Logging
                     break;
             }
 
-            Console.Write($"[{DateTime.UtcNow:HH:mm:ss}] [{logLevel,-11}] ");
+            Console.Write($"[{logLevel,-11}] ");
             Console.ForegroundColor = originalColor;
             Console.WriteLine($" {_Name} - {formatter(state, exception)}");
         }
