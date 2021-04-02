@@ -41,6 +41,7 @@ namespace TransactionService.Controllers
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
             if (_TransactionsDbContext.BuyOrders.Any(x => x.AccountId == createBuyOrder.AccountId && x.Number == createBuyOrder.TransactionNumber)) {
+                _Logger.LogWarning($"Transaction with number {createBuyOrder.TransactionNumber} allready exists for this account")
                 return StatusCode(StatusCodes.Status409Conflict, new ErrorResult { Code = "duplicate_buy_order", Message = $"Buyorder with number {createBuyOrder.TransactionNumber} for this account allready exists"});
             }
             
