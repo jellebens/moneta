@@ -40,6 +40,10 @@ namespace TransactionService.Controllers
 
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
+            if (_TransactionsDbContext.BuyOrders.Any(x => x.AccountId == createBuyOrder.AccountId && x.Number == createBuyOrder.TransactionNumber)) {
+                return StatusCode(StatusCodes.Status409Conflict, new ErrorResult { Code = "duplicate_buy_order", Message = $"Buyorder with number {createBuyOrder.TransactionNumber} for this account allready exists"});
+            }
+            
             BuyOrder buyOrder = new BuyOrder(id, createBuyOrder.AccountId, createBuyOrder.Currency.ToUpper(), createBuyOrder.Symbol, createBuyOrder.TransactionDate, createBuyOrder.TransactionNumber, userId.Value);
 
             await _TransactionsDbContext.BuyOrders.AddAsync(buyOrder);

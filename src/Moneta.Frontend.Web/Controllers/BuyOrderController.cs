@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
@@ -61,7 +62,15 @@ namespace Moneta.Frontend.WebControllers
                 }
                 else
                 {
-                    _Logger.LogCritical("Error while trying to create transaction: " + response.ReasonPhrase);
+                    if (response.StatusCode == HttpStatusCode.Conflict) {
+                        this.ModelState.AddModelError("TransactionNumber", "Transaction with this number allready exists for this account");
+                    }
+                    else
+                    {
+                        _Logger.LogCritical("Error while trying to create transaction: " + response.ReasonPhrase);
+                    }
+                    
+
                 }
             }
             catch (Exception exc)
