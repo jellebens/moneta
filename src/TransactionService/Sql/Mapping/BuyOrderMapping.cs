@@ -17,7 +17,7 @@ namespace TransactionService.Sql.Mapping
 
             builder.HasKey(t => t.Id);
 
-            builder.HasAlternateKey(x => new { x.Number, x.AccountId }).IsClustered();
+            builder.HasAlternateKey(x => new { x.AccountId, x.Number }).IsClustered();
 
             builder.Property(t => t.AccountId)
                    .HasColumnName("AccountId");

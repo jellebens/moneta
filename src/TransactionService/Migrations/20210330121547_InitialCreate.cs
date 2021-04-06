@@ -26,7 +26,7 @@ namespace TransactionService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
-                    table.UniqueConstraint("AK_Transactions_Number_AccountId", x => new { x.Number, x.AccountId })
+                    table.UniqueConstraint("AK_Transactions_Number_AccountId", x => new { x.AccountId, x.Number })
                         .Annotation("SqlServer:Clustered", true);
                 });
         }

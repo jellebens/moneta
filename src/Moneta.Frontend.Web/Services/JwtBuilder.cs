@@ -41,7 +41,7 @@ namespace Moneta.Frontend.Web.Services
                     new Claim(ClaimTypes.Name, name)
                 }),
                 NotBefore = DateTime.UtcNow.AddMinutes(-15),
-                Expires = DateTime.UtcNow.AddDays(30),
+                Expires = DateTime.UtcNow.AddDays(1),
                 Issuer = "https://login.microsoftonline.com/common",
                 Audience = _Configuration.GetValue<string>("CLIENT_ID"),
                 SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)

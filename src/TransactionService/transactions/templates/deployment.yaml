@@ -36,6 +36,11 @@ spec:
           env:
           - name: ASPNETCORE_URLS
             value: http://+:8080
+          - name: "Transactions"
+            valueFrom:
+              secretKeyRef:
+                name: mssql
+                key: TransactionsDb
           - name: "JWT_SECRET"
             valueFrom:
               secretKeyRef:

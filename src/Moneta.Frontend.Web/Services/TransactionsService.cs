@@ -26,13 +26,12 @@ namespace Moneta.Frontend.Web.Services
             _Client.BaseAddress = new Uri(_Configuration["TRANSACTIONS_SERVICE"]);
         }
 
-        
 
         public async Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model) {
 
             var startTransactionCommand = new
             {
-                Id = Guid.NewGuid(),
+                Id = model.Id,
                 AccountId = model.SelectedAccount,
                 Currency = model.Currency,
                 TransactionNumber = model.TransactionNumber,

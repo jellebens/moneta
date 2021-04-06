@@ -81,6 +81,7 @@ namespace TransactionService
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

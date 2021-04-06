@@ -8,6 +8,9 @@ namespace Moneta.Frontend.Web.Models
 {
     public class TransactionAmountModel
     {
+        [Required(ErrorMessage = "Id is required")]
+        public Guid Id { get; set; }
+
         [Required(ErrorMessage = "Price is required")]
         public decimal? Price { get; set; }
 

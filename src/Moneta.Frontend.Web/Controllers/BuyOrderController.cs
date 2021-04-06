@@ -37,7 +37,12 @@ namespace Moneta.Frontend.WebControllers
         [Route("new")]
         public IActionResult Index()
         {
-            return View();
+            TransactionHeaderModel model = new TransactionHeaderModel()
+            {
+                Id = Guid.NewGuid(),
+
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -58,7 +63,7 @@ namespace Moneta.Frontend.WebControllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Amount");
+                    return RedirectToAction("Amount", new { id = model.Id });
                 }
                 else
                 {
@@ -69,8 +74,6 @@ namespace Moneta.Frontend.WebControllers
                     {
                         _Logger.LogCritical("Error while trying to create transaction: " + response.ReasonPhrase);
                     }
-                    
-
                 }
             }
             catch (Exception exc)
@@ -83,8 +86,14 @@ namespace Moneta.Frontend.WebControllers
         }
 
         [HttpGet]
-        public IActionResult Amount() {
-            return View();
+        [Route("amount/{id}")]
+        public IActionResult Amount(Guid id) {
+            TransactionAmountModel model = new TransactionAmountModel()
+            {
+                Id = id
+            };
+
+            return View(model);
         }
 
         [HttpPost]

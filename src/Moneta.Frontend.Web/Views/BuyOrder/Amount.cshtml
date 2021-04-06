@@ -17,6 +17,7 @@
             <div class="ibox-content">
                 @using (Html.BeginForm("Amount", "BuyOrder", FormMethod.Post))
                 {
+                    @Html.HiddenFor(m => m.Id);
                     <div class="form-group row">
                         <label class="col-sm-1 col-form-label">Quantity:</label>
                         <div class="col-sm-11">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>

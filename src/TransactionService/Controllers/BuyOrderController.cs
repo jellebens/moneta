@@ -35,23 +35,23 @@ namespace TransactionService.Controllers
 
         [HttpPost("start")]
         public async Task<IActionResult> Start([FromBody]StartBuyOrderCommand createBuyOrder, CancellationToken cancellationToken) {
-            Guid id = Guid.NewGuid();
-            _Logger.LogInformation($"Creating Buy Order with Id: {id} and number {createBuyOrder.TransactionNumber}");
+
+            _Logger.LogInformation($"Creating Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
 
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
             if (_TransactionsDbContext.BuyOrders.Any(x => x.AccountId == createBuyOrder.AccountId && x.Number == createBuyOrder.TransactionNumber)) {
-                _Logger.LogWarning($"Transaction with number {createBuyOrder.TransactionNumber} allready exists for this account")
+                _Logger.LogWarning($"Transaction with number {createBuyOrder.TransactionNumber} allready exists for this account");
                 return StatusCode(StatusCodes.Status409Conflict, new ErrorResult { Code = "duplicate_buy_order", Message = $"Buyorder with number {createBuyOrder.TransactionNumber} for this account allready exists"});
             }
             
-            BuyOrder buyOrder = new BuyOrder(id, createBuyOrder.AccountId, createBuyOrder.Currency.ToUpper(), createBuyOrder.Symbol, createBuyOrder.TransactionDate, createBuyOrder.TransactionNumber, userId.Value);
+            BuyOrder buyOrder = new BuyOrder(createBuyOrder.Id, createBuyOrder.AccountId, createBuyOrder.Currency.ToUpper(), createBuyOrder.Symbol, createBuyOrder.TransactionDate, createBuyOrder.TransactionNumber, userId.Value);
 
             await _TransactionsDbContext.BuyOrders.AddAsync(buyOrder);
 
             await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
 
-            _Logger.LogInformation($"Created Buy Order with Id: {id} and number {createBuyOrder.TransactionNumber}");
+            _Logger.LogInformation($"Created Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
             return Ok();
         }
     }
