@@ -1,0 +1,16 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "accounts.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "accounts.name" . }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/moneta/sa/frontend-web"]
+  - to:
+    - operation:
+        paths: ["/accounts/*"]

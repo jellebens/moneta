@@ -41,6 +41,11 @@ spec:
               secretKeyRef:
                 name: mssql
                 key: TransactionsDb
+          - name: "CLIENT_ID"
+            valueFrom:
+              secretKeyRef:
+                name: azure
+                key: ClientId
           - name: "JWT_SECRET"
             valueFrom:
               secretKeyRef:
