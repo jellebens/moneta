@@ -116,6 +116,7 @@
                         success: function (data, textStatus) {
                             console.log('Closing modal')
                             $("#newAccount").modal('hide');
+                            $('#accounts').DataTable().ajax.reload();
                         },
                         error: function (request, status, error) {
                             var val = request.responseText;
@@ -126,33 +127,36 @@
                 } //endif
             });
 
-            $.ajax({
-                'url': "/accounts/list",
-                'method': "GET",
-                'contentType': 'application/json'
-            }).done(function (ajaxData) {
-                $('#accounts').dataTable({
-                    data: ajaxData,
-                    order: [[0, 'asc']],
-                    columns: [
-                        { data: 'name' },
-                        { data: 'currency' },
-                        {
-                            data: 'id',
-                            "orderable": false,
-                            "searchable": false,
-                            "render":
-                                function (data, type, row, meta) {
-                                    var a = '<a href="accounts/delete/' + data + '"><i class="fa fa-minus-circle text-navy" aria-hidden="true"></i></a>';
-                                    return a;
-                                }
-                        },
-                    ]
-                })
+
+            $('#accounts').DataTable({
+                "responsive": true,
+                "processing": true,
+                "serverSide": false,
+                "ajax": {
+                    url: "/accounts/list",
+                    dataSrc: ''
+                },
+                order: [[0, 'asc']],
+                columns: [
+                    { data: 'name' },
+                    { data: 'currency' },
+                    {
+                        data: 'id',
+                        "orderable": false,
+                        "searchable": false,
+                        "render":
+                            function (data, type, row, meta) {
+                                var a = '<a href="accounts/delete/' + data + '"><i class="fa fa-minus-circle text-navy" aria-hidden="true"></i></a>';
+                                return a;
+                            }
+                    },
+                ]
             })
         });
 
-
+                                    function getAccounts() {
+                                        
+                                    }
 
     </script>
 }

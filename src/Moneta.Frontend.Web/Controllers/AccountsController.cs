@@ -43,10 +43,22 @@ namespace Moneta.Frontend.Web.Controllers
             return new JsonResult(accounts);
         }
 
+        [HttpGet]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            _AccountsService.Authenticate(_JwtTokenBuilder.Build(User));
+
+            await _AccountsService.DeleteAsync(id);
+
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Index([FromBody]NewAccountModel model)
         {
             _AccountService.Authenticate(_JwtTokenBuilder.Build(User));
+
             HttpResponseMessage response = await _AccountService.CreateAccountAsync(model);
             if (!response.IsSuccessStatusCode) {
                 _Logger.LogError("Error creating acount: " + response.ReasonPhrase);

@@ -36,7 +36,7 @@ namespace AccountService.Controllers
                 Currency = a.Currency,
                 Id = a.Id,
                 Name = a.Name
-            }).OrderBy(a => a.Name); 
+            }).OrderBy(a => a.Name);
 
             return Ok(accounts.ToList());
         }
@@ -50,7 +50,7 @@ namespace AccountService.Controllers
 
             Account account = new Account(Guid.NewGuid(), command.Name, command.Currency.ToUpper(), id.Value);
 
-            bool accountExists =  _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency == account.Currency && a.Owner == account.Owner);
+            bool accountExists = _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency == account.Currency && a.Owner == account.Owner);
 
             if (!accountExists) {
                 await _AccountsDbContext.Accounts.AddAsync(account);
@@ -60,6 +60,25 @@ namespace AccountService.Controllers
             {
                 _Logger.LogInformation("Account allready exists, not creating a new one");
             }
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(Guid id) {
+
+            Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id);
+
+            if (account == null) {
+                return Ok();
+            }
+
+            _Logger.LogInformation($"Deleting account {account.Name}");
+
+            _AccountsDbContext.Accounts.Remove(account);
+
+            await _AccountsDbContext.SaveChangesAsync();
 
             return Ok();
         }

@@ -28,7 +28,8 @@ namespace Moneta.Frontend.Web.Services
     {
         Task<AccountInfo[]> ListAsync();
         
-        Task<HttpResponseMessage> CreateAccountAsync(NewAccountModel model); 
+        Task<HttpResponseMessage> CreateAccountAsync(NewAccountModel model);
+        Task DeleteAsync(Guid id);
     }
     public class AccountsService : ServiceBase, IAccountsService
     {
@@ -53,6 +54,14 @@ namespace Moneta.Frontend.Web.Services
             StringContent data = new StringContent(JsonConvert.SerializeObject(createAccountCommand), Encoding.UTF8, "application/json");
 
             return await _Client.PostAsync("/accounts", data);
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+
+            HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{id}");
+
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<AccountInfo[]> ListAsync()
