@@ -7,9 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Add local styles, mostly for plugins css file -->
-    @if (IsSectionDefined("Styles"))
-    {@RenderSection("Styles", required: false)}
-
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
@@ -22,6 +19,8 @@
         <link rel="stylesheet" href="~/css/animate.css" />
         <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     </environment>
+    @if (IsSectionDefined("Styles"))
+    {@RenderSection("Styles", required: false)}
 </head>
 <body>
 
