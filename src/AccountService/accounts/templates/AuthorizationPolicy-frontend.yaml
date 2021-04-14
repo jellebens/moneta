@@ -1,7 +1,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ include "accounts.name" . }}
+  name: {{ include "accounts.name" . }}-frontend
 spec:
   selector:
     matchLabels:
