@@ -8,6 +8,4 @@ spec:
       app.kubernetes.io/name: {{ include "web.name" . }}
   action: ALLOW
   rules:
-  - to:
-    - operation:
-        paths: ["/*"]
+  - {}
