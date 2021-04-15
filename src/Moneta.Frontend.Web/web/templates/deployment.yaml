@@ -19,7 +19,7 @@ spec:
     {{- end }}
       labels:
         {{- include "web.selectorLabels" . | nindent 8 }}
-        app: {{ include "web.fullname" . }}
+        app: {{ include "web.name" . }}
         version: {{ .Chart.AppVersion }}
     spec:
       {{- with .Values.imagePullSecrets }}
