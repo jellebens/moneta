@@ -1,7 +1,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-transaction-service
+  name: ap-allow-transactions-service
 spec:
   selector:
     matchLabels:
@@ -10,7 +10,7 @@ spec:
   rules:
   - from:
     - source:
-        principals: ["cluster.local/ns/moneta/sa/transaction"]
-  - to:
-    - operation:
-        ports: ["1433"]
+        principals: ["cluster.local/ns/moneta/sa/transactions"]
+    to:
+      - operation:
+          ports: ["1433"]

@@ -1,7 +1,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-accounts-service
+  name: ap-allow-accounts-service
 spec:
   selector:
     matchLabels:
@@ -11,6 +11,6 @@ spec:
   - from:
     - source:
         principals: ["cluster.local/ns/moneta/sa/accounts"]
-  - to:
-    - operation:
-        ports: ["1433"]
+    to:
+      - operation:
+          ports: ["1433"]
