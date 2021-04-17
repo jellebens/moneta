@@ -23,7 +23,7 @@ serviceAccount:
 podAnnotations: {}
 
 podSecurityContext: 
-  runAsUser: 65534
+  runAsUser: 65534  # run as the nobody/nogroup user
   fsGroup: 65534
 
 securityContext: 
@@ -32,7 +32,6 @@ securityContext:
     - ALL
     add: 
     - "NET_ADMIN"
-    #- "NET_BIND_SERVICE" 
   readOnlyRootFilesystem: false
   runAsNonRoot: false
   runAsUser: 65534 # run as the nobody/nogroup user

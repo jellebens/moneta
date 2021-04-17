@@ -9,6 +9,8 @@ https://cert-manager.io/docs/installation/kubernetes/
  helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0 --create-namespace --set installCRDs=true
 
  # Modify Coredns
+Confure local dns to resolve hostname to internal ip
+
 jellebens.ddns.net.:53 {
     errors
     log

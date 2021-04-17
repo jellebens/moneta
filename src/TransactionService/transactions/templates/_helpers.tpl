@@ -48,6 +48,7 @@ Selector labels
 */}}
 {{- define "transactions.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "transactions.name" . }}
+app: {{ include "transactions.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

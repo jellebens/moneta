@@ -19,7 +19,6 @@ spec:
     {{- end }}
       labels:
         {{- include "accounts.selectorLabels" . | nindent 8 }}
-        app: {{ include "accounts.fullname" . }}
         version: {{ .Chart.AppVersion }}
     spec:
       {{- with .Values.imagePullSecrets }}
