@@ -5,6 +5,8 @@ EXPOSE 8080
 ARG VERSION="dev"
 ENV VERSION=$VERSION
 
+RUN apt-get update && apt-get upgrade -y
+
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS publish
 WORKDIR /src
 COPY . .
