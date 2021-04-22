@@ -107,7 +107,8 @@ namespace Moneta.UI
 
             app.UseCookiePolicy(new CookiePolicyOptions
             {
-                Secure = CookieSecurePolicy.Always
+                Secure = CookieSecurePolicy.Always,
+                MinimumSameSitePolicy = SameSiteMode.None
             });
 
             app.UseStaticFiles();
