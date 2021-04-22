@@ -13,4 +13,4 @@ spec:
         principals: ["cluster.local/ns/moneta/sa/frontend-web"]
     to:
     - operation:
-        paths: ["/accounts/*"]
+        paths: ["/accounts", "/accounts/*"]

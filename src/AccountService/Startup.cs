@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AccountService
 {
@@ -63,6 +64,7 @@ namespace AccountService
                     RequireExpirationTime = false,
                     ValidateLifetime = true
                 };
+                
 
             });
 
