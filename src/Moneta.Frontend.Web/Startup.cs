@@ -18,6 +18,7 @@ using System.Net.Http;
 using Moneta.Frontend.Web.Services;
 using Polly;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Http;
 
 namespace Moneta.UI
 {
@@ -44,7 +45,6 @@ namespace Moneta.UI
                         .AddPolicyHandler(GetRetryPolicy());
 
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
-
 
 
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
@@ -105,6 +105,10 @@ namespace Moneta.UI
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                Secure = CookieSecurePolicy.Always
+            });
 
             app.UseStaticFiles();
 
