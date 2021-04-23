@@ -16,7 +16,7 @@ namespace Moneta.Frontend.Web.Services
     {
        
         Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model);
-        
+        Task<TransactionAmountModel> GetAmount(Guid id);
     }
 
     public class TransactionsService: ServiceBase, ITransactionsService
@@ -26,6 +26,15 @@ namespace Moneta.Frontend.Web.Services
             _Client.BaseAddress = new Uri(_Configuration["TRANSACTIONS_SERVICE"]);
         }
 
+        public Task<TransactionAmountModel> GetAmount(Guid id)
+        {
+
+            return Task.Run(() =>
+            {
+                return new TransactionAmountModel();
+            });
+            
+        }
 
         public async Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model) {
 

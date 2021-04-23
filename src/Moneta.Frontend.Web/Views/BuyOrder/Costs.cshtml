@@ -1,8 +1,9 @@
-﻿@model Moneta.Frontend.Web.Models.TransactionAmountModel
+﻿@model Moneta.Frontend.Web.Models.TransactionCostsModel
 
 @{
     ViewData["Title"] = "New  buy order";
 }
+
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -17,19 +18,23 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    @using (Html.BeginForm("Amount", "BuyOrder", FormMethod.Post))
+                    @using (Html.BeginForm("Costs", "BuyOrder", FormMethod.Post))
                     {
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Quantity:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
+                            <label class="col-sm-3 col-form-label">ExchangeRate:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Exchangerate, new { @class = "form-control m-b price" })</div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Price:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
+                            <label class="col-sm-3 col-form-label">Commission:</label>
+                            <div class="col-sm-8">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b price" })</div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Currency:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
+                            <label class="col-sm-3 col-form-label">Exch. Rate Costs:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.CostExchangeRate, new { @class = "form-control m-b price", maxlength = 3 })</div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">stock market tax:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.StockMarketTax, new { @class = "form-control m-b price", maxlength = 3 })</div>
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
@@ -43,3 +48,4 @@
         </div>
     </div>
 </div>
+

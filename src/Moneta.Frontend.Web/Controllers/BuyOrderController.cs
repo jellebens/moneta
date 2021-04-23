@@ -33,15 +33,16 @@ namespace Moneta.Frontend.WebControllers
             _JwtTokenBuilder = jwtTokenBuilder;
         }
 
+        
+
         [HttpGet]
         [Route("new")]
         public IActionResult Index()
         {
-            TransactionHeaderModel model = new TransactionHeaderModel()
-            {
-                Id = Guid.NewGuid(),
-
+            TransactionHeaderModel model = new TransactionHeaderModel() {
+                Id = Guid.NewGuid()
             };
+            
             return View(model);
         }
 
@@ -67,7 +68,8 @@ namespace Moneta.Frontend.WebControllers
                 }
                 else
                 {
-                    if (response.StatusCode == HttpStatusCode.Conflict) {
+                    if (response.StatusCode == HttpStatusCode.Conflict)
+                    {
                         this.ModelState.AddModelError("TransactionNumber", "Transaction with this number allready exists for this account");
                     }
                     else
@@ -75,6 +77,7 @@ namespace Moneta.Frontend.WebControllers
                         _Logger.LogCritical("Error while trying to create transaction: " + response.ReasonPhrase);
                     }
                 }
+
             }
             catch (Exception exc)
             {
@@ -87,17 +90,18 @@ namespace Moneta.Frontend.WebControllers
 
         [HttpGet]
         [Route("amount/{id}")]
-        public IActionResult Amount(Guid id) {
-            TransactionAmountModel model = new TransactionAmountModel()
-            {
-                Id = id
-            };
+        public async Task<IActionResult> Amount(Guid id) {
+
+            _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+            TransactionAmountModel model = await _TransactionService.GetAmount(id);
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Amount(TransactionAmountModel model)
+        [ValidateAntiForgeryToken]
+        [Route("amount/{id}")]
+        public IActionResult Amount(Guid id, TransactionAmountModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -105,7 +109,33 @@ namespace Moneta.Frontend.WebControllers
                 return View(model);
             }
 
-            return RedirectToAction("Costs");
+            return RedirectToAction("Costs", new { Id = id});
+        }
+
+        [HttpGet]
+        [Route("costs/{id}")]
+        public IActionResult Costs(Guid id)
+        {
+            TransactionCostsModel model = new TransactionCostsModel()
+            {
+                
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("costs/{id}")]
+        public IActionResult Costs(Guid id, TransactionCostsModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                _Logger.LogWarning("Model Invalid");
+                return View(model);
+            }
+
+            return View(model);
         }
 
         [HttpGet]

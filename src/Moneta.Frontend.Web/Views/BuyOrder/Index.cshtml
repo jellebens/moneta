@@ -17,7 +17,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Create a new Buy order</h5>
+                    <h5>Create a new buy order</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -31,24 +31,24 @@
                         @Html.HiddenFor(m => m.Currency);
                         @Html.HiddenFor(m => m.Id);
                         <div class="form-group row">
-                            <label class="col-sm-1 col-form-label">Select an account:</label>
-                            <div class="col-sm-11"><select class="form-control m-b" name="SelectedAccount"></select></div>
+                            <label class="col-sm-3 col-form-label">Select an account:</label>
+                            <div class="col-sm-9"><select class="form-control m-b" name="SelectedAccount"></select></div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-1 col-form-label">Transaction #:</label>
-                            <div class="col-sm-11">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                            <label class="col-sm-3 col-form-label">Transaction #:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-1 col-form-label">date:</label>
-                            <div class="col-sm-11" id="date">
+                            <label class="col-sm-3 col-form-label">date:</label>
+                            <div class="col-sm-9" id="date">
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-1 col-form-label">Symbol:</label>
-                            <div class="col-sm-11">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
+                            <label class="col-sm-3 col-form-label">Symbol:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
@@ -64,38 +64,38 @@
 </div>
     @*<div class="hr-line-dashed"></div>
         <div class="form-group row">
-            <label class="col-sm-1 col-form-label">Quantity:</label>
+            <label class="col-sm-3 col-form-label">Quantity:</label>
             <div class="col-sm-1">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
-            <label class="col-sm-1 col-form-label">Price:</label>
+            <label class="col-sm-3 col-form-label">Price:</label>
             <div class="col-sm-1">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
-            <label class="col-sm-1 col-form-label">Currency:</label>
+            <label class="col-sm-3 col-form-label">Currency:</label>
             <div class="col-sm-1">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
-            <label class="col-sm-1 col-form-label">Total:</label>
+            <label class="col-sm-3 col-form-label">Total:</label>
             <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
 
         </div>
         <div class="form-group row">
-            <label class="col-sm-1 col-form-label">Exchangerate:</label>
+            <label class="col-sm-3 col-form-label">Exchangerate:</label>
             <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b price" })</div>
         </div>
         <div class="hr-line-dashed"></div>
         <div class="form-group row">
-            <label class="col-sm-1 col-form-label">Commission:</label>
+            <label class="col-sm-3 col-form-label">Commission:</label>
             <div class="col-sm-2">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b costs" })</div>
-            <label class="col-sm-1 col-form-label exchange-rate-fee">Exch. Fee:</label>
+            <label class="col-sm-3 col-form-label exchange-rate-fee">Exch. Fee:</label>
             <div class="col-sm-2 exchange-rate-fee">
                 <div class="input-group m-b">
                     @Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b costs" })
                 </div>
             </div>
-            <label class="col-sm-1 col-form-label">TOB:</label>
+            <label class="col-sm-3 col-form-label">TOB:</label>
             <div class="col-sm-2">@Html.TextBoxFor(m => m.TOB, new { @class = "form-control m-b costs" })</div>
-            <label class="col-sm-1 col-form-label sub-total">Total Costs:</label>
+            <label class="col-sm-3 col-form-label sub-total">Total Costs:</label>
             <div class="col-sm-2">@Html.TextBoxFor(m => m.TotalCosts, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
         </div>
         <div class="hr-line-dashed"></div>
         <div class="form-group row">
-            <label class="col-sm-1 col-form-label">Total:</label>
+            <label class="col-sm-3 col-form-label">Total:</label>
             <div class="col-sm-2 input-group m-b">
                 @Html.TextBoxFor(m => m.Total, new { @class = "form-control m-b ", @readonly = "readonly" })
                 <div class="input-group-append">
