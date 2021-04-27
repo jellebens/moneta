@@ -9,10 +9,6 @@ namespace Moneta.Frontend.Web.Models
     public class TransactionCostsModel
     {
 
-        [Required(ErrorMessage = "Exchangerate is required")]
-
-        public decimal Exchangerate { get; set; }
-
         [Required(ErrorMessage = "Commission is required")]
         public decimal Commission { get; set; }
 

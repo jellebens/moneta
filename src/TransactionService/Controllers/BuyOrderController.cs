@@ -19,7 +19,7 @@ using TransactionService.Sql;
 
 namespace TransactionService.Controllers
 {
-    [Route("buyorder")]
+    [Route("buyorders")]
     [ApiController]
     public class BuyOrderController : ControllerBase
     {
@@ -27,9 +27,9 @@ namespace TransactionService.Controllers
         private readonly IConfiguration _Configuration;
         private readonly TransactionsDbContext _TransactionsDbContext;
         private readonly IAccountsService _AccountService;
-        private readonly JwtTokenBuilder _JwtTokenBuilder;
+        private readonly IJwtTokenBuilder _JwtTokenBuilder;
 
-        public BuyOrderController(ILogger<BuyOrderController> logger, IConfiguration configuration, TransactionsDbContext transactionsDbContext, IAccountsService accountService, JwtTokenBuilder jwtTokenBuilder)
+        public BuyOrderController(ILogger<BuyOrderController> logger, IConfiguration configuration, TransactionsDbContext transactionsDbContext, IAccountsService accountService, IJwtTokenBuilder jwtTokenBuilder)
         {
             _Logger = logger;
             _Configuration = configuration;
@@ -60,7 +60,7 @@ namespace TransactionService.Controllers
             return Ok();
         }
 
-        [HttpPost("/{id}/amount")]
+        [HttpPut("{id}/amount")]
         public async Task<IActionResult> Amount(Guid id, [FromBody] UpdateAmountCommand updateAmount, CancellationToken cancellationToken) {
 
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -68,7 +68,7 @@ namespace TransactionService.Controllers
             BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
 
             if (buyOrder == null) {
-                _Logger.LogError($"Account with id: {id} not found for user: {userId.Value}");
+                _Logger.LogError($"Buyorder with id: {id} found for user: {userId.Value}");
 
                 return StatusCode(StatusCodes.Status404NotFound);
             }
@@ -85,6 +85,8 @@ namespace TransactionService.Controllers
 
             Amount amount = new Amount(Guid.NewGuid(), updateAmount.Quantity, updateAmount.Price, exchangerate);
 
+            await _TransactionsDbContext.Amounts.AddAsync(amount);
+
             buyOrder.With(amount);
             
             await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
@@ -92,7 +94,7 @@ namespace TransactionService.Controllers
             return Ok();
         }
 
-        [HttpPost("/{id}/costs")]
+        [HttpPut("{id}/costs")]
         public async Task<IActionResult> Costs(Guid id, [FromBody] UpdateCostsCommand updateCosts, CancellationToken cancellationToken)
         {
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -101,7 +103,7 @@ namespace TransactionService.Controllers
 
             if (buyOrder == null)
             {
-                _Logger.LogError($"Account with id: {id} not found for user: {userId.Value}");
+                _Logger.LogError($"Buyorder with id: {id} not found for user: {userId.Value}");
 
                 return StatusCode(StatusCodes.Status404NotFound);
             }

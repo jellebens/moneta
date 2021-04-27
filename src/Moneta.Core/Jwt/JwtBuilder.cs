@@ -28,8 +28,10 @@ namespace Moneta.Core.Jwt
         }
         public string Build(ClaimsPrincipal principal)
         {
-            string name = principal.Claims.FirstOrDefault(c => c.Type.Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value;
-            string id = principal.Claims.FirstOrDefault(c => c.Type.Equals("preferred_username", StringComparison.CurrentCultureIgnoreCase)).Value; ;
+            string name = principal.Claims.FirstOrDefault(c => c.Type.Equals("name", StringComparison.CurrentCultureIgnoreCase) 
+                                                            || c.Type.Equals(ClaimTypes.Name, StringComparison.InvariantCultureIgnoreCase)).Value;
+            string id = principal.Claims.FirstOrDefault(c => c.Type.Equals("preferred_username", StringComparison.CurrentCultureIgnoreCase)
+                                                          || c.Type.Equals(ClaimTypes.NameIdentifier, StringComparison.InvariantCultureIgnoreCase)).Value;
 
             var mySecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Configuration["JWT_SECRET"]));
 

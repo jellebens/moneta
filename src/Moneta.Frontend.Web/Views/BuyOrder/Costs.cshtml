@@ -21,10 +21,6 @@
                     @using (Html.BeginForm("Costs", "BuyOrder", FormMethod.Post))
                     {
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">ExchangeRate:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Exchangerate, new { @class = "form-control m-b price" })</div>
-                        </div>
-                        <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Commission:</label>
                             <div class="col-sm-8">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b price" })</div>
                         </div>

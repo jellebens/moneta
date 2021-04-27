@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moneta.Frontend.Web.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,15 @@ namespace TransactionService.Services
             _Client.BaseAddress = new Uri(configuration["ACCOUNTS_SERVICE"]);
         }
 
-        public Task<AccountInfo> GetAsync(Guid id)
+        public async Task<AccountInfo> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            HttpResponseMessage response = await _Client.GetAsync($"/accounts/{id}");
+            
+            string result = await response.Content.ReadAsStringAsync();
+
+            AccountInfo account = JsonConvert.DeserializeObject<AccountInfo>(result);
+
+            return account;
         }
     }
 

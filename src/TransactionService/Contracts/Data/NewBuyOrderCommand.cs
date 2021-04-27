@@ -24,6 +24,6 @@ namespace TransactionService.Contracts.Data
         public DateTime TransactionDate { get; set; }
 
         [Required]
-        public string Currency { get; internal set; }
+        public string Currency { get; set; }
     }
 }

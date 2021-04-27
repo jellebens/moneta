@@ -12,10 +12,10 @@ namespace Moneta.Frontend.Web.Models
         [Required(ErrorMessage = "Price is required")]
         public decimal? Price { get; set; }
 
-        [Required(ErrorMessage = "Currency is required")]
-        public string Currency { get; set; }
-
         [Required(ErrorMessage = "Quantity is required")]
         public int? Quantity { get; set; }
+
+        [Required(ErrorMessage = "Exchangerate is required")]
+        public decimal Exchangerate { get; internal set; }
     }
 }

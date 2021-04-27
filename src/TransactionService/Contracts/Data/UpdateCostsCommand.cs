@@ -7,8 +7,9 @@ namespace TransactionService.Contracts.Data
 {
     public class UpdateCostsCommand
     {
-        public decimal Commision { get; internal set; }
-        public decimal CostExchangerate { get; internal set; }
-        public decimal StockMarketTax { get; internal set; }
+        public Guid Id { get; set; }
+        public decimal Commision { get; set; }
+        public decimal CostExchangerate { get; set; }
+        public decimal StockMarketTax { get; set; }
     }
 }

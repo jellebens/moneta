@@ -21,15 +21,15 @@
                     {
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Quantity:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b" })</div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Price:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b" })</div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Currency:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
+                            <label class="col-sm-3 col-form-label">Exchangerate:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Exchangerate, new { @class = "form-control m-b" })</div>
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
@@ -37,6 +37,12 @@
                                 <button class="btn btn-primary btn-sm float-right" type="submit">Next</button>
                             </div>
                         </div>
+                        @if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
+                        {
+                            <div class="alert alert-danger">
+                                @Html.ValidationSummary(false, "")
+                            </div>
+                        }
                     }
                 </div>
             </div>

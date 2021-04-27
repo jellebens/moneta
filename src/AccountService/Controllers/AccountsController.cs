@@ -64,8 +64,7 @@ namespace AccountService.Controllers
             return Ok();
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id) {
 
             Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id);
@@ -81,6 +80,22 @@ namespace AccountService.Controllers
             await _AccountsDbContext.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Index(Guid id)
+        {
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            var account = _AccountsDbContext.Accounts.Where(a => a.Id == id && a.Owner == userId.Value)
+                                                      .Select(a => new AccountInfo(){
+                                                                        Currency = a.Currency,
+                                                                        Id = a.Id,
+                                                                        Name = a.Name
+                                                                    })
+                                                      .Single();
+
+            return Ok(account);
         }
     }
 }

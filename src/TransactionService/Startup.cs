@@ -1,19 +1,18 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Moneta.Core.Jwt;
+using Polly;
+using Polly.Extensions.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using TransactionService.Services;
 using TransactionService.Sql;
 
 namespace TransactionService
@@ -39,6 +38,12 @@ namespace TransactionService
                                    });
 
             });
+
+            services.AddHttpClient<IAccountsService, AccountsService>()
+                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                        .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
 
             services.AddAuthentication(x =>
             {
@@ -68,6 +73,18 @@ namespace TransactionService
             services.AddControllers();
 
             services.AddTransient<IStartupFilter, DatabaseUpgradeFilter>();
+        }
+
+        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            Random jitterer = new Random();
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(3,    // exponential back-off plus some jitter
+                                retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                              + TimeSpan.FromMilliseconds(jitterer.Next(0, 100)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

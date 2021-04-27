@@ -15,8 +15,10 @@ namespace Moneta.Frontend.Web.Services
     public interface ITransactionsService: IService
     {
        
-        Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model);
+        Task<HttpResponseMessage> CreateTransactionAsync(TransactionHeaderModel model);
         Task<TransactionAmountModel> GetAmount(Guid id);
+        Task<HttpResponseMessage> UpdateAmountAsync(Guid transactionId, TransactionAmountModel model);
+        Task<HttpResponseMessage> UpdateCosts(Guid transactionId, TransactionCostsModel model);
     }
 
     public class TransactionsService: ServiceBase, ITransactionsService
@@ -36,7 +38,7 @@ namespace Moneta.Frontend.Web.Services
             
         }
 
-        public async Task<HttpResponseMessage> StartAsync(TransactionHeaderModel model) {
+        public async Task<HttpResponseMessage> CreateTransactionAsync(TransactionHeaderModel model) {
 
             var startTransactionCommand = new
             {
@@ -44,12 +46,44 @@ namespace Moneta.Frontend.Web.Services
                 AccountId = model.SelectedAccount,
                 TransactionNumber = model.TransactionNumber,
                 Symbol = model.Symbol,
-                TransactionDate = DateTime.ParseExact(model.TransactionDate, "dd/MM/yyyy", null)
+                TransactionDate = DateTime.ParseExact(model.TransactionDate, "dd/MM/yyyy", null),
+                Currency = model.Currency
             };
 
             StringContent data = new StringContent(JsonConvert.SerializeObject(startTransactionCommand), Encoding.UTF8, "application/json");
 
-            return await _Client.PostAsync("/buyorder/new", data);
+            return await _Client.PostAsync("/buyorders/new", data);
+        }
+
+        public async Task<HttpResponseMessage> UpdateAmountAsync(Guid transactionId, TransactionAmountModel model)
+        {
+
+            var updateAmountCommand = new
+            {
+                Price = model.Price,
+                Quantity = model.Quantity,
+                Exchangerate = model.Exchangerate
+            };
+
+            StringContent data = new StringContent(JsonConvert.SerializeObject(updateAmountCommand), Encoding.UTF8, "application/json");
+
+            return await _Client.PutAsync($"/buyorders/{transactionId}/amount", data);
+        }
+
+        public async Task<HttpResponseMessage> UpdateCosts(Guid transactionId, TransactionCostsModel model)
+        {
+
+            var updateCostsCommand = new
+            {
+                Id = Guid.NewGuid(),
+                Commision = model.Commission,
+                CostExchangerate = model.CostExchangeRate,
+                StockMarketTax = model.StockMarketTax
+            };
+
+            StringContent data = new StringContent(JsonConvert.SerializeObject(updateCostsCommand), Encoding.UTF8, "application/json");
+
+            return await _Client.PutAsync($"/buyorders/{transactionId}/costs", data);
         }
     }
 }

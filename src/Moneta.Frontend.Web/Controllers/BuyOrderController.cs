@@ -60,7 +60,7 @@ namespace Moneta.Frontend.WebControllers
             try
             {
                 _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
-                HttpResponseMessage response = await _TransactionService.StartAsync(model);
+                HttpResponseMessage response = await _TransactionService.CreateTransactionAsync(model);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -101,7 +101,7 @@ namespace Moneta.Frontend.WebControllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("amount/{id}")]
-        public IActionResult Amount(Guid id, TransactionAmountModel model)
+        public async Task<IActionResult> Amount(Guid id, TransactionAmountModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -109,7 +109,14 @@ namespace Moneta.Frontend.WebControllers
                 return View(model);
             }
 
-            return RedirectToAction("Costs", new { Id = id});
+            _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+            HttpResponseMessage response = await _TransactionService.UpdateAmountAsync(id, model);
+
+            if (response.IsSuccessStatusCode) {
+                return RedirectToAction("Costs", new { Id = id });
+            }
+
+            return StatusCode(500);
         }
 
         [HttpGet]

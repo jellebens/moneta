@@ -7,6 +7,7 @@ namespace TransactionService.Contracts.Data
 {
     public class UpdateAmountCommand
     {
+        public Guid Id { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public decimal Exchangerate { get; set; }
