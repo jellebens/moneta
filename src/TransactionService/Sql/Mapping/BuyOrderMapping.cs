@@ -29,6 +29,11 @@ namespace TransactionService.Sql.Mapping
 
             builder.Property(t => t.Symbol).HasColumnName("Symbol");
 
+            builder.Property(t => t.Currency)
+                .HasColumnName("Currency")
+                .HasColumnType("char(3)")
+                .HasMaxLength(3);
+
             builder.Property(t => t.UserId).HasColumnName("UserId");
 
             builder.HasOne(t => t.Amount);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TransactionService.Contracts.Data
 {
-    public class StartBuyOrderCommand
+    public class NewBuyOrderCommand
     {
         [Required]
         public Guid Id { get; set; }
@@ -22,5 +22,8 @@ namespace TransactionService.Contracts.Data
 
         [Required]
         public DateTime TransactionDate { get; set; }
+
+        [Required]
+        public string Currency { get; internal set; }
     }
 }

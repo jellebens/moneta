@@ -7,12 +7,11 @@ namespace TransactionService.Domain
 {
     public class Amount
     {
-        public Amount(Guid id, int quantity, decimal price, string currency, decimal exchangerate)
+        public Amount(Guid id, int quantity, decimal price, decimal exchangerate)
         {
             Id = id;
             Quantity = quantity;
             Price = price;
-            Currency = currency;
             Exchangerate = exchangerate;
         }
 
@@ -20,7 +19,6 @@ namespace TransactionService.Domain
 
         public int Quantity { get; protected set; }
         public decimal Price { get; protected set; }
-        public string Currency { get; protected set; }
         public decimal Exchangerate { get; protected set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Moneta.Frontend.Web.Models
         [Required(ErrorMessage = "Id is required")]
         public Guid? Id { get; set; }
 
-        [Required(ErrorMessage = "AccountCurrency is required")]
-        public string AccountCurrency { get; set; }
+        [Required(ErrorMessage = "Currency is required")]
+        public string Currency { get; set; }
     }
 }

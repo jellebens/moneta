@@ -19,11 +19,6 @@ namespace TransactionService.Sql.Mapping
 
             builder.Property(t => t.Id).HasColumnName("Id");
 
-            builder.Property(t => t.Currency)
-                .HasColumnName("Currency")
-                .HasColumnType("char(3)")
-                .HasMaxLength(3);
-
             builder.Property(t => t.Quantity)
                 .HasColumnName("Quantity")
                 .HasColumnType("decimal(19,5)")

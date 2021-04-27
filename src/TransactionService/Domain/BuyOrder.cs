@@ -12,7 +12,7 @@ namespace TransactionService.Domain
 
         }
 
-        public BuyOrder(Guid id, Guid accountId, string symbol, DateTime transactionDate, int transactionNumber, string userId)
+        public BuyOrder(Guid id, Guid accountId, string symbol, string currency, DateTime transactionDate, int transactionNumber, string userId)
         {
             Id = id;
             AccountId = accountId;
@@ -20,6 +20,7 @@ namespace TransactionService.Domain
             Symbol = symbol;
             Date = transactionDate;
             Number = transactionNumber;
+            Currency = currency;
         }
 
         public Guid Id { get; protected set; }
@@ -70,6 +71,7 @@ namespace TransactionService.Domain
         }
 
         public IList<Cost> Costs { get; internal set; }
+        public string Currency { get; protected set; }
 
         public void With(Amount amount)
         {

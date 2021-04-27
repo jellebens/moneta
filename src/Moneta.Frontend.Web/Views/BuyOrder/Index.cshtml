@@ -27,35 +27,38 @@
                 <div class="ibox-content">
                     @using (Html.BeginForm("Index", "BuyOrder", FormMethod.Post))
                     {
-                        @Html.AntiForgeryToken();
-                        @Html.HiddenFor(m => m.AccountCurrency);
-                        @Html.HiddenFor(m => m.Id);
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Select an account:</label>
-                            <div class="col-sm-9"><select class="form-control m-b" name="SelectedAccount"></select></div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Transaction #:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">date:</label>
-                            <div class="col-sm-9" id="date">
-                                <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
-                                </div>
+                    @Html.AntiForgeryToken();
+                    @Html.HiddenFor(m => m.Id);
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Select an account:</label>
+                        <div class="col-sm-9"><select class="form-control m-b" name="SelectedAccount"></select></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Transaction #:</label>
+                        <div class="col-sm-9">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">date:</label>
+                        <div class="col-sm-9" id="date">
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Symbol:</label>
-                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Symbol:</label>
+                        <div class="col-sm-9">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Currency:</label>
+                        <div class="col-sm-9">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b" })</div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary float-right" type="submit">Next</button>
                         </div>
-                        <div class="hr-line-dashed"></div>
-                        <div class="form-group row">
-                            <div class="col-sm-12">
-                                <button class="btn btn-primary float-right" type="submit">Next</button>
-                            </div>
-                        </div>
+                    </div>
                     }
                 </div>
             </div>
@@ -136,39 +139,6 @@
             $('.input-validation-error').parents('.form-group').addClass('has-error');
             $('.field-validation-error').addClass('text-danger');
 
-            //function SetExhangeRate() {
-            //    var accountCurrency = $("#AccountCurrency").val();
-            //    var transactionCurrency = $("#AccountCurrency").val().toUpperCase();
-            //    if (accountCurrency == transactionCurrency) {
-            //        $("#ExchangeRate").val(1.00);
-            //        $(".exchange-rate-fee").hide();
-            //        $("#ExchangeRate").attr("readonly", "readonly");
-            //        $(".sub-total").addClass("offset-md-1")
-
-            //    } else {
-            //        $("#ExchangeRate").removeAttr("readonly");
-            //        $(".exchange-rate-fee").show();
-            //        $(".sub-total").removeClass("offset-md-1")
-            //    }
-
-            //    $("#total-currency").html(accountCurrency);
-
-            //}
-
-            //function UpdateTotal() {
-            //    var subtotal = $("#Subtotal").val() * 1.00;
-            //    var costs = $("#TotalCosts").val() * 1.00;
-            //    var exchangeRate = $("#ExchangeRate").val() * 1.00;
-
-            //    total = (subtotal / exchangeRate) + costs;
-
-            //    if(!isNaN(total)) {
-            //        $("#Total").val(total.toFixed(2));
-            //    } else {
-            //        $("#Total").val("-");
-            //    }
-            //}
-
 
             $(document).ready(function () {
                 $('#date .input-group.date').datepicker({
@@ -186,61 +156,7 @@
                         );
                     });
 
-                    var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
-
-                    $("#AccountCurrency").val(val);
                 });
-
-                $("SELECT[name='SelectedAccount']").change(function () {
-                    var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
-
-                    $("#AccountCurrency").val(val);
-                });
-                //    $("#total-currency").html(val);
-                //    SetExhangeRate();
-                //});
-
-                //$("#ExchangeRate").change(function () {
-                //    UpdateTotal();
-                //});
-
-                //$(".costs").change(function () {
-                //    var commission = $("#Commission").val();
-                //    var exchangeRateFee = $("#ExchangeRateFee").val()
-                //    var TOB = $("#TOB").val()
-
-                //    var totalCosts = commission * 1.00 + exchangeRateFee * 1.00 + TOB * 1.00;
-
-                //    $("#TotalCosts").val(totalCosts);
-
-                //    if (isNaN(totalCosts)) {
-                //        $("#TotalCosts").parent().addClass("has-error");
-                //    } else {
-                //        $("#TotalCosts").parent().removeClass("has-error");
-                //    }
-                //    UpdateTotal();
-                //});
-
-                //$(".price").change(function () {
-                //    var qty = parseInt($("#Quantity").val());
-                //    var price = $("#Price").val()
-
-                //    var subtotal = (qty * price).toFixed(2);
-
-                //    $("#Subtotal").val(subtotal);
-
-                //    if (isNaN(subtotal)) {
-                //        $("#Subtotal").parent().addClass("has-error");
-                //    } else {
-                //        $("#Subtotal").parent().removeClass("has-error");
-                //    }
-                //    UpdateTotal();
-                //});
-
-                //$("#AccountCurrency").change(function () {
-                //    SetExhangeRate();
-                //});
-
             });
 
         </script>
