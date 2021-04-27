@@ -19,17 +19,17 @@ namespace TransactionService.Sql.Mapping
 
             builder.Property(t => t.Id).HasColumnName("Id");
 
-            builder.Property(t => t.Quantity)
-                .HasColumnName("Quantity")
-                .HasColumnType("decimal(19,5)")
-                .HasPrecision(19, 5);
+            builder.Property(t => t.Quantity);
 
             builder.Property(t => t.Price)
                 .HasColumnName("Price")
                 .HasColumnType("decimal(19,5)")
                 .HasPrecision(19, 5);
 
-            
+            builder.Property(t => t.Exchangerate)
+                .HasColumnName("Exchangerate")
+                .HasColumnType("decimal(19,5)")
+                .HasPrecision(19, 5);
 
         }
     }

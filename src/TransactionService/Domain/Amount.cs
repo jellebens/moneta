@@ -20,5 +20,12 @@ namespace TransactionService.Domain
         public int Quantity { get; protected set; }
         public decimal Price { get; protected set; }
         public decimal Exchangerate { get; protected set; }
+
+        internal void Update(int quantity, decimal price, decimal exchangerate)
+        {
+            this.Quantity = quantity;
+            this.Price = price;
+            this.Exchangerate = exchangerate;
+        }
     }
 }

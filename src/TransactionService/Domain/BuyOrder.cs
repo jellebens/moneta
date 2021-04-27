@@ -86,5 +86,10 @@ namespace TransactionService.Domain
 
             this.Costs.Add(costs);
         }
+
+        public void UpdateAmount(int quantity, decimal price, decimal exchangerate)
+        {
+            this.Amount.Update(quantity, price, exchangerate);
+        }
     }
 }

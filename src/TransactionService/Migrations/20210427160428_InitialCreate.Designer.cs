@@ -10,7 +10,7 @@ using TransactionService.Sql;
 namespace TransactionService.Migrations
 {
     [DbContext(typeof(TransactionsDbContext))]
-    [Migration("20210427095726_InitialCreate")]
+    [Migration("20210427160428_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,23 +25,25 @@ namespace TransactionService.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("Exchangerate")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Exchangerate");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Price");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Amount");
+                    b.ToTable("amount", "transactions");
                 });
 
             modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
@@ -57,6 +59,11 @@ namespace TransactionService.Migrations
 
                     b.Property<Guid?>("AmountId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Currency")
+                        .HasMaxLength(3)
+                        .HasColumnType("char(3)")
+                        .HasColumnName("Currency");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2")
@@ -84,6 +91,32 @@ namespace TransactionService.Migrations
                     b.ToTable("buyorder", "transactions");
                 });
 
+            modelBuilder.Entity("TransactionService.Domain.Cost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Amount");
+
+                    b.Property<Guid?>("BuyorderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyorderId");
+
+                    b.ToTable("costs", "transactions");
+                });
+
             modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
                 {
                     b.HasOne("TransactionService.Domain.Amount", "Amount")
@@ -91,6 +124,20 @@ namespace TransactionService.Migrations
                         .HasForeignKey("AmountId");
 
                     b.Navigation("Amount");
+                });
+
+            modelBuilder.Entity("TransactionService.Domain.Cost", b =>
+                {
+                    b.HasOne("TransactionService.Domain.BuyOrder", "Buyorder")
+                        .WithMany("Costs")
+                        .HasForeignKey("BuyorderId");
+
+                    b.Navigation("Buyorder");
+                });
+
+            modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
+                {
+                    b.Navigation("Costs");
                 });
 #pragma warning restore 612, 618
         }

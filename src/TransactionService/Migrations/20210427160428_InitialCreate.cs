@@ -11,19 +11,18 @@ namespace TransactionService.Migrations
                 name: "transactions");
 
             migrationBuilder.CreateTable(
-                schema: "transactions",
                 name: "amount",
+                schema: "transactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(19,5)", nullable: false),
-                    Currency = table.Column<string>(type: "char(3)", nullable: true),
-                    Exchangerate = table.Column<decimal>(type: "decimal(19,5)", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false),
+                    Exchangerate = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Amount", x => x.Id);
+                    table.PrimaryKey("PK_amount", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,7 +36,8 @@ namespace TransactionService.Migrations
                     Symbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Number = table.Column<long>(type: "bigint", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AmountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    AmountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Currency = table.Column<string>(type: "char(3)", maxLength: 3, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,10 +45,32 @@ namespace TransactionService.Migrations
                     table.UniqueConstraint("AK_buyorder_AccountId_Number", x => new { x.AccountId, x.Number })
                         .Annotation("SqlServer:Clustered", true);
                     table.ForeignKey(
-                        name: "FK_buyorder_Amount_AmountId",
+                        name: "FK_buyorder_amount_AmountId",
                         column: x => x.AmountId,
                         principalSchema: "transactions",
                         principalTable: "amount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "costs",
+                schema: "transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BuyorderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_costs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_costs_buyorder_BuyorderId",
+                        column: x => x.BuyorderId,
+                        principalSchema: "transactions",
+                        principalTable: "buyorder",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -58,16 +80,27 @@ namespace TransactionService.Migrations
                 schema: "transactions",
                 table: "buyorder",
                 column: "AmountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_costs_BuyorderId",
+                schema: "transactions",
+                table: "costs",
+                column: "BuyorderId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "costs",
+                schema: "transactions");
+
+            migrationBuilder.DropTable(
                 name: "buyorder",
                 schema: "transactions");
 
             migrationBuilder.DropTable(
-                name: "Amount");
+                name: "amount",
+                schema: "transactions");
         }
     }
 }

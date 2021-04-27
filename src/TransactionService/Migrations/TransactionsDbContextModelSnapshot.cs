@@ -23,20 +23,25 @@ namespace TransactionService.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("Exchangerate")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Exchangerate");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Price");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Amount");
+                    b.ToTable("amount", "transactions");
                 });
 
             modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
@@ -88,22 +93,26 @@ namespace TransactionService.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Amount");
 
                     b.Property<Guid?>("BuyorderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Type");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BuyorderId");
 
-                    b.ToTable("Cost");
+                    b.ToTable("costs", "transactions");
                 });
 
             modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>

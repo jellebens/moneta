@@ -16,6 +16,7 @@ using TransactionService.Domain;
 using TransactionService.Events;
 using TransactionService.Services;
 using TransactionService.Sql;
+using Microsoft.EntityFrameworkCore;
 
 namespace TransactionService.Controllers
 {
@@ -65,7 +66,10 @@ namespace TransactionService.Controllers
 
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
+            
+
+            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.Include(b => b.Amount)
+                                                                .SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
 
             if (buyOrder == null) {
                 _Logger.LogError($"Buyorder with id: {id} found for user: {userId.Value}");
@@ -77,18 +81,23 @@ namespace TransactionService.Controllers
             AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
 
 
+
             decimal exchangerate = updateAmount.Exchangerate;
             
             if (string.Equals(account.Currency, buyOrder.Currency, StringComparison.InvariantCultureIgnoreCase)){
                 exchangerate = 1.00m;
             };
 
-            Amount amount = new Amount(Guid.NewGuid(), updateAmount.Quantity, updateAmount.Price, exchangerate);
+            if (buyOrder.Amount == null) {
+                Amount amount = new Amount(Guid.NewGuid(), updateAmount.Quantity, updateAmount.Price, exchangerate);
+                await _TransactionsDbContext.Amounts.AddAsync(amount);
+                buyOrder.With(amount);
+            }
+            else
+            {
+                buyOrder.UpdateAmount(updateAmount.Quantity, updateAmount.Price, exchangerate);
+            }
 
-            await _TransactionsDbContext.Amounts.AddAsync(amount);
-
-            buyOrder.With(amount);
-            
             await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
 
             return Ok();
