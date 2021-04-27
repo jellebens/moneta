@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 using TransactionService.Contracts.Data;
 using TransactionService.Domain;
 using TransactionService.Events;
+using TransactionService.Services;
 using TransactionService.Sql;
-using static Confluent.Kafka.ConfigPropertyNames;
 
 namespace TransactionService.Controllers
 {
@@ -25,16 +25,18 @@ namespace TransactionService.Controllers
         private readonly ILogger<BuyOrderController> _Logger;
         private readonly IConfiguration _Configuration;
         private readonly TransactionsDbContext _TransactionsDbContext;
+        private readonly IAccountsService _AccountService;
 
-        public BuyOrderController(ILogger<BuyOrderController> logger, IConfiguration configuration, TransactionsDbContext transactionsDbContext)
+        public BuyOrderController(ILogger<BuyOrderController> logger, IConfiguration configuration, TransactionsDbContext transactionsDbContext, IAccountsService accountService)
         {
             _Logger = logger;
             _Configuration = configuration;
             _TransactionsDbContext = transactionsDbContext;
+            _AccountService = accountService;
         }
 
-        [HttpPost("start")]
-        public async Task<IActionResult> Start([FromBody]StartBuyOrderCommand createBuyOrder, CancellationToken cancellationToken) {
+        [HttpPost("new")]
+        public async Task<IActionResult> New([FromBody]StartBuyOrderCommand createBuyOrder, CancellationToken cancellationToken) {
 
             _Logger.LogInformation($"Creating Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
 
@@ -45,13 +47,72 @@ namespace TransactionService.Controllers
                 return StatusCode(StatusCodes.Status409Conflict, new ErrorResult { Code = "duplicate_buy_order", Message = $"Buyorder with number {createBuyOrder.TransactionNumber} for this account allready exists"});
             }
             
-            BuyOrder buyOrder = new BuyOrder(createBuyOrder.Id, createBuyOrder.AccountId, createBuyOrder.Currency.ToUpper(), createBuyOrder.Symbol, createBuyOrder.TransactionDate, createBuyOrder.TransactionNumber, userId.Value);
+            BuyOrder buyOrder = new BuyOrder(createBuyOrder.Id, createBuyOrder.AccountId, createBuyOrder.Symbol, createBuyOrder.TransactionDate, createBuyOrder.TransactionNumber, userId.Value);
 
             await _TransactionsDbContext.BuyOrders.AddAsync(buyOrder);
 
             await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
 
             _Logger.LogInformation($"Created Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
+            return Ok();
+        }
+
+        [HttpPost("/{id}/amount")]
+        public async Task<IActionResult> Amount(Guid id, [FromBody] UpdateAmountCommand updateAmount, CancellationToken cancellationToken) {
+
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
+
+            if (buyOrder == null) {
+                _Logger.LogError($"Account with id: {id} not found for user: {userId.Value}");
+
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
+
+
+            decimal exchangerate = updateAmount.Exchangerate;
+            
+            if (string.Equals(account.Currency, updateAmount.Currency, StringComparison.InvariantCultureIgnoreCase)){
+                exchangerate = 1.00m;
+            };
+
+            Amount amount = new Amount(Guid.NewGuid(), updateAmount.Quantity, updateAmount.Price, updateAmount.Currency, exchangerate);
+
+            buyOrder.With(amount);
+            
+            await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost("/{id}/costs")]
+        public async Task<IActionResult> Costs(Guid id, [FromBody] UpdateCostsCommand updateCosts, CancellationToken cancellationToken)
+        {
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
+
+            if (buyOrder == null)
+            {
+                _Logger.LogError($"Account with id: {id} not found for user: {userId.Value}");
+
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+
+            Cost commission = new Cost(Guid.NewGuid(), updateCosts.Commision, "Commission");
+            Cost costExchangerate = new Cost(Guid.NewGuid(), updateCosts.CostExchangerate, "Exchange rate cost");
+            Cost stockMarketTax = new Cost(Guid.NewGuid(), updateCosts.StockMarketTax, "Stock market taks");
+            
+            buyOrder.With(commission);
+            buyOrder.With(costExchangerate);
+            buyOrder.With(costExchangerate);
+
+            await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
+
             return Ok();
         }
     }

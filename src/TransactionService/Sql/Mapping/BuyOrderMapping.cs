@@ -13,16 +13,13 @@ namespace TransactionService.Sql.Mapping
     {
         public void Configure(EntityTypeBuilder<BuyOrder> builder)
         {
-            builder.ToTable("Transactions", "BuyOrder");
+            builder.ToTable("buyorder", "transactions");
 
             builder.HasKey(t => t.Id);
 
             builder.HasAlternateKey(x => new { x.AccountId, x.Number }).IsClustered();
 
-            builder.Property(t => t.AccountId)
-                   .HasColumnName("AccountId");
-
-            builder.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(3);
+            builder.Property(t => t.AccountId).HasColumnName("AccountId");
 
             builder.Property(t => t.Date).HasColumnName("Date");
 
@@ -34,9 +31,9 @@ namespace TransactionService.Sql.Mapping
 
             builder.Property(t => t.UserId).HasColumnName("UserId");
 
-            
+            builder.HasOne(t => t.Amount);
 
-
+            builder.HasMany(t => t.Costs).WithOne(x => x.Buyorder);
 
         }
     }

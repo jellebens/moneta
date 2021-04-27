@@ -7,15 +7,15 @@ namespace TransactionService.Domain
 {
     public class BuyOrder
     {
-        protected BuyOrder() { 
-        
+        protected BuyOrder()
+        {
+
         }
 
-        public BuyOrder(Guid id, Guid accountId, string currency, string symbol, DateTime transactionDate, int transactionNumber, string userId)
+        public BuyOrder(Guid id, Guid accountId, string symbol, DateTime transactionDate, int transactionNumber, string userId)
         {
             Id = id;
             AccountId = accountId;
-            Currency = currency;
             UserId = userId;
             Symbol = symbol;
             Date = transactionDate;
@@ -28,14 +28,61 @@ namespace TransactionService.Domain
 
         public string UserId { get; protected set; }
 
-        public string Symbol { get; set; }
+        public string Symbol { get; protected set; }
 
         public long Number { get; protected set; }
-        
-        public string Currency { get; set; }
+
+
 
         public DateTime Date { get; protected set; }
+        public Amount Amount { get; protected set; }
 
+        public decimal Subtotal
+        {
+            get
+            {
+                if (this.Amount == null)
+                {
+                    return 0;
+                }
 
+                return Amount.Quantity * Amount.Price / Amount.Exchangerate;
+
+            }
+        }
+
+        public decimal TotalCosts
+        {
+            get
+            {
+                decimal costs = 0;
+                if (this.Costs == null) {
+                    return costs;
+                }
+
+                foreach (Cost cost in Costs)
+                {
+                    costs += cost.Amount;
+                }
+
+                return costs;
+            }
+        }
+
+        public IList<Cost> Costs { get; internal set; }
+
+        public void With(Amount amount)
+        {
+            this.Amount = amount;
+        }
+
+        internal void With(Cost costs)
+        {
+            if (this.Costs == null) {
+                this.Costs = new List<Cost>();
+            }
+
+            this.Costs.Add(costs);
+        }
     }
 }

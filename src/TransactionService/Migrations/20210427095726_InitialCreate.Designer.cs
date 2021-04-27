@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransactionService.Sql;
 
 namespace TransactionService.Migrations
 {
     [DbContext(typeof(TransactionsDbContext))]
-    partial class TransactionsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210427095726_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,28 +84,6 @@ namespace TransactionService.Migrations
                     b.ToTable("buyorder", "transactions");
                 });
 
-            modelBuilder.Entity("TransactionService.Domain.Cost", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid?>("BuyorderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyorderId");
-
-                    b.ToTable("Cost");
-                });
-
             modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
                 {
                     b.HasOne("TransactionService.Domain.Amount", "Amount")
@@ -111,20 +91,6 @@ namespace TransactionService.Migrations
                         .HasForeignKey("AmountId");
 
                     b.Navigation("Amount");
-                });
-
-            modelBuilder.Entity("TransactionService.Domain.Cost", b =>
-                {
-                    b.HasOne("TransactionService.Domain.BuyOrder", "Buyorder")
-                        .WithMany("Costs")
-                        .HasForeignKey("BuyorderId");
-
-                    b.Navigation("Buyorder");
-                });
-
-            modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
-                {
-                    b.Navigation("Costs");
                 });
 #pragma warning restore 612, 618
         }

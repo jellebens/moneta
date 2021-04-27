@@ -15,9 +15,6 @@ namespace TransactionService.Contracts.Data
         public Guid AccountId { get; set; }
 
         [Required]
-        public string Currency { get; set; }
-
-        [Required]
         public int TransactionNumber { get; set; }
 
         [Required]

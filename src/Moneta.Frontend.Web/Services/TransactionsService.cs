@@ -42,7 +42,6 @@ namespace Moneta.Frontend.Web.Services
             {
                 Id = model.Id,
                 AccountId = model.SelectedAccount,
-                Currency = model.Currency,
                 TransactionNumber = model.TransactionNumber,
                 Symbol = model.Symbol,
                 TransactionDate = DateTime.ParseExact(model.TransactionDate, "dd/MM/yyyy", null)
@@ -50,7 +49,7 @@ namespace Moneta.Frontend.Web.Services
 
             StringContent data = new StringContent(JsonConvert.SerializeObject(startTransactionCommand), Encoding.UTF8, "application/json");
 
-            return await _Client.PostAsync("/buyorder/start", data);
+            return await _Client.PostAsync("/buyorder/new", data);
         }
     }
 }

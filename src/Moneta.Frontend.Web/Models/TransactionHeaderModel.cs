@@ -20,10 +20,10 @@ namespace Moneta.Frontend.Web.Models
         [Required(ErrorMessage = "Account is required")]
         public Guid? SelectedAccount { get; set; }
 
-        [Required(ErrorMessage = "Account Currency is required")]
-        public string Currency { get; set; }
-
         [Required(ErrorMessage = "Id is required")]
         public Guid? Id { get; set; }
+
+        [Required(ErrorMessage = "AccountCurrency is required")]
+        public string AccountCurrency { get; set; }
     }
 }

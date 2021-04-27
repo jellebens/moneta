@@ -28,7 +28,7 @@
                     @using (Html.BeginForm("Index", "BuyOrder", FormMethod.Post))
                     {
                         @Html.AntiForgeryToken();
-                        @Html.HiddenFor(m => m.Currency);
+                        @Html.HiddenFor(m => m.AccountCurrency);
                         @Html.HiddenFor(m => m.Id);
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Select an account:</label>
@@ -138,7 +138,7 @@
 
             //function SetExhangeRate() {
             //    var accountCurrency = $("#AccountCurrency").val();
-            //    var transactionCurrency = $("#Currency").val().toUpperCase();
+            //    var transactionCurrency = $("#AccountCurrency").val().toUpperCase();
             //    if (accountCurrency == transactionCurrency) {
             //        $("#ExchangeRate").val(1.00);
             //        $(".exchange-rate-fee").hide();
@@ -188,13 +188,13 @@
 
                     var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
 
-                    $("#Currency").val(val);
+                    $("#AccountCurrency").val(val);
                 });
 
                 $("SELECT[name='SelectedAccount']").change(function () {
                     var val = $("SELECT[name='SelectedAccount'] option:selected").attr('currency');
 
-                    $("#Currency").val(val);
+                    $("#AccountCurrency").val(val);
                 });
                 //    $("#total-currency").html(val);
                 //    SetExhangeRate();
@@ -237,7 +237,7 @@
                 //    UpdateTotal();
                 //});
 
-                //$("#Currency").change(function () {
+                //$("#AccountCurrency").change(function () {
                 //    SetExhangeRate();
                 //});
 
