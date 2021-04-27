@@ -24,13 +24,11 @@ namespace TransactionService.Sql
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new BuyOrderMapping());
-            modelBuilder.ApplyConfiguration(new AmountMapping());
             modelBuilder.ApplyConfiguration(new CostsMapping());
         }
 
         public DbSet<BuyOrder> BuyOrders { get; set; }
 
-        public DbSet<Amount> Amounts { get; set; }
 
         public DbSet<Cost> Costs { get; set; }
 

@@ -11,21 +11,6 @@ namespace TransactionService.Migrations
                 name: "transactions");
 
             migrationBuilder.CreateTable(
-                name: "amount",
-                schema: "transactions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false),
-                    Exchangerate = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_amount", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "buyorder",
                 schema: "transactions",
                 columns: table => new
@@ -36,7 +21,9 @@ namespace TransactionService.Migrations
                     Symbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Number = table.Column<long>(type: "bigint", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AmountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Quantity = table.Column<int>(type: "int", precision: 19, scale: 5, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false),
+                    Exchangerate = table.Column<decimal>(type: "decimal(19,5)", precision: 19, scale: 5, nullable: false),
                     Currency = table.Column<string>(type: "char(3)", maxLength: 3, nullable: true)
                 },
                 constraints: table =>
@@ -44,13 +31,6 @@ namespace TransactionService.Migrations
                     table.PrimaryKey("PK_buyorder", x => x.Id);
                     table.UniqueConstraint("AK_buyorder_AccountId_Number", x => new { x.AccountId, x.Number })
                         .Annotation("SqlServer:Clustered", true);
-                    table.ForeignKey(
-                        name: "FK_buyorder_amount_AmountId",
-                        column: x => x.AmountId,
-                        principalSchema: "transactions",
-                        principalTable: "amount",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,12 +56,6 @@ namespace TransactionService.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_buyorder_AmountId",
-                schema: "transactions",
-                table: "buyorder",
-                column: "AmountId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_costs_BuyorderId",
                 schema: "transactions",
                 table: "costs",
@@ -96,10 +70,6 @@ namespace TransactionService.Migrations
 
             migrationBuilder.DropTable(
                 name: "buyorder",
-                schema: "transactions");
-
-            migrationBuilder.DropTable(
-                name: "amount",
                 schema: "transactions");
         }
     }

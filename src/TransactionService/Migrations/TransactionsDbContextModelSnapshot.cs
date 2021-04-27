@@ -19,31 +19,6 @@ namespace TransactionService.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TransactionService.Domain.Amount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<decimal>("Exchangerate")
-                        .HasPrecision(19, 5)
-                        .HasColumnType("decimal(19,5)")
-                        .HasColumnName("Exchangerate");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(19, 5)
-                        .HasColumnType("decimal(19,5)")
-                        .HasColumnName("Price");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("amount", "transactions");
-                });
-
             modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
                 {
                     b.Property<Guid>("Id")
@@ -55,9 +30,6 @@ namespace TransactionService.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("AccountId");
 
-                    b.Property<Guid?>("AmountId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Currency")
                         .HasMaxLength(3)
                         .HasColumnType("char(3)")
@@ -67,9 +39,24 @@ namespace TransactionService.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("Date");
 
+                    b.Property<decimal>("Exchangerate")
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Exchangerate");
+
                     b.Property<long>("Number")
                         .HasColumnType("bigint")
                         .HasColumnName("Number");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(19, 5)
+                        .HasColumnType("decimal(19,5)")
+                        .HasColumnName("Price");
+
+                    b.Property<int>("Quantity")
+                        .HasPrecision(19, 5)
+                        .HasColumnType("int")
+                        .HasColumnName("Quantity");
 
                     b.Property<string>("Symbol")
                         .HasColumnType("nvarchar(max)")
@@ -83,8 +70,6 @@ namespace TransactionService.Migrations
 
                     b.HasAlternateKey("AccountId", "Number")
                         .IsClustered();
-
-                    b.HasIndex("AmountId");
 
                     b.ToTable("buyorder", "transactions");
                 });
@@ -113,15 +98,6 @@ namespace TransactionService.Migrations
                     b.HasIndex("BuyorderId");
 
                     b.ToTable("costs", "transactions");
-                });
-
-            modelBuilder.Entity("TransactionService.Domain.BuyOrder", b =>
-                {
-                    b.HasOne("TransactionService.Domain.Amount", "Amount")
-                        .WithMany()
-                        .HasForeignKey("AmountId");
-
-                    b.Navigation("Amount");
                 });
 
             modelBuilder.Entity("TransactionService.Domain.Cost", b =>

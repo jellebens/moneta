@@ -36,7 +36,19 @@ namespace TransactionService.Sql.Mapping
 
             builder.Property(t => t.UserId).HasColumnName("UserId");
 
-            builder.HasOne(t => t.Amount);
+            builder.Property(t => t.Price)
+                .HasColumnName("Price")
+                .HasPrecision(19, 5);
+
+            builder.Property(t => t.Quantity)
+                .HasColumnName("Quantity")
+                .HasPrecision(19, 5);
+
+            builder.Property(t => t.Exchangerate)
+                .HasColumnName("Exchangerate")
+                .HasPrecision(19, 5);
+
+
 
             builder.HasMany(t => t.Costs).WithOne(x => x.Buyorder);
 

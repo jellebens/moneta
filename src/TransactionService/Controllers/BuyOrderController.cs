@@ -68,8 +68,7 @@ namespace TransactionService.Controllers
 
             
 
-            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.Include(b => b.Amount)
-                                                                .SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
+            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
 
             if (buyOrder == null) {
                 _Logger.LogError($"Buyorder with id: {id} found for user: {userId.Value}");
@@ -88,15 +87,10 @@ namespace TransactionService.Controllers
                 exchangerate = 1.00m;
             };
 
-            if (buyOrder.Amount == null) {
-                Amount amount = new Amount(Guid.NewGuid(), updateAmount.Quantity, updateAmount.Price, exchangerate);
-                await _TransactionsDbContext.Amounts.AddAsync(amount);
-                buyOrder.With(amount);
-            }
-            else
-            {
-                buyOrder.UpdateAmount(updateAmount.Quantity, updateAmount.Price, exchangerate);
-            }
+           
+            
+            buyOrder.UpdateAmount(updateAmount.Quantity, updateAmount.Price, exchangerate);
+            
 
             await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
 
@@ -108,7 +102,7 @@ namespace TransactionService.Controllers
         {
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
+            BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.Include(b => b.Costs).SingleOrDefault(bo => bo.Id == id && bo.UserId == userId.Value);
 
             if (buyOrder == null)
             {
@@ -118,10 +112,10 @@ namespace TransactionService.Controllers
             }
 
 
-            Cost commission = new Cost(Guid.NewGuid(), updateCosts.Commision, "Commission");
+            Cost commission = new Cost(updateCosts.Commision, "Commission");
             buyOrder.With(commission);
 
-            Cost stockMarketTax = new Cost(Guid.NewGuid(), updateCosts.StockMarketTax, "Stock market taks");
+            Cost stockMarketTax = new Cost(updateCosts.StockMarketTax, "Stock market taks");
             buyOrder.With(stockMarketTax);
 
             _AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
@@ -129,10 +123,10 @@ namespace TransactionService.Controllers
 
             if (string.Equals(account.Currency, buyOrder.Currency, StringComparison.InvariantCultureIgnoreCase))
             {
-                Cost costExchangerate = new Cost(Guid.NewGuid(), updateCosts.CostExchangerate, "Exchange rate cost");
+                Cost costExchangerate = new Cost(updateCosts.CostExchangerate, "Exchange rate cost");
+                
                 buyOrder.With(costExchangerate);
             }
-
 
             await _TransactionsDbContext.SaveChangesAsync(cancellationToken);
 

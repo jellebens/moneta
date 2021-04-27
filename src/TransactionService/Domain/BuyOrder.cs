@@ -33,21 +33,18 @@ namespace TransactionService.Domain
 
         public long Number { get; protected set; }
 
-
-
         public DateTime Date { get; protected set; }
-        public Amount Amount { get; protected set; }
+
+        public int Quantity { get; protected set; }
+        public decimal Price { get; protected set; }
+        public decimal Exchangerate { get; protected set; }
 
         public decimal Subtotal
         {
             get
             {
-                if (this.Amount == null)
-                {
-                    return 0;
-                }
-
-                return Amount.Quantity * Amount.Price / Amount.Exchangerate;
+               
+                return this.Quantity * this.Price / this.Exchangerate;
 
             }
         }
@@ -73,23 +70,28 @@ namespace TransactionService.Domain
         public IList<Cost> Costs { get; internal set; }
         public string Currency { get; protected set; }
 
-        public void With(Amount amount)
-        {
-            this.Amount = amount;
-        }
-
-        internal void With(Cost costs)
+        internal void With(Cost cost)
         {
             if (this.Costs == null) {
                 this.Costs = new List<Cost>();
             }
 
-            this.Costs.Add(costs);
+            Cost c = this.Costs.SingleOrDefault(c => c.Type == cost.Type);
+
+            if (c != null)
+            {
+                c.Amount = cost.Amount;
+            }
+            else {
+                this.Costs.Add(cost);
+            }
         }
 
         public void UpdateAmount(int quantity, decimal price, decimal exchangerate)
         {
-            this.Amount.Update(quantity, price, exchangerate);
+            this.Quantity = quantity;
+            this.Price = price;
+            this.Exchangerate = exchangerate;
         }
     }
 }

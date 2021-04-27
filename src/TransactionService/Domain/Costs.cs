@@ -8,9 +8,8 @@ namespace TransactionService.Domain
     public class Cost
     {
         
-        public Cost(Guid id, decimal amount, string type)
+        public Cost(decimal amount, string type)
         {
-            this.Id = id;
             this.Amount = amount;
             this.Type = type;
         }
