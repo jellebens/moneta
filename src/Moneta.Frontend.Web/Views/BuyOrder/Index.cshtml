@@ -27,137 +27,82 @@
                 <div class="ibox-content">
                     @using (Html.BeginForm("Index", "BuyOrder", FormMethod.Post))
                     {
-                    @Html.AntiForgeryToken();
-                    @Html.HiddenFor(m => m.Id);
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Select an account:</label>
-                        <div class="col-sm-9"><select class="form-control m-b" name="SelectedAccount"></select></div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Transaction #:</label>
-                        <div class="col-sm-9">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">date:</label>
-                        <div class="col-sm-9" id="date">
-                            <div class="input-group date">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
+                        @Html.AntiForgeryToken();
+                        @Html.HiddenFor(m => m.Id);
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Select an account:</label>
+                            <div class="col-sm-9"><select class="form-control m-b" name="SelectedAccount"></select></div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Transaction #:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.TransactionNumber, "", new { @class = "form-control m-b" })</div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">date:</label>
+                            <div class="col-sm-9" id="date">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>@Html.TextBoxFor(m => m.TransactionDate, "{0:dd-MM-yyyy}", new { @class = "form-control m-b", })
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Symbol:</label>
-                        <div class="col-sm-9">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Currency:</label>
-                        <div class="col-sm-9">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b" })</div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-                    <div class="form-group row">
-                        <div class="col-sm-12">
-                            <button class="btn btn-primary float-right" type="submit">Next</button>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Symbol:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control m-b" })</div>
                         </div>
-                    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Currency:</label>
+                            <div class="col-sm-9">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b" })</div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-primary float-right" type="submit">Next</button>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
-    @*<div class="hr-line-dashed"></div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Quantity:</label>
-            <div class="col-sm-1">@Html.TextBoxFor(m => m.Quantity, new { @class = "form-control m-b price" })</div>
-            <label class="col-sm-3 col-form-label">Price:</label>
-            <div class="col-sm-1">@Html.TextBoxFor(m => m.Price, new { @class = "form-control m-b price" })</div>
-            <label class="col-sm-3 col-form-label">Currency:</label>
-            <div class="col-sm-1">@Html.TextBoxFor(m => m.Currency, new { @class = "form-control m-b price", maxlength = 3 })</div>
-            <label class="col-sm-3 col-form-label">Total:</label>
-            <div class="col-sm-1">@Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
 
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Exchangerate:</label>
-            <div class="col-sm-3">@Html.TextBoxFor(m => m.ExchangeRate, new { @class = "form-control m-b price" })</div>
-        </div>
-        <div class="hr-line-dashed"></div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Commission:</label>
-            <div class="col-sm-2">@Html.TextBoxFor(m => m.Commission, new { @class = "form-control m-b costs" })</div>
-            <label class="col-sm-3 col-form-label exchange-rate-fee">Exch. Fee:</label>
-            <div class="col-sm-2 exchange-rate-fee">
-                <div class="input-group m-b">
-                    @Html.TextBoxFor(m => m.ExchangeRateFee, new { @class = "form-control m-b costs" })
-                </div>
-            </div>
-            <label class="col-sm-3 col-form-label">TOB:</label>
-            <div class="col-sm-2">@Html.TextBoxFor(m => m.TOB, new { @class = "form-control m-b costs" })</div>
-            <label class="col-sm-3 col-form-label sub-total">Total Costs:</label>
-            <div class="col-sm-2">@Html.TextBoxFor(m => m.TotalCosts, new { @class = "form-control m-b ", @readonly = "readonly" })</div>
-        </div>
-        <div class="hr-line-dashed"></div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Total:</label>
-            <div class="col-sm-2 input-group m-b">
-                @Html.TextBoxFor(m => m.Total, new { @class = "form-control m-b ", @readonly = "readonly" })
-                <div class="input-group-append">
-                    <span class="input-group-addon" id="total-currency"></span>
-                </div>
-            </div>
-
-
-        </div>
-        <div class="hr-line-dashed"></div>
-        <div class="form-group row">
-            <div class="col-sm-4 col-sm-offset-2">
-                <button class="btn btn-primary btn-sm" type="submit">Submit</button>
-            </div>
-        </div>*@
-
-    @*</div>
-                </div>
-            </div>
-        </div>*@
-
-
-    @if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
-    {
-        <div class="alert alert-danger">
-            @Html.ValidationSummary(false, "")
-        </div>
-    }
+@if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false, "")
+    </div>
+}
 
 
 
-    @section scripts {
-        <script src="~/lib/datapicker/bootstrap-datepicker.js"></script>
-        <script src="~/lib/iCheck/icheck.min.js"></script>
+@section scripts {
+    <script src="~/lib/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/lib/iCheck/icheck.min.js"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
-            $('.input-validation-error').parents('.form-group').addClass('has-error');
-            $('.field-validation-error').addClass('text-danger');
+        $('.input-validation-error').parents('.form-group').addClass('has-error');
+        $('.field-validation-error').addClass('text-danger');
 
 
-            $(document).ready(function () {
-                $('#date .input-group.date').datepicker({
-                    format: 'dd/mm/yyyy'
-                });
-
-                $.ajax({
-                    'url': "/buyorder/accounts",
-                    'method': "GET",
-                    'contentType': 'application/json'
-                }).done(function (dataList) {
-                    $.each(dataList, function (index, data) {
-                        $("SELECT[name='SelectedAccount']").append(
-                            $("<option></option>").val(data.id).html(data.name + ' (' + data.currency + ')').attr('currency', data.currency)
-                        );
-                    });
-
-                });
+        $(document).ready(function () {
+            $('#date .input-group.date').datepicker({
+                format: 'dd/mm/yyyy'
             });
 
-        </script>
-    }
+            $.ajax({
+                'url': "/buyorder/accounts",
+                'method': "GET",
+                'contentType': 'application/json'
+            }).done(function (dataList) {
+                $.each(dataList, function (index, data) {
+                    $("SELECT[name='SelectedAccount']").append(
+                        $("<option></option>").val(data.id).html(data.name + ' (' + data.currency + ')').attr('currency', data.currency)
+                    );
+                });
+
+            });
+        });
+
+    </script>
+}

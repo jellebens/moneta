@@ -134,7 +134,7 @@ namespace Moneta.Frontend.WebControllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("costs/{id}")]
-        public IActionResult Costs(Guid id, TransactionCostsModel model)
+        public async Task<IActionResult> Costs(Guid id, TransactionCostsModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -142,14 +142,56 @@ namespace Moneta.Frontend.WebControllers
                 return View(model);
             }
 
-            return View(model);
+            _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+            HttpResponseMessage response = await _TransactionService.UpdateCostsAsync(id, model);
+
+            if (response.IsSuccessStatusCode) {
+                return RedirectToAction("Overview", new { Id = id });
+            }
+
+            return StatusCode(500, response.ReasonPhrase);
+        }
+
+        [HttpGet]
+        [Route("overview/{id}")]
+        public IActionResult Overview()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Index(Guid id) {
+            _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+            TransactionHeaderOverviewModel result = await _TransactionService.TransactionOverview(id);
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        [Route("{id}/amount")]
+        public async Task<IActionResult> AmountOverview(Guid id)
+        {
+            _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+            TransactionAmountOverviewModel result = await _TransactionService.AmountOverviewAsync(id);
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        [Route("{id}/costs")]
+        public async Task<IActionResult> CostsOverview(Guid id)
+        {
+            _TransactionService.Authenticate(_JwtTokenBuilder.Build(User));
+            TransactionCostsOverviewModel result = await _TransactionService.CostOverviewAsync(id);
+
+            return Json(result);
         }
 
         [HttpGet]
         [Route("accounts")]
         public async Task<IActionResult> GetAccounts()
         {
-
             _AccountsService.Authenticate(_JwtTokenBuilder.Build(User));
 
             AccountInfo[] accounts = await _AccountsService.ListAsync();

@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.Web.Models
 {
-    public class TransactionCostsModel
+    public class TransactionCostsOverviewModel
     {
+
         public string Commission { get; set; }
 
         public string CostExchangeRate { get; set; }
 
         public string StockMarketTax { get; set; }
+
+        public string Total { get; set; }
+
+        public string Currency { get; set; }
     }
 }

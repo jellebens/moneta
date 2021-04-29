@@ -18,7 +18,10 @@ namespace Moneta.Frontend.Web.Services
         Task<HttpResponseMessage> CreateTransactionAsync(TransactionHeaderModel model);
         Task<TransactionAmountModel> GetAmount(Guid id);
         Task<HttpResponseMessage> UpdateAmountAsync(Guid transactionId, TransactionAmountModel model);
-        Task<HttpResponseMessage> UpdateCosts(Guid transactionId, TransactionCostsModel model);
+        Task<HttpResponseMessage> UpdateCostsAsync(Guid transactionId, TransactionCostsModel model);
+        Task<TransactionAmountOverviewModel> AmountOverviewAsync(Guid id);
+        Task<TransactionCostsOverviewModel> CostOverviewAsync(Guid id);
+        Task<TransactionHeaderOverviewModel> TransactionOverview(Guid id);
     }
 
     public class TransactionsService: ServiceBase, ITransactionsService
@@ -70,7 +73,7 @@ namespace Moneta.Frontend.Web.Services
             return await _Client.PutAsync($"/buyorders/{transactionId}/amount", data);
         }
 
-        public async Task<HttpResponseMessage> UpdateCosts(Guid transactionId, TransactionCostsModel model)
+        public async Task<HttpResponseMessage> UpdateCostsAsync(Guid transactionId, TransactionCostsModel model)
         {
 
             var updateCostsCommand = new
@@ -84,6 +87,45 @@ namespace Moneta.Frontend.Web.Services
             StringContent data = new StringContent(JsonConvert.SerializeObject(updateCostsCommand), Encoding.UTF8, "application/json");
 
             return await _Client.PutAsync($"/buyorders/{transactionId}/costs", data);
+        }
+
+        public async Task<TransactionAmountOverviewModel> AmountOverviewAsync(Guid transactionId)
+        {
+            HttpResponseMessage response = await _Client.GetAsync($"/buyorders/{transactionId}/amount");
+
+            response.EnsureSuccessStatusCode();
+
+            string result = await response.Content.ReadAsStringAsync();
+
+            TransactionAmountOverviewModel model = JsonConvert.DeserializeObject<TransactionAmountOverviewModel>(result);
+
+            return model;
+        }
+
+        public async Task<TransactionCostsOverviewModel> CostOverviewAsync(Guid transactionId)
+        {
+            HttpResponseMessage response = await _Client.GetAsync($"/buyorders/{transactionId}/costs");
+
+            response.EnsureSuccessStatusCode();
+
+            string result = await response.Content.ReadAsStringAsync();
+
+            TransactionCostsOverviewModel model = JsonConvert.DeserializeObject<TransactionCostsOverviewModel>(result);
+
+            return model;
+        }
+
+        public async Task<TransactionHeaderOverviewModel> TransactionOverview(Guid transactionId)
+        {
+            HttpResponseMessage response = await _Client.GetAsync($"/buyorders/{transactionId}");
+
+            response.EnsureSuccessStatusCode();
+
+            string result = await response.Content.ReadAsStringAsync();
+
+            TransactionHeaderOverviewModel model = JsonConvert.DeserializeObject<TransactionHeaderOverviewModel>(result);
+
+            return model;
         }
     }
 }

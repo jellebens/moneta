@@ -44,7 +44,7 @@ namespace TransactionService.Sql.Mapping
                 .HasColumnName("Quantity")
                 .HasPrecision(19, 5);
 
-            builder.Property(t => t.Exchangerate)
+            builder.Property(t => t.ExchangeRate)
                 .HasColumnName("Exchangerate")
                 .HasPrecision(19, 5);
 

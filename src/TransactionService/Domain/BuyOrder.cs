@@ -37,14 +37,14 @@ namespace TransactionService.Domain
 
         public int Quantity { get; protected set; }
         public decimal Price { get; protected set; }
-        public decimal Exchangerate { get; protected set; }
+        public decimal ExchangeRate { get; protected set; }
 
         public decimal Subtotal
         {
             get
             {
                
-                return this.Quantity * this.Price / this.Exchangerate;
+                return this.Quantity * this.Price / this.ExchangeRate;
 
             }
         }
@@ -91,7 +91,7 @@ namespace TransactionService.Domain
         {
             this.Quantity = quantity;
             this.Price = price;
-            this.Exchangerate = exchangerate;
+            this.ExchangeRate = exchangerate;
         }
     }
 }
