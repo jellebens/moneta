@@ -78,6 +78,10 @@ namespace TransactionService
             services.AddOpenTelemetryTracing((builder) =>
             {
                 builder.AddAspNetCoreInstrumentation();
+                builder.AddSqlClientInstrumentation(options =>
+                {
+                    options.RecordException = true;
+                });
                 builder.AddHttpClientInstrumentation();
                 builder.AddSource("Moneta.Frontend.Web");
                 builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE"]));
