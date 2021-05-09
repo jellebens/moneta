@@ -15,7 +15,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
+using OpenTelemetry;
+
 
 namespace AccountService
 {
@@ -70,6 +73,19 @@ namespace AccountService
 
             services.AddControllers();
 
+            services.AddOpenTelemetryTracing((builder) =>
+            {
+                builder.AddAspNetCoreInstrumentation();
+                builder.AddHttpClientInstrumentation();
+                builder.AddSource("Moneta.Frontend.Web");
+                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE"]));
+                builder.AddJaegerExporter(options => {
+                    options.AgentHost = Configuration["JAEGER_AGENT_HOST"];
+                    options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
+                    options.ExportProcessorType = ExportProcessorType.Simple;
+                });
+            }
+           );
 
             services.AddTransient<IStartupFilter, DatabaseUpgradeFilter>();
         }

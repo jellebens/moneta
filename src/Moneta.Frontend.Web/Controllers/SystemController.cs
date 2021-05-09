@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AccountService.Controllers
+namespace Moneta.Frontend.Web.Controllers
 {
     [Route("sys")]
     [AllowAnonymous]

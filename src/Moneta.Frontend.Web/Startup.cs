@@ -17,10 +17,13 @@ using Polly.Extensions.Http;
 using System.Net.Http;
 using Moneta.Frontend.Web.Services;
 using Polly;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Http;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
 
-namespace Moneta.UI
+namespace Moneta.Frontend.Web
 {
     public class Startup
     {
@@ -37,11 +40,11 @@ namespace Moneta.UI
             services.AddControllersWithViews();
 
             services.AddHttpClient<IAccountsService, AccountsService>()
-                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))  
+                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                         .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpClient<ITransactionsService, TransactionsService>()
-                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))  
+                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                         .AddPolicyHandler(GetRetryPolicy());
 
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
@@ -62,8 +65,9 @@ namespace Moneta.UI
                     {
                         // Call what Microsoft.Identity.Web is doing
                         await redirectToIdpHandler(context);
-                        
-                        if (context.ProtocolMessage.RedirectUri.Contains(Configuration["REDIRECT_URI_DOMAIN"])) {
+
+                        if (context.ProtocolMessage.RedirectUri.Contains(Configuration["REDIRECT_URI_DOMAIN"]))
+                        {
                             context.ProtocolMessage.RedirectUri = context.ProtocolMessage.RedirectUri.Replace("http://", "https://");
                         }
                     };
@@ -78,6 +82,21 @@ namespace Moneta.UI
             });
             services.AddRazorPages()
                  .AddMicrosoftIdentityUI();
+
+            
+            services.AddOpenTelemetryTracing((builder) =>
+                {
+                    builder.AddAspNetCoreInstrumentation();
+                    builder.AddHttpClientInstrumentation();
+                    builder.AddSource("Moneta.Frontend.Web");
+                    builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE"]));
+                    builder.AddJaegerExporter(options => {
+                        options.AgentHost = Configuration["JAEGER_AGENT_HOST"];
+                        options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
+                        options.ExportProcessorType = ExportProcessorType.Simple;
+                    });
+                }
+            );
 
         }
 
