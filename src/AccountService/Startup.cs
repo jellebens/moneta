@@ -79,6 +79,8 @@ namespace AccountService
                 builder.AddSqlClientInstrumentation(options =>
                 {
                     options.RecordException = true;
+                    options.SetDbStatementForText = true;
+                    options.SetDbStatementForStoredProcedure = true;
                 });
                 builder.AddHttpClientInstrumentation();
                 builder.AddSource("Moneta.Frontend.Web");
