@@ -1,0 +1,55 @@
+{
+  "name": "moneta.frontend.web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@azure/msal-browser": "^2.14.2",
+    "@azure/msal-react": "^1.0.0",
+    "@babel/core": "7.14.2",
+    "@types/react": "^17.0.7",
+    "@types/react-dom": "^17.0.5",
+    "@types/react-router-dom": "^5.1.7",
+    "axios": "^0.21.1",
+    "bootstrap": "4.6.0",
+    "chart.js": "3.2.1",
+    "jquery": "3.6.0",
+    "node-sass": "6.0.0",
+    "perfect-scrollbar": "1.5.1",
+    "react": "17.0.2",
+    "react-chartjs-2": "3.0.3",
+    "react-dom": "17.0.2",
+    "react-notification-alert": "0.0.13",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "4.0.3",
+    "reactstrap": "8.9.0"
+  },
+  "devDependencies": {
+    "ajv": "^6.9.1",
+    "cross-env": "^5.2.0",
+    "nan": "^2.14.1",
+    "typescript": "^3.7.5"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "cross-env CI=true react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src/"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

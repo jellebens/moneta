@@ -1,19 +1,20 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
+FROM node:16-alpine3.11 as build
 WORKDIR /app
-EXPOSE 8080
-ARG VERSION="dev"
-ENV VERSION=$VERSION
 
-RUN apt-get update && apt-get upgrade -y
+ENV PATH /app/node_modules/.bin:$PATH
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS publish
-WORKDIR /src
-COPY . .
-RUN dotnet restore Moneta.Frontend.Web/Moneta.Frontend.Web.csproj
-RUN dotnet publish Moneta.Frontend.Web/Moneta.Frontend.Web.csproj -c Release -o /app/publish
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install --silent
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Moneta.Frontend.Web.dll"]
+COPY . ./
+
+RUN yarn build
+
+FROM nginx:latest
+COPY --from=build /app/build /usr/share/nginx/html
+
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+ENV REDIRECT_URL=http://localhost/home
+CMD ["nginx", "-g", "daemon off;"]
