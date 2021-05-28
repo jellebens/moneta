@@ -8,6 +8,7 @@ COPY Moneta.Frontend.Web/package-lock.json ./
 RUN npm install --silent
 
 COPY Moneta.Frontend.Web/ ./
+RUN touch .env
 
 RUN yarn build
 

@@ -39,23 +39,6 @@ spec:
             value: http://transactions.moneta.svc.cluster.local
           - name: ACCOUNTS_SERVICE
             value: http://accounts.moneta.svc.cluster.local
-          - name: "JWT_SECRET"
-            valueFrom:
-              secretKeyRef:
-                name: jwt
-                key: Secret
-          - name: "REACT_APP_CLIENT_ID"
-            valueFrom:
-              secretKeyRef:
-                name: frontend
-                key: ClientId
-          - name: "REACT_APP_TENANT_ID"
-            valueFrom:
-              secretKeyRef:
-                name: frontend
-                key: TenantId
-          - name: VERSION
-            value: {{ .Chart.AppVersion }}
           ports:
             - name: http
               containerPort: 8080
