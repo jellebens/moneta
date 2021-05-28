@@ -1,9 +1,9 @@
-const {CLIENT_ID, TENANT_ID} = process.env
+const {REACT_APP_CLIENT_ID, REACT_APP_TENANT_ID} = process.env
+
 export const msalConfig = {
-    
     auth: {
-        clientId: CLIENT_ID,
-        authority: `https://login.microsoftonline.com/${TENANT_ID}`,
+        clientId: `${REACT_APP_CLIENT_ID}`,
+        authority: `https://login.microsoftonline.com/${REACT_APP_TENANT_ID}`,
         redirectUri: window.location.origin + '/home',
         validateAuthority: true
     },

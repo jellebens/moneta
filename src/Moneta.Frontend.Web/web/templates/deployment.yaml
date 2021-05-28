@@ -35,8 +35,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: ASPNETCORE_URLS
-            value: http://+:8080
           - name: TRANSACTIONS_SERVICE
             value: http://transactions.moneta.svc.cluster.local
           - name: ACCOUNTS_SERVICE
@@ -46,16 +44,16 @@ spec:
               secretKeyRef:
                 name: jwt
                 key: Secret
-          - name: "CLIENT_ID"
+          - name: "REACT_APP_CLIENT_ID"
             valueFrom:
               secretKeyRef:
-                name: azure
+                name: frontend
                 key: ClientId
-          - name: "CLIENT_SECRET"
+          - name: "REACT_APP_TENANT_ID"
             valueFrom:
               secretKeyRef:
-                name: azure
-                key: ClientSecret
+                name: frontend
+                key: TenantId
           - name: VERSION
             value: {{ .Chart.AppVersion }}
           ports:

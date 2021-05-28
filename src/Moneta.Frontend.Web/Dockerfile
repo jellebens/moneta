@@ -3,18 +3,28 @@ WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 
-COPY package.json ./
-COPY package-lock.json ./
+COPY Moneta.Frontend.Web/package.json ./
+COPY Moneta.Frontend.Web/package-lock.json ./
 RUN npm install --silent
 
-COPY . ./
+COPY Moneta.Frontend.Web/ ./
 
 RUN yarn build
 
 FROM nginx:latest
 COPY --from=build /app/build /usr/share/nginx/html
 
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY Moneta.Frontend.Web/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY Moneta.Frontend.Web/nginx/nginx.conf /etc/nginx/nginx.conf
+
+RUN chown -R nobody:nogroup /usr/share/nginx/html && chmod -R 755 /usr/share/nginx/html && \
+        chown -R nobody:nogroup /var/cache/nginx && \
+        chown -R nobody:nogroup /var/log/nginx && \
+        chown -R nobody:nogroup /etc/nginx/conf.d
+
+RUN touch /var/run/nginx.pid && \
+        chown -R nobody:nogroup /var/run/nginx.pid
+
 EXPOSE 80
 ENV REDIRECT_URL=http://localhost/home
 CMD ["nginx", "-g", "daemon off;"]
