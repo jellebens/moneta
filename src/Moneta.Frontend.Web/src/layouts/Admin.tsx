@@ -27,12 +27,16 @@ import Sidebar from "components/Sidebar/Sidebar";
 
 import routes from "routes.js";
 
-var ps;
+var ps: PerfectScrollbar;
 
-function Dashboard(props) {
+type DashboardProps = {
+
+}
+
+export const Dashboard = (props: DashboardProps) => {
   const [backgroundColor] = React.useState("black");
   const [activeColor] = React.useState("warning");
-  const mainPanel = React.useRef();
+  const mainPanel = React.useRef<HTMLDivElement>(null);
   const location = useLocation();
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
@@ -47,8 +51,8 @@ function Dashboard(props) {
     };
   });
   React.useEffect(() => {
-    mainPanel.current.scrollTop = 0;
-    document.scrollingElement.scrollTop = 0;
+    mainPanel.current!.scrollTop = 0;
+    document.scrollingElement!.scrollTop = 0;
   }, [location]);
   return (
     <div className="wrapper">

@@ -4,7 +4,7 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 
 
 
-export const  Dashboard = () => {
+export const  Main = () => {
     const isAuthenticated = useIsAuthenticated();
     
     const accounts = useMsal().accounts;
@@ -29,4 +29,4 @@ export const  Dashboard = () => {
 }
 
 
-export default Dashboard;
+export default Main;
