@@ -1,6 +1,5 @@
 import React, {useState , useEffect } from "react";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-import {AccountInfo} from "@azure/msal-browser"
 
 
 

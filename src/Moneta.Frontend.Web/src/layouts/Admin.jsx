@@ -19,7 +19,7 @@
 import React from "react";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
-import { Route, Switch, useLocation, Redirect } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 
 import Navbar from "components/Navbars/Navbar";
 import Footer from "components/Footer/Footer";
