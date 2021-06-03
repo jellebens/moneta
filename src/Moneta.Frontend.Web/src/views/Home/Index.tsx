@@ -1,17 +1,22 @@
-import {useState , useEffect } from "react";
+import React, {useState , useEffect } from "react";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
+import {AccountInfo} from "@azure/msal-browser"
+
+
+
 
 export const  Dashboard = () => {
     const isAuthenticated = useIsAuthenticated();
-    const {accounts} = useMsal();
+    
+    const accounts = useMsal().accounts;
 
-    const [name, setName] = useState(null);
-    const [username, setUserName] = useState(null);
+    const [username, setUsername] = useState<string>();
+    const [name, setName] = useState<string>();
 
       useEffect(() => {
         if (accounts.length > 0) {
-          setName(accounts[0].name);
-          setUserName(accounts[0].username)
+          setUsername(accounts[0].username);
+          setName(accounts[0].username);
         }
     }, [accounts]);
 

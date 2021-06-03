@@ -30,7 +30,7 @@ function Sidebar(props) {
   const sidebar = React.useRef();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
-    return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+    return props.location.pathname == routeName ? "active" : "";
   };
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {

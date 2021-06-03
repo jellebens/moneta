@@ -69,7 +69,7 @@ function Dashboard(props) {
             );
           })}
           
-          <Redirect to="/home" />
+          {/* <Redirect to="/home" /> */}
         </Switch>
         </div>
 

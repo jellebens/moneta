@@ -3,7 +3,7 @@ import Dashboard from "views/Dashboard/Index";
 
 var routes = [
   {
-    path: "/home",
+    path: "/",
     name: "Home",
     icon: "nc-icon nc-bank",
     component: Home

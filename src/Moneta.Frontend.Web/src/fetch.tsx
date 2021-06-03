@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const callApiWithToken = async(accessToken) => {
+export const callApiWithToken = async(accessToken: string) => {
     const url = "http://localhost:5000/WeatherForecast"
     // const headers = new Headers();
     // const bearer = `Bearer "+ ${accessToken}`;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMsal  } from "@azure/msal-react";
 import { loginRequest } from "AuthConfig";
 import {Button} from "reactstrap";
-import { callApiWithToken } from "fetch.js";
+import { callApiWithToken } from "fetch";
 
 //https://github.com/Azure-Samples/ms-identity-javascript-react-tutorial/blob/main/3-Authorization-II/1-call-api/SPA/src/authConfig.js
 

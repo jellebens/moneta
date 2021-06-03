@@ -27,5 +27,5 @@ RUN touch /var/run/nginx.pid && \
         chown -R nobody:nogroup /var/run/nginx.pid
 
 EXPOSE 80
-ENV REDIRECT_URL=http://localhost/home
+
 CMD ["nginx", "-g", "daemon off;"]
