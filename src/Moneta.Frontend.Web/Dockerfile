@@ -26,6 +26,6 @@ RUN chown -R nobody:nogroup /usr/share/nginx/html && chmod -R 755 /usr/share/ngi
 RUN touch /var/run/nginx.pid && \
         chown -R nobody:nogroup /var/run/nginx.pid
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]

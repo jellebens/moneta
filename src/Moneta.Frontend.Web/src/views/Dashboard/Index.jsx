@@ -7,7 +7,7 @@ import { callApiWithToken } from "fetch";
 //https://github.com/Azure-Samples/ms-identity-javascript-react-tutorial/blob/main/3-Authorization-II/1-call-api/SPA/src/authConfig.js
 
 
-function Dashboard() {
+export const  Dashboard = () => {
     const { instance, accounts } = useMsal();
     const [accessToken, setAccessToken] = useState(null);
 
