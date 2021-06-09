@@ -11,8 +11,8 @@ image:
   tag: ""
 
 imagePullSecrets: []
-nameOverride: "frontendapi"
-fullnameOverride: "frontendapi"
+nameOverride: "frontend-api"
+fullnameOverride: "frontend-api"
 
 serviceAccount:
   # Specifies whether a service account should be created
