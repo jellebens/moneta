@@ -1,0 +1,19 @@
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "frontendapi.fullname" . }}
+spec:
+  hosts:
+  - jellebens.ddns.net
+  gateways:
+  - moneta
+  http:    
+    - match:
+        - uri:
+            prefix: /api
+      route:
+        - destination:
+            port:
+              number: {{ $svcPort }}
+            host: {{ include "frontendapi.fullname" . }}

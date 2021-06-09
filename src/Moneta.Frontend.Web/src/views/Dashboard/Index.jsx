@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { useMsal  } from "@azure/msal-react";
+import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "AuthConfig";
-import {Button} from "reactstrap";
-import { callApiWithToken } from "fetch";
+import { Button } from "reactstrap"
+import axios from "axios";
 
 //https://github.com/Azure-Samples/ms-identity-javascript-react-tutorial/blob/main/3-Authorization-II/1-call-api/SPA/src/authConfig.js
 
 
-export const  Dashboard = () => {
+export const Dashboard = () => {
     const { instance, accounts } = useMsal();
     const [accessToken, setAccessToken] = useState(null);
+    const [serverName, setServerName] = useState(null);
 
     const name = accounts[0] && accounts[0].name;
 
@@ -19,10 +20,26 @@ export const  Dashboard = () => {
             account: accounts[0]
         };
 
-        instance.acquireTokenSilent(request).then((response) => {
+        instance.acquireTokenSilent(request).then(async (response) => {
             setAccessToken(response.accessToken);
-            callApiWithToken(response.accessToken);
+            let url = "/api/users/me";
+
+            if (process.env.REACT_APP_API !== undefined ) {
+                url = process.env.REACT_APP_API + "/api/users/me";
+            }
+            console.log("url=" + url);
+
+            const config = {
+                headers: { Authorization: `Bearer ${response.accessToken}` },
+                mode: "no-cors",
+            };
+            
+            var x = await axios.get(url, config).then(r => r.data);
+            console.log(x);
+            setServerName(x.name);
+
         }).catch((e) => {
+            console.log(e);
             instance.acquireTokenPopup(request).then((response) => {
                 setAccessToken(response.accessToken);
             });
@@ -32,16 +49,19 @@ export const  Dashboard = () => {
     return (
         <>
             <h5 className="card-title">Welcome {name}</h5>
-            {accessToken ? 
-                <p>Access Token Acquired! {accessToken}</p>
+            {accessToken ?
+                <>
+                    <p>Access Token Acquired! {accessToken}</p>
+                    <p>On the server you are known as:&nbsp;{serverName}</p>
+                </>
                 :
                 <Button variant="secondary" onClick={RequestAccessToken}>Request Access Token</Button>
             }
 
-            
+
         </>
     );
-    
+
 }
 
 

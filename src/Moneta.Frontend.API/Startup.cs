@@ -20,8 +20,6 @@ namespace Moneta.Frontend.API
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,10 +31,16 @@ namespace Moneta.Frontend.API
         //https://github.com/Azure-Samples/ms-identity-javascript-react-spa-dotnetcore-webapi-obo/
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
-            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(options => { }, options => {
+                    options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
+                    options.Instance = "https://login.microsoftonline.com/";
+                    options.TenantId = "common";
+                });
+            //.AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
