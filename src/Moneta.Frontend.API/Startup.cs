@@ -67,11 +67,10 @@ namespace Moneta.Frontend.API
 
             app.UseCors(builder =>
                builder.WithOrigins("http://localhost:3000")
-                       .WithOrigins("https://jellebens.ddns.net")
-                       .AllowAnyHeader()
-                       .AllowCredentials()
-                       .AllowAnyMethod()
-        );
+                      .WithOrigins("https://jellebens.ddns.net")
+                      .AllowAnyHeader()
+                      .AllowCredentials()
+                      .AllowAnyMethod());
 
             app.UseRouting();
 

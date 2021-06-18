@@ -1,5 +1,8 @@
+
 import Home from "views/Home/Index"
 import Dashboard from "views/Dashboard/Index";
+import AccountOverview from "views/AccountOverview/Index";
+
 
 var routes = [
   {
@@ -13,6 +16,12 @@ var routes = [
     name: "Dashboard",
     icon: "nc-icon nc-chart-pie-36",
     component: Dashboard
+  },
+  {
+    path: "/accounts",
+    name: "Accounts",
+    icon: "nc-icon nc-chart-pie-36",
+    component: AccountOverview
   }
 ];
 
