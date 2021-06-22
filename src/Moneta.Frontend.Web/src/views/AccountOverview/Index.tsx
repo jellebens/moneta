@@ -1,5 +1,5 @@
 import React from "react";
-import { dummyAccounts } from "views/AccountOverview/Accounts";
+import { AccountsList,AccountListItem } from "views/AccountOverview/Accounts";
 import {
     Card,
     CardHeader,
@@ -10,11 +10,28 @@ import {
     Col,
 } from "reactstrap";
 
-
+import { Spinner } from "reactstrap";
 
 
 export const AccountOverview = () => {
-    const accounts = dummyAccounts
+    
+
+    const [accounts, setAccounts] = React.useState<AccountListItem[]>([]);
+
+    const[isLoading, setIsLoading] = React.useState(true);
+    
+    React.useEffect(() =>  {
+        // const accounts = await AccountsList;
+        const doListAccounts =  async () => {
+            const result = await AccountsList();
+
+            setAccounts(result);
+            setIsLoading(false);
+        }
+
+        doListAccounts();
+    }, []);
+
     return (
        
             <Row>
@@ -24,24 +41,27 @@ export const AccountOverview = () => {
                             <CardTitle tag="h4">Accounts</CardTitle>
                         </CardHeader>
                         <CardBody>
-                            <Table striped>
-                                <thead className="text-primary">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Currency</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {accounts.map((account) => (
-                                        <tr key={account.name + '_' + account.currency}>
-                                            <td>{account.name}</td>
-                                            <td>{account.currency}</td>
-                                            <td></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
+                            {
+                            isLoading ? <div className="text-center"><Spinner color="primary" /></div>:
+                                                            <Table striped>
+                                                                <thead className="text-primary">
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Currency</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {accounts.map((account) => (
+                                                                        <tr key={account.name + '_' + account.currency}>
+                                                                            <td>{account.name}</td>
+                                                                            <td>{account.currency}</td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </Table>
+                            }
                         </CardBody>
                     </Card>
                 </Col>
