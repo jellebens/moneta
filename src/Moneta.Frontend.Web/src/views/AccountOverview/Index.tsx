@@ -42,7 +42,7 @@ export const AccountOverview = () => {
                         </CardHeader>
                         <CardBody>
                             {
-                            isLoading ? <div className="text-center"><Spinner color="primary" /></div>:
+                            isLoading ? <p className="text-center"><Spinner color="primary" /></p>:
                                                             <Table striped>
                                                                 <thead className="text-primary">
                                                                     <tr>
