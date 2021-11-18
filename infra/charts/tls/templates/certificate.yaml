@@ -1,10 +1,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: noip-tls-cert-v2
+  name: noip-tls-cert-v18
   namespace: istio-system
 spec:
-  secretName: noip-tls-cert-v3
+  secretName: noip-tls-cert-v1
   issuerRef:
     name: letsencrypt
   commonName: jellebens.ddns.net
