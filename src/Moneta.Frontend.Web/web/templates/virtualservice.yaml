@@ -9,14 +9,14 @@ spec:
   gateways:
   - moneta
   http:
-    - match:
-        - uri:
-            prefix: /.well-known/acme-challenge/ 
-      route:
-        - destination:
-            port:
-              number: 8089
-            host: cm-acme-http-solver-778x4.istio-system.svc.cluster.local
+    # - match:
+    #     - uri:
+    #         prefix: /.well-known/acme-challenge/ 
+    #   route:
+    #     - destination:
+    #         port:
+    #           number: 8089
+    #         host: cm-acme-http-solver-778x4.istio-system.svc.cluster.local
     - match:
         - uri:
             prefix: /
