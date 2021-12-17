@@ -86,7 +86,7 @@ namespace TransactionService
                 });
                 builder.AddHttpClientInstrumentation();
                 builder.AddSource("Moneta.Frontend.Web");
-                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE"]));
+                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
                 builder.AddJaegerExporter(options => {
                     options.AgentHost = Configuration["JAEGER_AGENT_HOST"];
                     options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);

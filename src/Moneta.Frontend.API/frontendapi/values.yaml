@@ -43,6 +43,11 @@ service:
   type: ClusterIP
   port: 80
 
+jaeger:
+  agent:
+    host: "jaeger-agent.observability"
+    port: 6831
+
 ingress:
   enabled: false
   annotations: {}

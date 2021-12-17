@@ -20,5 +20,14 @@ jellebens.ddns.net.:53 {
     cache 30
 }
 
-# Run JAeger collector locally
+# Run Jaeger collector locally
 docker run --name jaeger -p 13133:13133 -p 16686:16686 -p 4317:4317 -p 6831:6831/udp -d --restart=unless-stopped jaegertracing/opentelemetry-all-in-one
+
+# Deploy Jaeger Operator
+https://www.jaegertracing.io/docs/1.29/operator/
+
+kubectl apply -f infra/jaeger/allinone.yaml -n observability
+
+
+# Configure Istio
+./istioctl install --set values.global.tracer.zipkin.address=jaeger-collector.observability:9411 --set meshConfig.defaultConfig.tracing.sampling=100

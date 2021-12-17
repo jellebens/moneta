@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
+using OpenTelemetry;
 
 namespace Moneta.Frontend.API
 {
@@ -48,7 +51,20 @@ namespace Moneta.Frontend.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Moneta.Frontend.API", Version = "v1" });
             });
 
-            
+            services.AddOpenTelemetryTracing((builder) =>
+            {
+                builder.AddAspNetCoreInstrumentation();
+                builder.AddHttpClientInstrumentation();
+                builder.AddSource("moneta");
+                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
+                builder.AddJaegerExporter(options =>
+                {
+                    options.AgentHost = Configuration["JAEGER_AGENT_HOST"];
+                    options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
+                    options.ExportProcessorType = ExportProcessorType.Simple;
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

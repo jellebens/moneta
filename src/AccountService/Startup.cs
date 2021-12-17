@@ -67,7 +67,7 @@ namespace AccountService
                     RequireExpirationTime = false,
                     ValidateLifetime = true
                 };
-                
+
 
             });
 
@@ -83,9 +83,10 @@ namespace AccountService
                     options.SetDbStatementForStoredProcedure = true;
                 });
                 builder.AddHttpClientInstrumentation();
-                builder.AddSource("Moneta.Frontend.Web");
-                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE"]));
-                builder.AddJaegerExporter(options => {
+
+                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
+                builder.AddJaegerExporter(options =>
+                {
                     options.AgentHost = Configuration["JAEGER_AGENT_HOST"];
                     options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
                     options.ExportProcessorType = ExportProcessorType.Simple;

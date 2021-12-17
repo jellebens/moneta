@@ -46,6 +46,12 @@ service:
   type: ClusterIP
   port: 80
 
+
+jaeger:
+  agent:
+    host: "jaeger-agent.observability"
+    port: 6831
+
 resources: 
   limits:
     cpu: 500m

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,14 +15,16 @@ namespace Moneta.Frontend.API.Controllers
     {
         [HttpGet("me")]
         public IActionResult Me() {
+            using (Activity getUserActivity = new ActivitySource("").StartActivity("api/users/me")) {
+                var user = new
+                {
+                    name = this.User.Claims.Single(x => x.Type.Equals("name")).Value,
+                    Id = this.User.Claims.Single(x => x.Type.Equals("preferred_username")).Value
+                };
 
-            var user = new
-            {
-                name = this.User.Claims.Single(x => x.Type.Equals("name")).Value,
-                Id = this.User.Claims.Single(x => x.Type.Equals("preferred_username")).Value
-            };
-
-            return Ok(user);
+                return Ok(user);
+            }
+            
         }
     }
 }
