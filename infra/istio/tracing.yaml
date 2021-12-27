@@ -5,6 +5,7 @@ spec:
     enableTracing: true
     defaultConfig:
       tracing:
-        sampling: 50
+        sampling: 100
         zipkin:
           address: jaeger-collector.observability:9411
+          

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Moneta.Frontend.API
 {

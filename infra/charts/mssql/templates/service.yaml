@@ -8,7 +8,8 @@ spec:
   selector:
     app: mssql
   ports:
-    - protocol: TCP
+    - name: mssql-tcp
+      protocol: TCP
       port: 1433
       targetPort: 1433
   type: ClusterIP

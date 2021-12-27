@@ -14,6 +14,7 @@ export const  Main = () => {
 
       useEffect(() => {
         if (accounts.length > 0) {
+          console.log(accounts[0]);
           setUsername(accounts[0].username);
           setName(accounts[0].username);
         }

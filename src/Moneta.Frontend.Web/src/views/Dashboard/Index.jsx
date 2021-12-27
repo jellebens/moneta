@@ -34,10 +34,7 @@ export const Dashboard = () => {
                 mode: "no-cors",
             };
             
-            var x = await axios.get(url, config).then(r => setServerName(r.data.name));
-            console.log(x);
-            
-
+            axios.get(url, config).then(r => setServerName(r.data.name));
         }).catch((e) => {
             console.log(e);
             instance.acquireTokenPopup(request).then((response) => {

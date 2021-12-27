@@ -1,0 +1,734 @@
+{
+	"info": {
+		"_postman_id": "f891640a-9e39-4e3c-9768-8ab27cf85dc4",
+		"name": "moneta",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "accounts",
+			"item": [
+				{
+					"name": "accounts - 401 => no bearer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwt_signed}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accounts_service}}/accounts",
+							"host": [
+								"{{accounts_service}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accounts - 401 => Invalid Issuer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"pm.test(\"WWW-Authenticate is present\", function () {\r",
+									"    pm.response.to.have.header(\"WWW-Authenticate\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is The Signature Is Invalid\", function () {\r",
+									"    pm.response.to.be.header(\"WWW-Authenticate\", 'Bearer error=\"invalid_token\", error_description=\"The issuer \\'invalid.issuer\\' is invalid\"');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// JWT generation script adapted from\r",
+									"// https://gist.github.com/corbanb/db03150abbe899285d6a86cc480f674d\r",
+									"\r",
+									"var jwtSecret = pm.variables.get('jwt_secret') || ''\r",
+									"\r",
+									"// Set headers for JWT\r",
+									"var header = {\r",
+									"\t'typ': 'JWT',\r",
+									"\t'alg': 'HS256'\r",
+									"};\r",
+									"\r",
+									"// Prepare timestamp in seconds\r",
+									"var currentTimestamp = Math.floor(Date.now() / 1000)\r",
+									"\r",
+									"var data = {\r",
+									"    'nameid': 'my@email.com',\r",
+									"    'unique_name': \"John Doe\",\r",
+									"\t'iss': 'invalid.issuer',\r",
+									"\t'aud': pm.variables.get('jwt_aud') || '',\r",
+									"\t'iat': currentTimestamp,\r",
+									"\t'exp': currentTimestamp + 30, // expiry time is 30 seconds from time of creation\r",
+									"};\r",
+									"\r",
+									"function base64url(source) {\r",
+									"    // Encode in classical base64\r",
+									"    encodedSource = CryptoJS.enc.Base64.stringify(source)\r",
+									"    \r",
+									"    // Remove padding equal characters\r",
+									"    encodedSource = encodedSource.replace(/=+$/, '')\r",
+									"    \r",
+									"    // Replace characters according to base64url specifications\r",
+									"    encodedSource = encodedSource.replace(/\\+/g, '-')\r",
+									"    encodedSource = encodedSource.replace(/\\//g, '_')\r",
+									"    \r",
+									"    return encodedSource\r",
+									"}\r",
+									"\r",
+									"// encode header\r",
+									"var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header))\r",
+									"var encodedHeader = base64url(stringifiedHeader)\r",
+									"// encode data\r",
+									"var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data))\r",
+									"var encodedData = base64url(stringifiedData)\r",
+									"\r",
+									"// build token\r",
+									"var token = `${encodedHeader}.${encodedData}`\r",
+									"\r",
+									"// sign token\r",
+									"var signature = CryptoJS.HmacSHA256(token, jwtSecret)\r",
+									"signature = base64url(signature)\r",
+									"var signedToken = `${token}.${signature}`\r",
+									"\r",
+									"pm.variables.set('jwt_signed', signedToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_signed}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwt_signed}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accounts_service}}/accounts",
+							"host": [
+								"{{accounts_service}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accounts - 401 => Invalid Signature",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"pm.test(\"WWW-Authenticate is present\", function () {\r",
+									"    pm.response.to.have.header(\"WWW-Authenticate\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is The Signature Is Invalid\", function () {\r",
+									"    pm.response.to.be.header(\"WWW-Authenticate\", 'Bearer error=\"invalid_token\", error_description=\"The signature is invalid\"');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// JWT generation script adapted from\r",
+									"// https://gist.github.com/corbanb/db03150abbe899285d6a86cc480f674d\r",
+									"\r",
+									"var jwtSecret = pm.variables.get('jwt_secret') || ''\r",
+									"\r",
+									"// Set headers for JWT\r",
+									"var header = {\r",
+									"\t'typ': 'JWT',\r",
+									"\t'alg': 'HS256'\r",
+									"};\r",
+									"\r",
+									"// Prepare timestamp in seconds\r",
+									"var currentTimestamp = Math.floor(Date.now() / 1000)\r",
+									"\r",
+									"var data = {\r",
+									"    'nameid': 'my@email.com',\r",
+									"    'unique_name': \"John Doe\",\r",
+									"\t'iss': pm.variables.get('jwt_iss') || '',\r",
+									"\t'aud': pm.variables.get('jwt_aud') || '',\r",
+									"\t'iat': currentTimestamp,\r",
+									"\t'exp': currentTimestamp + 30, // expiry time is 30 seconds from time of creation\r",
+									"};\r",
+									"\r",
+									"function base64url(source) {\r",
+									"    // Encode in classical base64\r",
+									"    encodedSource = CryptoJS.enc.Base64.stringify(source)\r",
+									"    \r",
+									"    // Remove padding equal characters\r",
+									"    encodedSource = encodedSource.replace(/=+$/, '')\r",
+									"    \r",
+									"    // Replace characters according to base64url specifications\r",
+									"    encodedSource = encodedSource.replace(/\\+/g, '-')\r",
+									"    encodedSource = encodedSource.replace(/\\//g, '_')\r",
+									"    \r",
+									"    return encodedSource\r",
+									"}\r",
+									"\r",
+									"// encode header\r",
+									"var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header))\r",
+									"var encodedHeader = base64url(stringifiedHeader)\r",
+									"// encode data\r",
+									"var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data))\r",
+									"var encodedData = base64url(stringifiedData)\r",
+									"\r",
+									"// build token\r",
+									"var token = `${encodedHeader}.${encodedData}`\r",
+									"\r",
+									"// sign token\r",
+									"var signature = CryptoJS.HmacSHA256(token, jwtSecret)\r",
+									"\r",
+									"var signedToken = `${token}.${signature}`\r",
+									"\r",
+									"pm.variables.set('jwt_signed', signedToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_signed}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwt_signed}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accounts_service}}/accounts",
+							"host": [
+								"{{accounts_service}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accounts - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accounts_service}}/accounts",
+							"host": [
+								"{{accounts_service}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accounts - byid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accounts_service}}/accounts/0ab9b89a-c793-4ad8-89ec-fbfb1f63bc35",
+							"host": [
+								"{{accounts_service}}"
+							],
+							"path": [
+								"accounts",
+								"0ab9b89a-c793-4ad8-89ec-fbfb1f63bc35"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accounts - Create New",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\" : \"{{$guid}}\",\r\n    \"Name\" : \"Test Account\",\r\n    \"Currency\": \"eur\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{accounts_service}}/accounts",
+							"host": [
+								"{{accounts_service}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "transactions",
+			"item": [
+				{
+					"name": "buyorder - new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"{{$randomUUID}}\",\r\n    \"AccountId\": \"0ab9b89a-c793-4ad8-89ec-fbfb1f63bc35\",\r\n    \"TransactionNumber\": 2,\r\n    \"Symbol\": \"ABI.BR\",\r\n    \"TransactionDate\": \"2019-01-06T17:16:40\",\r\n    \"Currency\": \"EUR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{transactions_service}}/buyorders/new",
+							"host": [
+								"{{transactions_service}}"
+							],
+							"path": [
+								"buyorders",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buyorder - amount",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"{{$randomUUID}}\",\r\n    \"Quantity\": 100,\r\n    \"Price\": 50,\r\n    \"Exchangerate\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{transactions_service}}/buyorders/6A28C40A-2841-447A-8507-14EF6BB31BAE/amount",
+							"host": [
+								"{{transactions_service}}"
+							],
+							"path": [
+								"buyorders",
+								"6A28C40A-2841-447A-8507-14EF6BB31BAE",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buyorder - costs",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"{{$randomUUID}}\",\r\n    \"Commision\": 9.75,\r\n    \"CostExchangerate\": 0,\r\n    \"StockMarketTax\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{transactions_service}}/buyorders/6A28C40A-2841-447A-8507-14EF6BB31BAE/costs",
+							"host": [
+								"{{transactions_service}}"
+							],
+							"path": [
+								"buyorders",
+								"6A28C40A-2841-447A-8507-14EF6BB31BAE",
+								"costs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buyorder - overview",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{transactions_service}}/buyorders/6A28C40A-2841-447A-8507-14EF6BB31BAE",
+							"host": [
+								"{{transactions_service}}"
+							],
+							"path": [
+								"buyorders",
+								"6A28C40A-2841-447A-8507-14EF6BB31BAE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buyorder - costs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{transactions_service}}/buyorders/6A28C40A-2841-447A-8507-14EF6BB31BAE/costs",
+							"host": [
+								"{{transactions_service}}"
+							],
+							"path": [
+								"buyorders",
+								"6A28C40A-2841-447A-8507-14EF6BB31BAE",
+								"costs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buyorder - amount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{transactions_service}}/buyorders/6A28C40A-2841-447A-8507-14EF6BB31BAE/amount",
+							"host": [
+								"{{transactions_service}}"
+							],
+							"path": [
+								"buyorders",
+								"6A28C40A-2841-447A-8507-14EF6BB31BAE",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "misc",
+			"item": []
+		},
+		{
+			"name": "API",
+			"item": [
+				{
+					"name": "WhoAmi",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" pm.sendRequest({\r",
+									"       url:  'https://login.microsoftonline.com/organizations/oauth2/v2.0/token', \r",
+									"       method: 'POST',\r",
+									"       header: {\r",
+									"         'Accept': 'application/json',\r",
+									"         'Content-Type': 'application/x-www-form-urlencoded'\r",
+									"       },\r",
+									"       body: {\r",
+									"           mode: 'urlencoded',\r",
+									"           urlencoded: [\r",
+									"             {key: \"grant_type\", value: \"password\"},\r",
+									"             {key: \"username\", value: pm.environment.get(\"USER_NAME\")},\r",
+									"             {key: \"password\", value: pm.environment.get(\"PASSWORD\")},\r",
+									"             {key: \"client_id\", value: pm.environment.get(\"CLIENT_ID\")},\r",
+									"             {key: \"client_secret\", value: pm.environment.get(\"CLIENT_SECRET\")},\r",
+									"             {key: \"scope\", value: pm.environment.get(\"SCOPE\")}\r",
+									"         ]\r",
+									"       }\r",
+									"   }, function (err, res) {\r",
+									"       pm.environment.set(\"bearer_token\", res.json().access_token);\r",
+									"   });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwt_iss}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://jellebens.ddns.net/api/users/me",
+							"protocol": "https",
+							"host": [
+								"jellebens",
+								"ddns",
+								"net"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_signed}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// JWT generation script adapted from",
+					"// https://gist.github.com/corbanb/db03150abbe899285d6a86cc480f674d",
+					"",
+					"var jwtSecret = pm.variables.get('jwt_secret') || ''",
+					"",
+					"// Set headers for JWT",
+					"var header = {",
+					"\t'typ': 'JWT',",
+					"\t'alg': 'HS256'",
+					"};",
+					"",
+					"// Prepare timestamp in seconds",
+					"var currentTimestamp = Math.floor(Date.now() / 1000)",
+					"",
+					"var data = {",
+					"    'nameid': 'my@email.com',",
+					"    'unique_name': \"John Doe\",",
+					"\t'iss': pm.variables.get('jwt_iss') || '',",
+					"\t'aud': pm.variables.get('jwt_aud') || '',",
+					"\t'iat': currentTimestamp,",
+					"\t'exp': currentTimestamp + 30, // expiry time is 30 seconds from time of creation",
+					"};",
+					"",
+					"function base64url(source) {",
+					"    // Encode in classical base64",
+					"    encodedSource = CryptoJS.enc.Base64.stringify(source)",
+					"    ",
+					"    // Remove padding equal characters",
+					"    encodedSource = encodedSource.replace(/=+$/, '')",
+					"    ",
+					"    // Replace characters according to base64url specifications",
+					"    encodedSource = encodedSource.replace(/\\+/g, '-')",
+					"    encodedSource = encodedSource.replace(/\\//g, '_')",
+					"    ",
+					"    return encodedSource",
+					"}",
+					"",
+					"// encode header",
+					"var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header))",
+					"var encodedHeader = base64url(stringifiedHeader)",
+					"// encode data",
+					"var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data))",
+					"var encodedData = base64url(stringifiedData)",
+					"",
+					"// build token",
+					"var token = `${encodedHeader}.${encodedData}`",
+					"",
+					"// sign token",
+					"var signature = CryptoJS.HmacSHA256(token, jwtSecret)",
+					"signature = base64url(signature)",
+					"var signedToken = `${token}.${signature}`",
+					"",
+					"pm.variables.set('jwt_signed', signedToken)"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt_secret",
+			"value": "arhvvueldfihzwzmgyastpbmvcavvvyessrzpmxlsyfpqapyyrhxlupolfthehnwsikygncmhslpcnotpswmzsbufivflfjlzqfhneuyttkqxijccpgayrdlcxvwvdef"
+		},
+		{
+			"key": "jwt_iss",
+			"value": "https://login.microsoftonline.com/common"
+		},
+		{
+			"key": "jwt_aud",
+			"value": "c15b6bd2-3978-45e8-8fdb-f20cea05211c"
+		}
+	]
+}
