@@ -13,7 +13,6 @@ namespace Moneta.Frontend.API.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ILogger _Logger;

@@ -52,7 +52,13 @@ export const Dashboard = () => {
                     <p>On the server you are known as:&nbsp;{serverName}</p>
                 </>
                 :
+                <>
+                {sessionStorage.getItem("bearer_token")}
                 <Button variant="secondary" onClick={RequestAccessToken}>Request Access Token</Button>
+                </>
+                
+
+
             }
 
 

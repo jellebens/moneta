@@ -9,6 +9,8 @@ export const dummyAccounts: AccountListItem[] = [
 ]
 
 export const AccountsList = async () : Promise<AccountListItem[]> => {
+    //https://www.josephguadagno.net/2020/10/24/working-with-microsoft-identity-react-native-client
+    //https://thedutchlab.com/blog/using-axios-interceptors-for-refreshing-your-api-token
     await wait(500);
     return dummyAccounts;
 }

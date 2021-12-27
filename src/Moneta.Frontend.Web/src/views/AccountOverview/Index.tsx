@@ -19,7 +19,7 @@ export const AccountOverview = () => {
     const [accounts, setAccounts] = React.useState<AccountListItem[]>([]);
 
     const[isLoading, setIsLoading] = React.useState(true);
-    
+
     React.useEffect(() =>  {
         // const accounts = await AccountsList;
         const doListAccounts =  async () => {

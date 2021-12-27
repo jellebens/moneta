@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter,  Switch } from "react-router-dom";
-import { PublicClientApplication  } from "@azure/msal-browser";
+import { BrowserRouter, Switch } from "react-router-dom";
+import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "AuthConfig";
 
@@ -22,13 +22,13 @@ export const msalInstance = new PublicClientApplication(msalConfig);
 ReactDOM.render(
   <React.StrictMode>
     <MsalProvider instance={msalInstance}>
-    <BrowserRouter>
-    <Switch>
-      <AdminLayout  />
-    </Switch>
-  </BrowserRouter>
+        <BrowserRouter>
+          <Switch>
+            <AdminLayout />
+          </Switch>
+        </BrowserRouter>
     </MsalProvider>
-  
+
   </React.StrictMode>
   , document.getElementById("root")
 );
