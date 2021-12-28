@@ -689,6 +689,85 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Accounts",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" pm.sendRequest({\r",
+									"       url:  'https://login.microsoftonline.com/organizations/oauth2/v2.0/token', \r",
+									"       method: 'POST',\r",
+									"       header: {\r",
+									"         'Accept': 'application/json',\r",
+									"         'Content-Type': 'application/x-www-form-urlencoded'\r",
+									"       },\r",
+									"       body: {\r",
+									"           mode: 'urlencoded',\r",
+									"           urlencoded: [\r",
+									"             {key: \"grant_type\", value: \"password\"},\r",
+									"             {key: \"username\", value: pm.environment.get(\"USER_NAME\")},\r",
+									"             {key: \"password\", value: pm.environment.get(\"PASSWORD\")},\r",
+									"             {key: \"client_id\", value: pm.environment.get(\"CLIENT_ID\")},\r",
+									"             {key: \"client_secret\", value: pm.environment.get(\"CLIENT_SECRET\")},\r",
+									"             {key: \"scope\", value: pm.environment.get(\"SCOPE\")}\r",
+									"         ]\r",
+									"       }\r",
+									"   }, function (err, res) {\r",
+									"       pm.environment.set(\"bearer_token\", res.json().access_token);\r",
+									"   });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwt_iss}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://jellebens.ddns.net/api/accounts",
+							"protocol": "https",
+							"host": [
+								"jellebens",
+								"ddns",
+								"net"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
