@@ -27,8 +27,7 @@ export const Dashboard = () => {
             if (process.env.REACT_APP_API !== undefined ) {
                 url = process.env.REACT_APP_API + "/api/users/me";
             }
-            console.log("url=" + url);
-
+           
             const config = {
                 headers: { Authorization: `Bearer ${response.accessToken}` },
                 mode: "no-cors",

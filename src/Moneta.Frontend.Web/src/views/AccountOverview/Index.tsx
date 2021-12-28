@@ -1,5 +1,6 @@
 import React from "react";
 import { AccountsList,AccountListItem } from "views/AccountOverview/Accounts";
+import { loginRequest } from "AuthConfig";
 import {
     Card,
     CardHeader,
@@ -11,21 +12,40 @@ import {
 } from "reactstrap";
 
 import { Spinner } from "reactstrap";
-
+import { useMsal } from "@azure/msal-react";
+import { AccountInfo } from "@azure/msal-browser";
+import axios from "axios";
 
 export const AccountOverview = () => {
     
-
-    const [accounts, setAccounts] = React.useState<AccountListItem[]>([]);
-
+    const { instance, accounts } = useMsal();
+    const [accountItems, setAccountItems] = React.useState<AccountListItem[]>([]);
     const[isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(() =>  {
-        // const accounts = await AccountsList;
         const doListAccounts =  async () => {
-            const result = await AccountsList();
+            const request = {
+                scopes: loginRequest.scopes,
+                account: accounts[0] as AccountInfo
+            };
+            
+            instance.acquireTokenSilent(request).then(async (response) => {
+                let url = "/api/accounts";
 
-            setAccounts(result);
+                if (process.env.REACT_APP_API !== undefined ) {
+                    url = process.env.REACT_APP_API + "/api/accounts";
+                }
+            
+                const config = {
+                    headers: { Authorization: `Bearer ${response.accessToken}` },
+                    mode: "no-cors",
+                };
+                
+                axios.get(url, config).then(r => setAccountItems(r.data));
+            }).catch((e) => {
+                console.log(e);
+            });
+
             setIsLoading(false);
         }
 
@@ -52,7 +72,7 @@ export const AccountOverview = () => {
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    {accounts.map((account) => (
+                                                                    {accountItems.map((account) => (
                                                                         <tr key={account.name + '_' + account.currency}>
                                                                             <td>{account.name}</td>
                                                                             <td>{account.currency}</td>
