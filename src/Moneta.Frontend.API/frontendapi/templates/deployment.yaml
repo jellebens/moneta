@@ -42,6 +42,13 @@ spec:
             value: "{{ template "frontendapi.fullname" . }}.{{ .Release.Namespace }}"
           - name: ASPNETCORE_URLS
             value: http://+:8080
+          - name: ACCOUNTS_SERVICE
+            value: http://accounts.moneta.svc.cluster.local/
+          - name: "CLIENT_SECRET"
+            valueFrom:
+              secretKeyRef:
+                name: azure
+                key: ClientSecret
           - name: "CLIENT_ID"
             valueFrom:
               secretKeyRef:

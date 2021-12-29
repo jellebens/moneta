@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
+using Moneta.Frontend.API.Services;
+using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Controllers
 {
@@ -10,21 +14,19 @@ namespace Moneta.Frontend.API.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly ILogger<AccountsController> _Logger;
-
-        public AccountsController(ILogger<AccountsController> logger)
+        private readonly IAccountsService _AccountService;
+        
+        public AccountsController(ILogger<AccountsController> logger, IAccountsService accountService)
         {
             _Logger = logger;
+            _AccountService = accountService;
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var accounts = new[]{
-                                    new { name = "mock account 1", currency = "EUR"},
-                                    new { name = "mock account 2", currency = "USD"},
-                                };
-
+            var accounts = await _AccountService.GetAsync();
+            
             return Ok(accounts);
         }
     }

@@ -42,8 +42,9 @@ namespace TransactionService
 
             });
 
-            services.AddHttpClient<IAccountsService, AccountsService>()
-                        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+            services.AddHttpClient<IAccountsService, AccountsService>(client => {
+                client.BaseAddress = new Uri(Configuration["ACCOUNTS_SERVICE"]);
+            }).SetHandlerLifetime(TimeSpan.FromMinutes(5))
                         .AddPolicyHandler(GetRetryPolicy());
 
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();

@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
-
+using Microsoft.Identity.Web;
 
 namespace AccountService
 {
@@ -44,32 +44,13 @@ namespace AccountService
 
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(jwt =>
-            {
-                byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
-
-                jwt.SaveToken = true;
-                jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
-                jwt.Authority = "https://login.microsoftonline.com/common";
-                jwt.RequireHttpsMetadata = false;
-
-                jwt.TokenValidationParameters = new TokenValidationParameters
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(options => { }, options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = "https://login.microsoftonline.com/common",
-                    ValidateAudience = true,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
-                };
-
-
-            });
+                    options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
+                    options.Instance = "https://login.microsoftonline.com/";
+                    options.TenantId = "common";
+                });
 
             services.AddControllers();
 

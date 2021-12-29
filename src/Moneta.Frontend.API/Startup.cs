@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
-using Microsoft.IdentityModel.Tokens;
+using Moneta.Frontend.API.Services;
+using Polly.Extensions.Http;
+using Polly;
+using System.Net.Http;
 
 namespace Moneta.Frontend.API
 {
@@ -36,14 +31,19 @@ namespace Moneta.Frontend.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(options => { }, options => {
+                .AddMicrosoftIdentityWebApi(options => { }, options =>
+                {
                     options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
                     options.Instance = "https://login.microsoftonline.com/";
                     options.TenantId = "common";
-                });
-            //.AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
-
+                }).EnableTokenAcquisitionToCallDownstreamApi( options => {
+                    options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
+                    options.Instance = "https://login.microsoftonline.com/";
+                    options.TenantId = "common";
+                    options.ClientSecret = Configuration.GetValue<string>("CLIENT_SECRET");
+                }).AddInMemoryTokenCaches();
 
 
             services.AddControllers();
@@ -65,6 +65,19 @@ namespace Moneta.Frontend.API
                     options.ExportProcessorType = ExportProcessorType.Simple;
                 });
             });
+            
+            services.AddHttpClient<IAccountsService, AccountsService>(client => {
+                                                                                    client.BaseAddress = new Uri(Configuration["ACCOUNTS_SERVICE"]);
+                                                                                }).SetHandlerLifetime(TimeSpan.FromMinutes(5))  
+                                                                                  .AddPolicyHandler(GetRetryPolicy());
+        }
+
+        private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions.HandleTransientHttpError()
+                                       .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                                       .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
+                                                                    retryAttempt)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +92,7 @@ namespace Moneta.Frontend.API
 
             //app.UseHttpsRedirection();
 
-            
+
 
             app.UseCors(builder =>
                builder.WithOrigins("http://localhost:3000")
