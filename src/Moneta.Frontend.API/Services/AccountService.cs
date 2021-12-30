@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
+using Moneta.Core.Jwt;
 using Moneta.Frontend.API.Models;
 using Moneta.Frontend.Web.Services;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Services
@@ -15,7 +17,7 @@ namespace Moneta.Frontend.API.Services
 
     public interface IAccountsService
     {
-        Task<AccountListItem[]> GetAsync();
+        Task<AccountListItem[]> GetAsync(ClaimsPrincipal user);
     }
 
 
@@ -24,22 +26,21 @@ namespace Moneta.Frontend.API.Services
 
         private readonly ILogger<AccountsService> _Logger;
         private readonly HttpClient _Client;
-        private readonly ITokenAcquisition _TokenAcquisition;
+        private readonly IJwtTokenBuilder _TokenBuilder;
 
-        public AccountsService(IConfiguration configuration, HttpClient client, ITokenAcquisition tokenAcquisition, ILogger<AccountsService> logger)
+        public AccountsService(IConfiguration configuration, HttpClient client, IJwtTokenBuilder tokenBuilder, ILogger<AccountsService> logger)
         {
             _Logger = logger;
             _Client = client;
-            _TokenAcquisition = tokenAcquisition;
+            _TokenBuilder = tokenBuilder;
         }
 
-        public async Task<AccountListItem[]> GetAsync()
+        public async Task<AccountListItem[]> GetAsync(ClaimsPrincipal user)
         {
+            //https://damienbod.com/2020/11/09/implement-a-web-app-and-an-asp-net-core-secure-api-using-azure-ad-which-delegates-to-second-api/
 
-            string[] scopes = new string[] { "api://3652d22c-6197-44a5-9334-da5a8c45182d/access_as_user" };
-            string accessToken = await _TokenAcquisition.GetAccessTokenForUserAsync(scopes);
-
-            _Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            var token = _TokenBuilder.Build(user);
+            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             HttpResponseMessage response = await _Client.GetAsync($"/accounts");
             if (response.IsSuccessStatusCode)

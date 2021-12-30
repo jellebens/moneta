@@ -30,9 +30,9 @@ namespace AccountService.Controllers
         public IActionResult Index()
         {
             
-            Claim id = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+            Claim id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            _Logger.LogInformation($"Getting counts for {id}");
+            _Logger.LogInformation($"Getting Accounts for {id}");
 
             var accounts = _AccountsDbContext.Accounts.Where(a => a.Owner == id.Value).Select(a => new AccountInfo()
             {

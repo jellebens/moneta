@@ -19,6 +19,7 @@ using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
 using Microsoft.Identity.Web;
+using Moneta.Core.Jwt;
 
 namespace AccountService
 {
@@ -44,13 +45,32 @@ namespace AccountService
 
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(options => { }, options =>
+            services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwt =>
+            {
+                byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
+
+                jwt.SaveToken = true;
+                jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
+                jwt.Authority = "https://login.microsoftonline.com/common";
+                jwt.RequireHttpsMetadata = false;
+
+                jwt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
-                    options.Instance = "https://login.microsoftonline.com/";
-                    options.TenantId = "common";
-                });
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = "https://login.microsoftonline.com/common",
+                    ValidateAudience = true,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+                };
+            });
 
             services.AddControllers();
 

@@ -14,6 +14,7 @@ using Moneta.Frontend.API.Services;
 using Polly.Extensions.Http;
 using Polly;
 using System.Net.Http;
+using Moneta.Core.Jwt;
 
 namespace Moneta.Frontend.API
 {
@@ -31,6 +32,9 @@ namespace Moneta.Frontend.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddOptions();
+
+            services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(options => { }, options =>
@@ -38,12 +42,7 @@ namespace Moneta.Frontend.API
                     options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
                     options.Instance = "https://login.microsoftonline.com/";
                     options.TenantId = "common";
-                }).EnableTokenAcquisitionToCallDownstreamApi( options => {
-                    options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
-                    options.Instance = "https://login.microsoftonline.com/";
-                    options.TenantId = "common";
-                    options.ClientSecret = Configuration.GetValue<string>("CLIENT_SECRET");
-                }).AddInMemoryTokenCaches();
+                });
 
 
             services.AddControllers();
