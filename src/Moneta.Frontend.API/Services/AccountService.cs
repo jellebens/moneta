@@ -35,24 +35,24 @@ namespace Moneta.Frontend.API.Services
 
         public async Task<AccountListItem[]> GetAsync()
         {
-           
-                string[] scopes = new string[] { "api://3652d22c-6197-44a5-9334-da5a8c45182d/access_as_user" };
-                string accessToken = await _TokenAcquisition.GetAccessTokenForUserAsync(scopes);
 
-                _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string[] scopes = new string[] { "api://3652d22c-6197-44a5-9334-da5a8c45182d/access_as_user" };
+            string accessToken = await _TokenAcquisition.GetAccessTokenForUserAsync(scopes);
 
-                HttpResponseMessage response = await _Client.GetAsync($"/accounts");
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = await response.Content.ReadAsStringAsync();
+            _Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
-                    AccountListItem[] accounts = JsonConvert.DeserializeObject<AccountListItem[]>(result);
+            HttpResponseMessage response = await _Client.GetAsync($"/accounts");
+            if (response.IsSuccessStatusCode)
+            {
+                string result = await response.Content.ReadAsStringAsync();
 
-                    return accounts;
-                }
+                AccountListItem[] accounts = JsonConvert.DeserializeObject<AccountListItem[]>(result);
 
-                _Logger.LogError("Error retrieving accounts: " + response.ReasonPhrase);
-                return new AccountListItem[] { };
+                return accounts;
+            }
+
+            _Logger.LogError($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
+            throw new Exception($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
         }
     }
 

@@ -86,6 +86,8 @@ namespace AccountService
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpLogging();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

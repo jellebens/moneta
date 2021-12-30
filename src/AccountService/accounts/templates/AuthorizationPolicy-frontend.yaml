@@ -10,7 +10,7 @@ spec:
   rules:
   - from:
     - source:
-        principals: ["cluster.local/ns/moneta/sa/frontend-web"]
+        principals: ["cluster.local/ns/moneta/sa/frontend-api"]
     to:
     - operation:
         paths: ["/accounts", "/accounts/*"]

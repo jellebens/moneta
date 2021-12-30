@@ -29,7 +29,10 @@ namespace AccountService.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            Claim id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            
+            Claim id = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+
+            _Logger.LogInformation($"Getting counts for {id}");
 
             var accounts = _AccountsDbContext.Accounts.Where(a => a.Owner == id.Value).Select(a => new AccountInfo()
             {
