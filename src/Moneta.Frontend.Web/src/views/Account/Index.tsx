@@ -1,6 +1,7 @@
 import React from "react";
-import { AccountsList,AccountListItem } from "views/AccountOverview/Accounts";
+import { AccountsList,AccountListItem } from "views/Account/Accounts";
 import { loginRequest } from "AuthConfig";
+import { NavLink } from "react-router-dom";
 import {
     Card,
     CardHeader,
@@ -9,12 +10,13 @@ import {
     Table,
     Row,
     Col,
+    Button
 } from "reactstrap";
+
 
 import { Spinner } from "reactstrap";
 import { useMsal } from "@azure/msal-react";
 import { AccountInfo } from "@azure/msal-browser";
-import axios from "axios";
 
 export const AccountOverview = () => {
     
@@ -30,18 +32,8 @@ export const AccountOverview = () => {
             };
             
             instance.acquireTokenSilent(request).then(async (response) => {
-                let url = "/api/accounts";
-
-                if (process.env.REACT_APP_API !== undefined ) {
-                    url = process.env.REACT_APP_API + "/api/accounts";
-                }
-            
-                const config = {
-                    headers: { Authorization: `Bearer ${response.accessToken}` },
-                    mode: "no-cors",
-                };
-                
-                axios.get(url, config).then(r => setAccountItems(r.data));
+                const result = await AccountsList(response.accessToken);
+                setAccountItems(result);
             }).catch((e) => {
                 console.log(e);
             });
@@ -53,7 +45,6 @@ export const AccountOverview = () => {
     }, []);
 
     return (
-       
             <Row>
                 <Col md="12">
                     <Card>
@@ -61,6 +52,7 @@ export const AccountOverview = () => {
                             <CardTitle tag="h4">Accounts</CardTitle>
                         </CardHeader>
                         <CardBody>
+                        <NavLink className="btn btn-icon btn-round btn-primary" to="/accounts/new"><i className="fa fa-plus"></i></NavLink>
                             {
                             isLoading ? <p className="text-center"><Spinner color="primary" /></p>:
                                                             <Table striped>

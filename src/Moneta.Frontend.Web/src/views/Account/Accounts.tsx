@@ -10,11 +10,18 @@ export const dummyAccounts: AccountListItem[] = [
     {name: "mock account 2", currency: "USD"}
 ]
 
-export const AccountsList = async () : Promise<AccountListItem[]> => {
-    
+export const AccountsList = async (token : string) : Promise<AccountListItem[]> => {
+    let url = "/api/accounts";
+           
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` },
+                    mode: "no-cors",
+                };
+                
+                return await (await axios.get(url, config)).data;
     
 
-    await wait(500);
+    
     return dummyAccounts;
 }
 

@@ -22,11 +22,7 @@ export const Dashboard = () => {
 
         instance.acquireTokenSilent(request).then(async (response) => {
             setAccessToken(response.accessToken);
-            let url = "/api/users/me";
-
-            if (process.env.REACT_APP_API !== undefined ) {
-                url = process.env.REACT_APP_API + "/api/users/me";
-            }
+            let url = "api/users/me";
            
             const config = {
                 headers: { Authorization: `Bearer ${response.accessToken}` },
