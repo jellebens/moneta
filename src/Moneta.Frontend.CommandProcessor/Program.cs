@@ -1,5 +1,6 @@
 using Moneta.Core.Logging;
 using Moneta.Frontend.CommandProcessor;
+using Autofac.Extensions.DependencyInjection;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(builder =>

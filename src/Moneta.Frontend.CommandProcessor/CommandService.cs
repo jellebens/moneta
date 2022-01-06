@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,9 +40,7 @@ namespace Moneta.Frontend.CommandProcessor
 
             builder.RegisterType<CommandDispatcher>().As<ICommandDispatcher>();
 
-            builder.RegisterType<CreateAccountHandler>().As<ICommandHandler<CreateAccountCommand>>();
-
-            builder.RegisterAssemblyTypes(typeof(ICommandHandler<>).GetType().Assembly)
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                    .AsClosedTypesOf(typeof(ICommandHandler<>));
 
             builder.RegisterInstance(new LoggerFactory())
