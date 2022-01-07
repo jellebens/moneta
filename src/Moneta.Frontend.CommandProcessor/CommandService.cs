@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using Moneta.Core;
 using Moneta.Frontend.CommandProcessor.Handlers;
 using Moneta.Frontend.Commands;
 using Newtonsoft.Json;
@@ -38,18 +39,11 @@ namespace Moneta.Frontend.CommandProcessor
 
             _Logger.LogInformation($"Creating Client");
 
-            CommandsBinder commandsBinder = new CommandsBinder()
-            {
-                KnownTypes = Known.Types()
-            };
-
-            _Logger.LogInformation($"Listening for messages");
-
             var factory = new ConnectionFactory() { HostName = connectionString };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: "frontend-commands",
+            channel.QueueDeclare(queue: Queues.Frontend.Commands,
                                  durable: true,
                                  exclusive: false,
                                  autoDelete: false,
@@ -65,7 +59,7 @@ namespace Moneta.Frontend.CommandProcessor
                 dynamic command = JsonConvert.DeserializeObject(message, new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All,
-                    SerializationBinder = commandsBinder
+                    SerializationBinder = CommandsBinder.Instance()
                 });
 
                 ICommandDispatcher dispatcher = container.Resolve<ICommandDispatcher>();
@@ -73,7 +67,10 @@ namespace Moneta.Frontend.CommandProcessor
                 _Logger.LogInformation($"Dispatching Command of type: {command.GetType().FullName}");
                 dispatcher.Dispatch(command);
             };
+            
+            channel.BasicConsume(Queues.Frontend.Commands, true, consumer);
 
+            _Logger.LogInformation($"Listening for messages");
 
             return Task.CompletedTask;
         }

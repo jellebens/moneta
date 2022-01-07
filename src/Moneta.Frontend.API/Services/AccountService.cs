@@ -37,8 +37,6 @@ namespace Moneta.Frontend.API.Services
 
         public async Task<AccountListItem[]> GetAsync(ClaimsPrincipal user)
         {
-            //https://damienbod.com/2020/11/09/implement-a-web-app-and-an-asp-net-core-secure-api-using-azure-ad-which-delegates-to-second-api/
-
             var token = _TokenBuilder.Build(user);
             _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

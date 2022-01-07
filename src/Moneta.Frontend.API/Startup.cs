@@ -15,6 +15,7 @@ using Polly.Extensions.Http;
 using Polly;
 using System.Net.Http;
 using Moneta.Core.Jwt;
+using Moneta.Frontend.API.Bus;
 
 namespace Moneta.Frontend.API
 {
@@ -35,7 +36,9 @@ namespace Moneta.Frontend.API
             services.AddOptions();
 
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
+            services.AddSingleton<IBus, RabbitMqBus>();
 
+            //https://damienbod.com/2020/11/09/implement-a-web-app-and-an-asp-net-core-secure-api-using-azure-ad-which-delegates-to-second-api/
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(options => { }, options =>
                 {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Serialization;
 
-namespace Moneta.Frontend.CommandProcessor
+namespace Moneta.Frontend.Commands
 {
     public class CommandsBinder: ISerializationBinder
     {
@@ -16,5 +16,14 @@ namespace Moneta.Frontend.CommandProcessor
             assemblyName = serializedType.Assembly.FullName;
             typeName = serializedType.Name;
         }
+
+        public static CommandsBinder Instance() {
+            return new CommandsBinder()
+            {
+                KnownTypes = typeof(ICommand).Assembly.GetTypes().Where(t => typeof(ICommand).IsAssignableFrom(t)).ToArray()
+            };
+        }
     }
+
+
 }

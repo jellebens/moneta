@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
+using Moneta.Core;
+using Moneta.Frontend.API.Bus;
 using Moneta.Frontend.API.Services;
+using Moneta.Frontend.Commands;
 using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Controllers
@@ -15,11 +18,13 @@ namespace Moneta.Frontend.API.Controllers
     {
         private readonly ILogger<AccountsController> _Logger;
         private readonly IAccountsService _AccountService;
-        
-        public AccountsController(ILogger<AccountsController> logger, IAccountsService accountService)
+        private readonly IBus _Bus;
+
+        public AccountsController(ILogger<AccountsController> logger, IAccountsService accountService, IBus bus)
         {
             _Logger = logger;
             _AccountService = accountService;
+            _Bus = bus;
         }
 
         [HttpGet]
@@ -29,5 +34,14 @@ namespace Moneta.Frontend.API.Controllers
             
             return Ok(accounts);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateAccountCommand createAccount)
+        {
+            await _Bus.SendAsync(Queues.Frontend.Commands, createAccount);
+
+            return Ok();
+        }
+
     }
 }
