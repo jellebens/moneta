@@ -11,14 +11,14 @@ namespace Moneta.Frontend.CommandProcessor.Handlers
     {
         private readonly ILogger<CreateAccountHandler> _Logger;
 
-        public CreateAccountHandler(ILogger<CreateAccountHandler> logger)
+        public CreateAccountHandler(ILoggerFactory logger)
         {
-            _Logger = logger;
+            _Logger = logger.CreateLogger<CreateAccountHandler>();
         }
         public void Execute(CreateAccountCommand command)
         {
             _Logger.LogInformation($"Creating account {command.Name} with {command.Currency}");
-            Console.WriteLine($"Creating account {command.Name} with {command.Currency}");
+            //Console.WriteLine($"Creating account {command.Name} with {command.Currency}");
         }
     }
 }

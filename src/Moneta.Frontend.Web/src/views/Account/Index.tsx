@@ -34,11 +34,11 @@ export const AccountOverview = () => {
             instance.acquireTokenSilent(request).then(async (response) => {
                 const result = await AccountsList(response.accessToken);
                 setAccountItems(result);
+                setIsLoading(false);
             }).catch((e) => {
                 console.log(e);
+                setIsLoading(false);
             });
-
-            setIsLoading(false);
         }
 
         doListAccounts();
