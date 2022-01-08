@@ -26,5 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Commands\" />
+    <Folder Include="charts\" />
   </ItemGroup>
 </Project>
