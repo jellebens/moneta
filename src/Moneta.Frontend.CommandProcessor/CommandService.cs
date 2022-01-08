@@ -33,7 +33,7 @@ namespace Moneta.Frontend.CommandProcessor
         {
             _Logger.LogInformation($"Starting service");
 
-            string connectionString = _Configuration.GetValue<string>("FRONTEND_COMMANDS");
+            string connectionString = _Configuration.GetValue<string>("RABBITMQ_HOST");
 
             IContainer container = ContainerFactory.Create(_LoggerFactory);
 

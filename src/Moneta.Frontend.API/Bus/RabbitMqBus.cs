@@ -19,7 +19,7 @@ namespace Moneta.Frontend.API.Bus
 
         public RabbitMqBus(IConfiguration configuration, ILogger<RabbitMqBus> logger)
         {
-            string connectionString = configuration.GetValue<string>("FRONTEND_COMMANDS");
+            string connectionString = configuration.GetValue<string>("RABBITMQ_HOST");
 
             _Factory = new ConnectionFactory() { HostName = connectionString };
             _Connection = _Factory.CreateConnection();
