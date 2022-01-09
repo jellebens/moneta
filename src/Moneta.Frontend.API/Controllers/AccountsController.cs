@@ -38,6 +38,7 @@ namespace Moneta.Frontend.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CreateAccountCommand createAccount)
         {
+            //https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
             await _Bus.SendAsync(Queues.Frontend.Commands, createAccount);
 
             return Ok();

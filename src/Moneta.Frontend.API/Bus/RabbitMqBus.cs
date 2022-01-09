@@ -2,8 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Moneta.Frontend.Commands;
 using Newtonsoft.Json;
+using OpenTelemetry;
+using OpenTelemetry.Context.Propagation;
 using RabbitMQ.Client;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +20,9 @@ namespace Moneta.Frontend.API.Bus
         private ConnectionFactory _Factory;
         private IConnection _Connection;
         private IModel _Channel;
+        private static readonly ActivitySource Activity = new(nameof(RabbitMqBus));
+        private static readonly TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
+
 
         public RabbitMqBus(IConfiguration configuration, ILogger<RabbitMqBus> logger)
         {
@@ -34,27 +41,54 @@ namespace Moneta.Frontend.API.Bus
             _Connection.Dispose();
         }
 
+        private void InjectContextIntoHeader(IBasicProperties props, string key, string value)
+        {
+            try
+            {
+                props.Headers ??= new Dictionary<string, object>();
+                props.Headers[key] = value;
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex, "Failed to inject trace context.");
+            }
+        }
+
         public Task SendAsync<T>(string queue, T message)
         {
-            _Channel.QueueDeclare(queue: queue,
-                                 durable: true,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            //FROM: https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
+            using (Activity activity = Activity.StartActivity("Publish message"))
+            {
+
+                IBasicProperties props = _Channel.CreateBasicProperties();
+
+                Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
+                activity?.SetTag("messaging.system", "rabbitmq");
+                activity?.SetTag("messaging.destination_kind", "queue");
+                activity?.SetTag("messaging.rabbitmq.queue", queue);
+
+
+                _Channel.QueueDeclare(queue: queue,
+                                         durable: true,
+                                         exclusive: false,
+                                         autoDelete: false,
+                                         arguments: null);
 
 
 
-            string json = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings {
-                TypeNameHandling = TypeNameHandling.All,
-                SerializationBinder = _CommandsBinder
-            });
+                string json = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    SerializationBinder = _CommandsBinder
+                });
 
-            var body = Encoding.UTF8.GetBytes(json);
+                var body = Encoding.UTF8.GetBytes(json);
 
-            _Channel.BasicPublish(exchange: "",
-                                 routingKey: queue,
-                                 basicProperties: null,
-                                 body: body);
+                _Channel.BasicPublish(exchange: "",
+                                     routingKey: queue,
+                                     basicProperties: props,
+                                     body: body); 
+            }
 
 
             return Task.CompletedTask;

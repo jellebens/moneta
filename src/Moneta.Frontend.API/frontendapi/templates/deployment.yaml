@@ -39,7 +39,7 @@ spec:
           - name: JAEGER_AGENT_PORT
             value: "{{ .Values.jaeger.agent.port }}"
           - name: RABBITMQ_HOST
-            value: rabbitmq.rabbitmq-cluster.svc.cluster.local
+            value: "{{ .Values.rabbitmq.host }}"
           - name: SERVICE_NAME
             value: "{{ template "frontendapi.fullname" . }}.{{ .Release.Namespace }}"
           - name: ASPNETCORE_URLS
