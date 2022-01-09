@@ -3,6 +3,7 @@ using Moneta.Frontend.CommandProcessor;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
+using Moneta.Core;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(builder =>
@@ -17,7 +18,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         {
             builder.AddAspNetCoreInstrumentation();
             builder.AddHttpClientInstrumentation();
-            builder.AddSource("moneta");
+            builder.AddSource(Telemetry.Source);
             builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(hostContext.Configuration["SERVICE_NAME"]));
             builder.AddJaegerExporter(options =>
             {

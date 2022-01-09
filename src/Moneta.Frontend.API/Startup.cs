@@ -17,6 +17,7 @@ using System.Net.Http;
 using Moneta.Core.Jwt;
 using Moneta.Frontend.API.Bus;
 using System.Diagnostics;
+using Moneta.Core;
 
 namespace Moneta.Frontend.API
 {
@@ -61,9 +62,14 @@ namespace Moneta.Frontend.API
 
             services.AddOpenTelemetryTracing((builder) =>
             {
-                builder.AddAspNetCoreInstrumentation();
+                builder.AddAspNetCoreInstrumentation(
+                    (options) => options.Filter = httpContext =>
+                    {
+                        return !httpContext.Request.Path.StartsWithSegments("/api/sys", StringComparison.OrdinalIgnoreCase);
+                    }
+                );
                 builder.AddHttpClientInstrumentation();
-                builder.AddSource(OpenTelemetry.Source);
+                builder.AddSource(Telemetry.Source);
                 builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
                 builder.AddJaegerExporter(options =>
                 {
@@ -71,6 +77,7 @@ namespace Moneta.Frontend.API
                     options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
                     options.ExportProcessorType = ExportProcessorType.Simple;
                 });
+                //builder.AddConsoleExporter();
             }
            );
         }

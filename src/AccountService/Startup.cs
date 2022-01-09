@@ -20,6 +20,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry;
 using Microsoft.Identity.Web;
 using Moneta.Core.Jwt;
+using Moneta.Core;
 
 namespace AccountService
 {
@@ -84,7 +85,7 @@ namespace AccountService
                     options.SetDbStatementForStoredProcedure = true;
                 });
                 builder.AddHttpClientInstrumentation();
-
+                builder.AddSource(Telemetry.Source);
                 builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
                 builder.AddJaegerExporter(options =>
                 {

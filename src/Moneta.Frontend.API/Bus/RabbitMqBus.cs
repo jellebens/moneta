@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Moneta.Core;
 using Moneta.Frontend.Commands;
 using Newtonsoft.Json;
 using OpenTelemetry;
@@ -20,7 +21,7 @@ namespace Moneta.Frontend.API.Bus
         private ConnectionFactory _Factory;
         private IConnection _Connection;
         private IModel _Channel;
-        private static readonly ActivitySource _ActivitySource = new ActivitySource(OpenTelemetry.Source);
+        private static readonly ActivitySource _ActivitySource = new ActivitySource(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
 
 
@@ -46,6 +47,7 @@ namespace Moneta.Frontend.API.Bus
         {
             try
             {
+                _Logger.LogInformation($"Injecting parent context {key} = {value}");
                 props.Headers ??= new Dictionary<string, object>();
                 props.Headers[key] = value;
             }
@@ -60,18 +62,11 @@ namespace Moneta.Frontend.API.Bus
             //FROM: https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
             try
             {
-                using (Activity activity = _ActivitySource.StartActivity("Publish message", ActivityKind.Server))
+                using (Activity activity = _ActivitySource.StartActivity("Publish message", ActivityKind.Producer))
                 {
-
                     IBasicProperties props = _Channel.CreateBasicProperties();
 
-                    if (activity != null) {
-                        Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
-                    }
-                    else
-                    {
-                        _Logger.LogWarning("Activity null Tracing disabled");
-                    }
+                    Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
                     
                     activity?.SetTag("messaging.system", "rabbitmq");
                     activity?.SetTag("messaging.destination_kind", "queue");

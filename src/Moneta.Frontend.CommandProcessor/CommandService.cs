@@ -25,8 +25,8 @@ namespace Moneta.Frontend.CommandProcessor
         private IConnection _Connection;
         private IModel _Channel;
 
-        private static readonly ActivitySource Activity = new(nameof(CommandService));
-        private static readonly TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
+        private static readonly ActivitySource Activity = new(Telemetry.Source);
+        private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
 
         public CommandService(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -81,10 +81,13 @@ namespace Moneta.Frontend.CommandProcessor
             consumer.Received += (model, ea) =>
             {
                 var parentContext = Propagator.Extract(default, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
+                
                 Baggage.Current = parentContext.Baggage;
 
                 using (var activity = Activity.StartActivity("Process Message", ActivityKind.Consumer, parentContext.ActivityContext))
                 {
+
+
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
 
@@ -101,7 +104,6 @@ namespace Moneta.Frontend.CommandProcessor
 
                     ICommandDispatcher dispatcher = container.Resolve<ICommandDispatcher>();
 
-                    _Logger.LogInformation($"Dispatching Command of type: {command.GetType().FullName}");
                     dispatcher.Dispatch(command);
                 }
             };

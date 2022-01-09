@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moneta.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,7 @@ namespace Moneta.Frontend.API.Controllers
 
         [HttpGet("me")]
         public IActionResult Me() {
-            using (Activity getUserActivity = new ActivitySource(OpenTelemetry.Source).StartActivity("Get User")) {
+            using (Activity getUserActivity = new ActivitySource(Telemetry.Source).StartActivity("Get User")) {
                 try
                 {
                     var user = new
