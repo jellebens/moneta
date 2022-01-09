@@ -71,7 +71,6 @@ namespace Moneta.Frontend.API
                     options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
                     options.ExportProcessorType = ExportProcessorType.Simple;
                 });
-                builder.AddConsoleExporter();
             }
            );
         }
