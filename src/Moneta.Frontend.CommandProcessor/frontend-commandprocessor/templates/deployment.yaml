@@ -40,6 +40,8 @@ spec:
             value: "{{ .Values.jaeger.agent.port }}"
           - name: RABBITMQ_HOST
             value: "{{ .Values.rabbitmq.host }}"
+          - name: SERVICE_NAME
+            value: "{{ template "frontend-commandprocessor.fullname" . }}.{{ .Release.Namespace }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

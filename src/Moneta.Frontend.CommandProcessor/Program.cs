@@ -1,6 +1,5 @@
 using Moneta.Core.Logging;
 using Moneta.Frontend.CommandProcessor;
-using Autofac.Extensions.DependencyInjection;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;

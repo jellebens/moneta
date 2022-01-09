@@ -8,6 +8,7 @@ using Moneta.Core;
 using Moneta.Frontend.API.Bus;
 using Moneta.Frontend.API.Services;
 using Moneta.Frontend.Commands;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Controllers
@@ -31,7 +32,7 @@ namespace Moneta.Frontend.API.Controllers
         public async Task<IActionResult> Get()
         {
             var accounts = await _AccountService.GetAsync(this.User);
-            
+
             return Ok(accounts);
         }
 

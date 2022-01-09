@@ -16,6 +16,7 @@ using Polly;
 using System.Net.Http;
 using Moneta.Core.Jwt;
 using Moneta.Frontend.API.Bus;
+using System.Diagnostics;
 
 namespace Moneta.Frontend.API
 {
@@ -32,7 +33,6 @@ namespace Moneta.Frontend.API
         //https://github.com/Azure-Samples/ms-identity-javascript-react-spa-dotnetcore-webapi-obo/
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddOptions();
 
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
@@ -54,11 +54,16 @@ namespace Moneta.Frontend.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Moneta.Frontend.API", Version = "v1" });
             });
 
+            services.AddHttpClient<IAccountsService, AccountsService>(client => {
+                                                                                    client.BaseAddress = new Uri(Configuration["ACCOUNTS_SERVICE"]);
+                                                                                }).SetHandlerLifetime(TimeSpan.FromMinutes(5))  
+                                                                                  .AddPolicyHandler(GetRetryPolicy());
+
             services.AddOpenTelemetryTracing((builder) =>
             {
                 builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
-                builder.AddSource("moneta");
+                builder.AddSource(OpenTelemetry.Source);
                 builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
                 builder.AddJaegerExporter(options =>
                 {
@@ -66,12 +71,9 @@ namespace Moneta.Frontend.API
                     options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
                     options.ExportProcessorType = ExportProcessorType.Simple;
                 });
-            });
-            
-            services.AddHttpClient<IAccountsService, AccountsService>(client => {
-                                                                                    client.BaseAddress = new Uri(Configuration["ACCOUNTS_SERVICE"]);
-                                                                                }).SetHandlerLifetime(TimeSpan.FromMinutes(5))  
-                                                                                  .AddPolicyHandler(GetRetryPolicy());
+                builder.AddConsoleExporter();
+            }
+           );
         }
 
         private IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

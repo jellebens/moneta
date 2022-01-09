@@ -24,7 +24,7 @@ namespace Moneta.Frontend.API.Controllers
 
         [HttpGet("me")]
         public IActionResult Me() {
-            using (Activity getUserActivity = new ActivitySource(typeof(UsersController).Name).StartActivity("Get User")) {
+            using (Activity getUserActivity = new ActivitySource(OpenTelemetry.Source).StartActivity("Get User")) {
                 try
                 {
                     var user = new

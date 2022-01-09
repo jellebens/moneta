@@ -20,7 +20,7 @@ namespace Moneta.Frontend.API.Bus
         private ConnectionFactory _Factory;
         private IConnection _Connection;
         private IModel _Channel;
-        private static readonly ActivitySource Activity = new(nameof(RabbitMqBus));
+        private static readonly ActivitySource _ActivitySource = new ActivitySource(OpenTelemetry.Source);
         private static readonly TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
 
 
@@ -39,6 +39,7 @@ namespace Moneta.Frontend.API.Bus
             _Logger.LogInformation($"Cleaning up");
             _Channel.Dispose();
             _Connection.Dispose();
+            _ActivitySource.Dispose();
         }
 
         private void InjectContextIntoHeader(IBasicProperties props, string key, string value)
@@ -57,38 +58,55 @@ namespace Moneta.Frontend.API.Bus
         public Task SendAsync<T>(string queue, T message)
         {
             //FROM: https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
-            using (Activity activity = Activity.StartActivity("Publish message"))
+            try
             {
-
-                IBasicProperties props = _Channel.CreateBasicProperties();
-
-                Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
-                activity?.SetTag("messaging.system", "rabbitmq");
-                activity?.SetTag("messaging.destination_kind", "queue");
-                activity?.SetTag("messaging.rabbitmq.queue", queue);
-
-
-                _Channel.QueueDeclare(queue: queue,
-                                         durable: true,
-                                         exclusive: false,
-                                         autoDelete: false,
-                                         arguments: null);
-
-
-
-                string json = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings
+                using (Activity activity = _ActivitySource.StartActivity("Publish message", ActivityKind.Server))
                 {
-                    TypeNameHandling = TypeNameHandling.All,
-                    SerializationBinder = _CommandsBinder
-                });
 
-                var body = Encoding.UTF8.GetBytes(json);
+                    IBasicProperties props = _Channel.CreateBasicProperties();
 
-                _Channel.BasicPublish(exchange: "",
-                                     routingKey: queue,
-                                     basicProperties: props,
-                                     body: body); 
+                    if (activity != null) {
+                        Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
+                    }
+                    else
+                    {
+                        _Logger.LogWarning("Activity null Tracing disabled");
+                    }
+                    
+                    activity?.SetTag("messaging.system", "rabbitmq");
+                    activity?.SetTag("messaging.destination_kind", "queue");
+                    activity?.SetTag("messaging.rabbitmq.queue", queue);
+
+
+                    _Channel.QueueDeclare(queue: queue,
+                                             durable: true,
+                                             exclusive: false,
+                                             autoDelete: false,
+                                             arguments: null);
+
+
+
+                    string json = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All,
+                        SerializationBinder = _CommandsBinder
+                    });
+
+                    var body = Encoding.UTF8.GetBytes(json);
+
+                    _Channel.BasicPublish(exchange: "",
+                                         routingKey: queue,
+                                         basicProperties: props,
+                                         body: body);
+                }
             }
+            catch (Exception exc)
+            {
+                _Logger?.LogError($"Error while sending message {exc.Message}\r\n{exc.StackTrace}");
+                throw;
+            }
+            
+            
 
 
             return Task.CompletedTask;
