@@ -47,7 +47,6 @@ namespace Moneta.Frontend.API.Bus
         {
             try
             {
-                _Logger.LogInformation($"Injecting parent context {key} = {value}");
                 props.Headers ??= new Dictionary<string, object>();
                 props.Headers[key] = value;
             }
@@ -57,7 +56,7 @@ namespace Moneta.Frontend.API.Bus
             }
         }
 
-        public Task SendAsync<T>(string queue, T message)
+        public Task SendAsync<T>(string queue, string token, T message)
         {
             //FROM: https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
             try
@@ -67,7 +66,9 @@ namespace Moneta.Frontend.API.Bus
                     IBasicProperties props = _Channel.CreateBasicProperties();
 
                     Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
-                    
+
+                    props.Headers.Add("token",token);
+
                     activity?.SetTag("messaging.system", "rabbitmq");
                     activity?.SetTag("messaging.destination_kind", "queue");
                     activity?.SetTag("messaging.rabbitmq.queue", queue);

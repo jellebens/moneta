@@ -21,12 +21,12 @@ namespace Moneta.Frontend.CommandProcessor
             this.context = context;
         }
 
-        public void Dispatch<TCommand>(TCommand command) where TCommand : ICommand
+        public void Dispatch<TCommand>(string token, TCommand command) where TCommand : ICommand
         {
             var handler = this.context.Resolve<ICommandHandler<TCommand>>();
             //https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
             using (Activity activity = Activity.StartActivity("Dispatching command", ActivityKind.Consumer)) {
-                handler.Execute(command);
+                handler.Execute(token, command);
             }
                 
         }

@@ -9,6 +9,6 @@ namespace Moneta.Frontend.CommandProcessor
 {
     public interface ICommandDispatcher
     {
-        void Dispatch<TCommand>(TCommand command) where TCommand : ICommand;
+        void Dispatch<TCommand>(string token, TCommand command) where TCommand : ICommand;
     }
 }

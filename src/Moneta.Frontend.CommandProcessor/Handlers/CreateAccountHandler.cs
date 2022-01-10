@@ -15,10 +15,9 @@ namespace Moneta.Frontend.CommandProcessor.Handlers
         {
             _Logger = logger.CreateLogger<CreateAccountHandler>();
         }
-        public void Execute(CreateAccountCommand command)
+        public void Execute(string token, CreateAccountCommand command)
         {
-            _Logger.LogInformation($"Creating account {command.Name} with {command.Currency}");
-            //Console.WriteLine($"Creating account {command.Name} with {command.Currency}");
+            _Logger.LogInformation($"Creating account {command.Name} in {command.Currency} for {token}");
         }
     }
 }

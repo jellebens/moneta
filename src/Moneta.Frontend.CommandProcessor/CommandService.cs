@@ -80,17 +80,19 @@ namespace Moneta.Frontend.CommandProcessor
 
             consumer.Received += (model, ea) =>
             {
-                var parentContext = Propagator.Extract(default, ea.BasicProperties, ExtractTraceContextFromBasicProperties);
+                IBasicProperties properties = ea.BasicProperties;
+                var parentContext = Propagator.Extract(default, properties, ExtractTraceContextFromBasicProperties);
                 
                 Baggage.Current = parentContext.Baggage;
 
                 using (var activity = Activity.StartActivity("Process Message", ActivityKind.Consumer, parentContext.ActivityContext))
                 {
 
+                    string token = Encoding.UTF8.GetString(properties.Headers["token"] as byte[]);
+                    byte[] body = ea.Body.ToArray();
+                    string message = Encoding.UTF8.GetString(body);
 
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-
+                    
                     //Add Tags to the Activity
                     activity?.SetTag("messaging.system", "rabbitmq");
                     activity?.SetTag("messaging.destination_kind", "queue");
@@ -104,7 +106,7 @@ namespace Moneta.Frontend.CommandProcessor
 
                     ICommandDispatcher dispatcher = container.Resolve<ICommandDispatcher>();
 
-                    dispatcher.Dispatch(command);
+                    dispatcher.Dispatch(token, command);
                 }
             };
             
