@@ -24,6 +24,7 @@ namespace Moneta.Frontend.CommandProcessor
 
         private IConnection _Connection;
         private IModel _Channel;
+        private EventingBasicConsumer consumer;
 
         private static readonly ActivitySource Activity = new(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
@@ -32,7 +33,8 @@ namespace Moneta.Frontend.CommandProcessor
         {
             _Logger = loggerFactory.CreateLogger<CommandService>();
             _LoggerFactory = loggerFactory;
-            this._Dispatcher = dispatcher;
+            _Dispatcher = dispatcher;
+            
             _Configuration = configuration;
 
         }
@@ -83,13 +85,13 @@ namespace Moneta.Frontend.CommandProcessor
                                  autoDelete: false,
                                  arguments: args);
 
-            var consumer = new EventingBasicConsumer(_Channel);
+            consumer = new EventingBasicConsumer(_Channel);
 
             consumer.Received += (model, ea) =>
             {
                 IBasicProperties properties = ea.BasicProperties;
                 var parentContext = Propagator.Extract(default, properties, ExtractTraceContextFromBasicProperties);
-
+                
                 Baggage.Current = parentContext.Baggage;
 
                 using (var activity = Activity.StartActivity("Process Message", ActivityKind.Consumer, parentContext.ActivityContext))
@@ -129,7 +131,7 @@ namespace Moneta.Frontend.CommandProcessor
                 }
             };
 
-            _Channel.BasicConsume(Queues.Frontend.Commands, true, consumer);
+            _Channel.BasicConsume(Queues.Frontend.Commands, false, consumer);
 
             _Logger.LogInformation($"Listening for messages");
 
@@ -139,6 +141,7 @@ namespace Moneta.Frontend.CommandProcessor
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _Channel.Dispose();
+            
             _Connection.Dispose();
 
 
