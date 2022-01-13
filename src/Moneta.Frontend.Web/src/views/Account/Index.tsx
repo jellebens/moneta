@@ -1,5 +1,5 @@
 import React from "react";
-import { AccountsList, AccountListItem } from "views/Account/Accounts";
+import { AccountsList, AccountListItem, DeleteAccount } from "views/Account/Accounts";
 import { loginRequest } from "AuthConfig";
 import { NavLink } from "react-router-dom";
 import {
@@ -44,6 +44,27 @@ export const AccountOverview = () => {
         doListAccounts();
     }, []);
 
+    function handleRemove(id: string) {
+        setIsLoading(true);
+        const request = {
+            scopes: loginRequest.scopes,
+            account: accounts[0] as AccountInfo
+        };
+
+        instance.acquireTokenSilent(request).then(async (response) => {
+            await DeleteAccount(response.accessToken, id);
+            setIsLoading(false);
+        }).catch((e) => {
+            console.log(e);
+            setIsLoading(false);
+        });
+
+        const newlist = accountItems.filter((item) => item.id !== id);
+        setAccountItems(newlist);
+        // remove item
+      }
+    
+
     return (
         <>
         <AuthenticatedTemplate>
@@ -67,10 +88,15 @@ export const AccountOverview = () => {
                                         </thead>
                                         <tbody>
                                             {accountItems.map((account) => (
-                                                <tr key={account.name + '_' + account.currency}>
+                                                <tr key={account.id}>
                                                     <td>{account.name}</td>
                                                     <td>{account.currency}</td>
-                                                    <td></td>
+                                                    <td>
+                                                        <Button className="btn btn-icon btn-round btn-danger" color="danger" type="button" onClick={() => handleRemove(account.id)}>
+                                                        <i className="fa fa-trash"></i>
+                                                        </Button>
+                                                    </td>
+                                                        
                                                 </tr>
                                             ))}
                                         </tbody>

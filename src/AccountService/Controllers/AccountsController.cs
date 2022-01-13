@@ -33,8 +33,6 @@ namespace AccountService.Controllers
             
             Claim id = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
-            _Logger.LogInformation($"Getting Accounts for {id}");
-
             var accounts = _AccountsDbContext.Accounts.Where(a => a.Owner == id.Value).Select(a => new AccountInfo()
             {
                 Currency = a.Currency,
@@ -50,11 +48,9 @@ namespace AccountService.Controllers
             Claim nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
             Claim id = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
-            _Logger.LogInformation($"Creating account {command.Name} for {nameClaim.Value}");
-
             Account account = new Account(Guid.NewGuid(), command.Name, command.Currency.ToUpper(), id.Value);
 
-            bool accountExists = _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency == account.Currency && a.Owner == account.Owner);
+            bool accountExists = _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency.ToUpper() == account.Currency.ToUpper() && a.Owner == account.Owner);
 
             if (!accountExists) {
                 await _AccountsDbContext.Accounts.AddAsync(account);
@@ -62,7 +58,7 @@ namespace AccountService.Controllers
             }
             else
             {
-                _Logger.LogInformation("Account allready exists, not creating a new one");
+                _Logger.LogWarning("Account allready exists, not creating a new one");
             }
 
             return Ok();
@@ -76,8 +72,6 @@ namespace AccountService.Controllers
             if (account == null) {
                 return Ok();
             }
-
-            _Logger.LogInformation($"Deleting account {account.Name}");
 
             _AccountsDbContext.Accounts.Remove(account);
 

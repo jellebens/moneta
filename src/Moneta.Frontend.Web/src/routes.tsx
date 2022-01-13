@@ -23,7 +23,7 @@ var routes = [
   {
     path: "/accounts",
     name: "Accounts",
-    icon: "nc-icon nc-chart-pie-36",
+    icon: "fa fa-wallet",
     showInSideBar: true,
     component: AccountOverview
   },

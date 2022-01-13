@@ -9,6 +9,7 @@ using Moneta.Core.Jwt;
 using Moneta.Frontend.API.Bus;
 using Moneta.Frontend.API.Services;
 using Moneta.Frontend.Commands;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -50,5 +51,11 @@ namespace Moneta.Frontend.API.Controllers
             return Ok();
         }
 
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            _AccountService.Delete(this.User, id);
+            return Ok();
+        }
     }
 }
