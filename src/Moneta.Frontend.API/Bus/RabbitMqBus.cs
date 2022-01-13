@@ -73,14 +73,16 @@ namespace Moneta.Frontend.API.Bus
                     activity?.SetTag("messaging.destination_kind", "queue");
                     activity?.SetTag("messaging.rabbitmq.queue", queue);
 
+                    Dictionary<string, object> args = new Dictionary<string, object>
+                    {
+                        {"x-dead-letter-exchange", $"{Queues.Frontend.Commands}-deadletter"}
+                    };
 
-                    _Channel.QueueDeclare(queue: queue,
-                                             durable: true,
-                                             exclusive: false,
-                                             autoDelete: false,
-                                             arguments: null);
-
-
+                    _Channel.QueueDeclare(queue: Queues.Frontend.Commands,
+                                         durable: true,
+                                         exclusive: false,
+                                         autoDelete: false,
+                                         arguments: args);
 
                     string json = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings
                     {

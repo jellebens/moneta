@@ -54,7 +54,7 @@ namespace Moneta.Frontend.CommandProcessor
             return Enumerable.Empty<string>();
         }
 
-       
+
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
@@ -70,11 +70,16 @@ namespace Moneta.Frontend.CommandProcessor
             _Connection = factory.CreateConnection();
             _Channel = _Connection.CreateModel();
 
+            Dictionary<string, object> args = new Dictionary<string, object>
+                    {
+                        {"x-dead-letter-exchange", $"{Queues.Frontend.Commands}-deadletter"}
+                    };
+
             _Channel.QueueDeclare(queue: Queues.Frontend.Commands,
                                  durable: true,
                                  exclusive: false,
                                  autoDelete: false,
-                                 arguments: null);
+                                 arguments: args);
 
             var consumer = new EventingBasicConsumer(_Channel);
 
@@ -82,7 +87,7 @@ namespace Moneta.Frontend.CommandProcessor
             {
                 IBasicProperties properties = ea.BasicProperties;
                 var parentContext = Propagator.Extract(default, properties, ExtractTraceContextFromBasicProperties);
-                
+
                 Baggage.Current = parentContext.Baggage;
 
                 using (var activity = Activity.StartActivity("Process Message", ActivityKind.Consumer, parentContext.ActivityContext))
@@ -92,7 +97,8 @@ namespace Moneta.Frontend.CommandProcessor
                     byte[] body = ea.Body.ToArray();
                     string message = Encoding.UTF8.GetString(body);
 
-                    
+
+
                     //Add Tags to the Activity
                     activity?.SetTag("messaging.system", "rabbitmq");
                     activity?.SetTag("messaging.destination_kind", "queue");
@@ -105,11 +111,22 @@ namespace Moneta.Frontend.CommandProcessor
                     });
 
                     ICommandDispatcher dispatcher = container.Resolve<ICommandDispatcher>();
+                    try
+                    {
+                        dispatcher.Dispatch(token, command);
+                        _Channel.BasicAck(ea.DeliveryTag, false);
+                    }
+                    catch (Exception exc)
+                    {
+                        _Logger.LogError($"Exception occured when executing command ({exc.Message}), deadlettering message.");
+                        _Channel.BasicNack(ea.DeliveryTag, false, false);
+                    }
 
-                    dispatcher.Dispatch(token, command);
+
+
                 }
             };
-            
+
             _Channel.BasicConsume(Queues.Frontend.Commands, true, consumer);
 
             _Logger.LogInformation($"Listening for messages");
