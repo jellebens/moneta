@@ -8,11 +8,11 @@ namespace AccountService.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "account");
+                name: "accounts");
 
             migrationBuilder.CreateTable(
-                name: "Account",
-                schema: "account",
+                name: "account",
+                schema: "accounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -30,8 +30,8 @@ namespace AccountService.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Account",
-                schema: "account");
+                name: "account",
+                schema: "accounts");
         }
     }
 }

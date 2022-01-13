@@ -12,7 +12,7 @@ namespace AccountService.Sql.Mapping
     {
         public void Configure(EntityTypeBuilder<Account> builder)
         {
-            builder.ToTable("Account", "account");
+            builder.ToTable("account", "accounts");
             builder.HasKey(a => a.Id)
                    .IsClustered();
             

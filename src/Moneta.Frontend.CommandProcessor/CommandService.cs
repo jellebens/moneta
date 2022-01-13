@@ -17,9 +17,9 @@ namespace Moneta.Frontend.CommandProcessor
 {
     public class CommandService : IHostedService
     {
+        private readonly ICommandDispatcher _Dispatcher;
         private readonly IConfiguration _Configuration;
         private readonly ILogger<CommandService> _Logger;
-        private readonly IContainer container;
         private readonly ILoggerFactory _LoggerFactory;
 
         private IConnection _Connection;
@@ -28,11 +28,13 @@ namespace Moneta.Frontend.CommandProcessor
         private static readonly ActivitySource Activity = new(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
 
-        public CommandService(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public CommandService(ICommandDispatcher dispatcher, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _Logger = loggerFactory.CreateLogger<CommandService>();
             _LoggerFactory = loggerFactory;
+            this._Dispatcher = dispatcher;
             _Configuration = configuration;
+
         }
 
         //Extract the Activity from the message header
@@ -62,7 +64,7 @@ namespace Moneta.Frontend.CommandProcessor
 
             string connectionString = _Configuration.GetValue<string>("RABBITMQ_HOST");
 
-            IContainer container = ContainerFactory.Create(_LoggerFactory);
+            //IContainer container = ContainerFactory.Create(_LoggerFactory);
 
             _Logger.LogInformation($"Creating Client");
 
@@ -110,10 +112,10 @@ namespace Moneta.Frontend.CommandProcessor
                         SerializationBinder = CommandsBinder.Instance()
                     });
 
-                    ICommandDispatcher dispatcher = container.Resolve<ICommandDispatcher>();
+                     
                     try
                     {
-                        dispatcher.Dispatch(token, command);
+                        _Dispatcher.Dispatch(token, command);
                         _Channel.BasicAck(ea.DeliveryTag, false);
                     }
                     catch (Exception exc)

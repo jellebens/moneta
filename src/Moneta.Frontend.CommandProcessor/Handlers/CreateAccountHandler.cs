@@ -1,4 +1,5 @@
-﻿using Moneta.Frontend.Commands;
+﻿using Moneta.Frontend.CommandProcessor.Services;
+using Moneta.Frontend.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,16 @@ namespace Moneta.Frontend.CommandProcessor.Handlers
     internal class CreateAccountHandler : ICommandHandler<CreateAccountCommand>
     {
         private readonly ILogger<CreateAccountHandler> _Logger;
+        private readonly IAccountsService _AccountService;
 
-        public CreateAccountHandler(ILoggerFactory logger)
+        public CreateAccountHandler(IAccountsService accountService, ILoggerFactory logger)
         {
             _Logger = logger.CreateLogger<CreateAccountHandler>();
+            _AccountService = accountService;
         }
         public void Execute(string token, CreateAccountCommand command)
         {
-            _Logger.LogInformation($"Creating account {command.Name} in {command.Currency} for {token}");
+            _AccountService.Create(command, token);
         }
     }
 }

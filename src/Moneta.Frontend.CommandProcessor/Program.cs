@@ -4,12 +4,27 @@ using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
 using Moneta.Core;
+using Polly;
+using Polly.Extensions.Http;
+using Moneta.Frontend.CommandProcessor.Services;
+using Moneta.Core.Jwt;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using System.Reflection;
+using Moneta.Frontend.CommandProcessor.Handlers;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(builder =>
     {
         builder.ClearProviders();
         builder.AddProvider(new MonetaLoggerProvider());
+    })
+    .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+    .ConfigureContainer<ContainerBuilder>(builder => {
+        builder.RegisterType<CommandDispatcher>().As<ICommandDispatcher>();
+
+        builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+               .AsClosedTypesOf(typeof(ICommandHandler<>));
     })
     .ConfigureServices((hostContext, services) =>
     {
@@ -29,9 +44,29 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
 
         services.AddHostedService<CommandService>();
+
+        services.AddHttpClient<IAccountsService, AccountsService>(client => {
+            client.BaseAddress = new Uri(hostContext.Configuration["ACCOUNTS_SERVICE"]);
+        }).SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                        .AddPolicyHandler(GetRetryPolicy());
+
+        services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
+
+        
     })
     .Build();
 
 await host.RunAsync();
 
 
+static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+{
+    Random jitterer = new Random();
+
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryAsync(3,    // exponential back-off plus some jitter
+                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                      + TimeSpan.FromMilliseconds(jitterer.Next(0, 100)));
+}
