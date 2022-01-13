@@ -34,6 +34,7 @@ namespace Moneta.Frontend.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            
             var accounts = await _AccountService.GetAsync(this.User);
 
             return Ok(accounts);

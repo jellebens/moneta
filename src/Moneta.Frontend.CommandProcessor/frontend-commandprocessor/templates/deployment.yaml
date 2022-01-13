@@ -42,6 +42,8 @@ spec:
             value: "{{ .Values.rabbitmq.host }}"
           - name: SERVICE_NAME
             value: "{{ template "frontend-commandprocessor.fullname" . }}.{{ .Release.Namespace }}"
+          - name: "ACCOUNTS_SERVICE"
+            value: "http://accounts.moneta.svc.cluster.local/"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

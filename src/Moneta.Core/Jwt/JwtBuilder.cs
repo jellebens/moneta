@@ -30,8 +30,7 @@ namespace Moneta.Core.Jwt
         {
             string name = principal.Claims.FirstOrDefault(c => c.Type.Equals("name", StringComparison.CurrentCultureIgnoreCase) 
                                                             || c.Type.Equals(ClaimTypes.Name, StringComparison.InvariantCultureIgnoreCase)).Value;
-            string id = principal.Claims.FirstOrDefault(c => c.Type.Equals("preferred_username", StringComparison.CurrentCultureIgnoreCase)
-                                                          || c.Type.Equals(ClaimTypes.NameIdentifier, StringComparison.InvariantCultureIgnoreCase)).Value;
+            string id = principal.Claims.FirstOrDefault(c => c.Type.Equals(MyClaimTypes.UserName, StringComparison.CurrentCultureIgnoreCase)).Value;
 
             var mySecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Configuration["JWT_SECRET"]));
 
@@ -39,7 +38,7 @@ namespace Moneta.Core.Jwt
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.NameIdentifier, id),
+                    new Claim(MyClaimTypes.UserName, id),
                     new Claim(ClaimTypes.Name, name)
                 }),
                 NotBefore = DateTime.UtcNow.AddMinutes(-15),

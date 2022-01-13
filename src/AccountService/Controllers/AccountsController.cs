@@ -4,6 +4,7 @@ using AccountService.Sql;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moneta.Core.Jwt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace AccountService.Controllers
         public IActionResult Index()
         {
             
-            Claim id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            Claim id = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             _Logger.LogInformation($"Getting Accounts for {id}");
 
@@ -47,7 +48,7 @@ namespace AccountService.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CreateAccountCommand command) {
             Claim nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-            Claim id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            Claim id = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             _Logger.LogInformation($"Creating account {command.Name} for {nameClaim.Value}");
 
@@ -88,7 +89,7 @@ namespace AccountService.Controllers
         [HttpGet("{id}")]
         public IActionResult Index(Guid id)
         {
-            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             var account = _AccountsDbContext.Accounts.Where(a => a.Id == id && a.Owner == userId.Value)
                                                       .Select(a => new AccountInfo(){

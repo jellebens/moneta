@@ -17,6 +17,10 @@ import { AccountInfo, NavigationClient } from "@azure/msal-browser";
 import { loginRequest } from "AuthConfig";
 import { useHistory } from "react-router-dom";
 
+const wait = (ms: number): Promise<void> => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export const NewAccountView = () => {
     const { instance, accounts } = useMsal();
     const [accountName, setAccountName] = useState("");
@@ -58,6 +62,9 @@ export const NewAccountView = () => {
                 "Name": accountName,
                 "Currency": currency
             } ,config));
+            
+            wait(300);
+
             history.push("/accounts")
         }).catch((e) => {
             console.log(e);

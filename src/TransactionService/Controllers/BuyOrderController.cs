@@ -45,7 +45,7 @@ namespace TransactionService.Controllers
 
             _Logger.LogInformation($"Creating Buy Order with Id: {createBuyOrder.Id} and number {createBuyOrder.TransactionNumber}");
 
-            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             if (_TransactionsDbContext.BuyOrders.Any(x => x.AccountId == createBuyOrder.AccountId && x.Number == createBuyOrder.TransactionNumber))
             {
@@ -67,7 +67,7 @@ namespace TransactionService.Controllers
         public async Task<IActionResult> Amount(Guid transactionId, [FromBody] UpdateAmountCommand updateAmount, CancellationToken cancellationToken)
         {
 
-            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
 
 
@@ -105,7 +105,7 @@ namespace TransactionService.Controllers
         [HttpPut("{transactionId}/costs")]
         public async Task<IActionResult> Costs(Guid transactionId, [FromBody] UpdateCostsCommand updateCosts, CancellationToken cancellationToken)
         {
-            Claim userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            Claim userId = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.Include(b => b.Costs).SingleOrDefault(bo => bo.Id == transactionId && bo.UserId == userId.Value);
 
