@@ -18,7 +18,6 @@ namespace Moneta.Frontend.API.Services
     public interface IAccountsService
     {
         Task<AccountListItem[]> GetAsync(ClaimsPrincipal user);
-        void Delete(ClaimsPrincipal user, Guid id);
     }
 
 
@@ -36,15 +35,7 @@ namespace Moneta.Frontend.API.Services
             _TokenBuilder = tokenBuilder;
         }
 
-        public async void Delete(ClaimsPrincipal user, Guid id)
-        {
-            var token = _TokenBuilder.Build(user);
-            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{id}");
-            
-            response.EnsureSuccessStatusCode();
-        }
+       
 
         public async Task<AccountListItem[]> GetAsync(ClaimsPrincipal user)
         {

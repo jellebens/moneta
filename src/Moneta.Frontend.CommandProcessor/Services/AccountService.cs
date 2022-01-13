@@ -13,6 +13,8 @@ namespace Moneta.Frontend.CommandProcessor.Services
     {
         Task Create(CreateAccountCommand newAccount, string jwtToken);
 
+        void Delete(DeleteAccountCommand deleteAccount, string jwtToken);
+
     }
     public class AccountsService : ServiceBase, IAccountsService
     {
@@ -35,6 +37,15 @@ namespace Moneta.Frontend.CommandProcessor.Services
             StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await _Client.PostAsync($"/accounts", httpContent);
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async void Delete(DeleteAccountCommand deleteAccount, string jwtToken)
+        {
+            Authenticate(jwtToken);
+
+            HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{deleteAccount.Id}");
 
             response.EnsureSuccessStatusCode();
         }

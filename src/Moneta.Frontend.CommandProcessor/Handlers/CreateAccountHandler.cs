@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.CommandProcessor.Handlers
 {
-    internal class CreateAccountHandler : ICommandHandler<CreateAccountCommand>
+    public class CreateAccountHandler : ICommandHandler<CreateAccountCommand>
     {
         private readonly ILogger<CreateAccountHandler> _Logger;
         private readonly IAccountsService _AccountService;

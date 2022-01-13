@@ -66,8 +66,9 @@ namespace AccountService.Controllers
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id) {
+            Claim owner = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
-            Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id);
+            Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id && a.Owner == owner.Value);
 
             if (account == null) {
                 return Ok();
