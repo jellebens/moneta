@@ -30,7 +30,15 @@ function Sidebar(props) {
   const sidebar = React.useRef();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
-    return props.location.pathname === routeName ? "active" : "";
+    console.log(props.location.pathname === '/');
+    if (props.location.pathname === '/') {
+      return props.location.pathname === routeName ? "active" : "";
+    } else {
+      return props.location.pathname.indexOf(routeName, 0) > -1  && routeName !== '/'  ? "active" : "";
+    }
+
+
+
   };
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
@@ -70,7 +78,7 @@ function Sidebar(props) {
       <div className="sidebar-wrapper" ref={sidebar}>
         <Nav>
           {props.routes.map((prop, key) => {
-            if(prop.showInSideBar === true){
+            if (prop.showInSideBar === true) {
               return (
                 <li
                   className={
@@ -87,7 +95,7 @@ function Sidebar(props) {
                     <p>{prop.name}</p>
                   </NavLink>
                 </li>
-              ); 
+              );
             }
           })}
         </Nav>
