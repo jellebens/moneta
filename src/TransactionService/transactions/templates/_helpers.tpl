@@ -35,10 +35,12 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "transactions.labels" -}}
+app: {{ include "transactions.fullname" . }}
 helm.sh/chart: {{ include "transactions.chart" . }}
 {{ include "transactions.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}

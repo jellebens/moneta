@@ -34,10 +34,12 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "frontend-commandprocessor.labels" -}}
+app: {{ include "frontend-commandprocessor.fullname" . }}
 helm.sh/chart: {{ include "frontend-commandprocessor.chart" . }}
 {{ include "frontend-commandprocessor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
