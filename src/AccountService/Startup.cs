@@ -48,6 +48,18 @@ namespace AccountService
 
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
 
+            services.AddHeaderPropagation(o =>
+            {
+                // propagate the header if present
+                o.Headers.Add("x-request-id");
+                o.Headers.Add("x-b3-traceid");
+                o.Headers.Add("x-b3-spanid");
+                o.Headers.Add("x-b3-parentspanid");
+                o.Headers.Add("x-b3-sampled");
+                o.Headers.Add("x-b3-flags");
+                o.Headers.Add("x-ot-span-context");
+            });
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

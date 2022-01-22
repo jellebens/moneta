@@ -37,7 +37,9 @@ export const NewAccountView = () => {
         }
     };
 
-
+    const cancelForm = async () => {
+        history.push("/accounts");
+    }
 
     const submitForm = async () => {
         
@@ -63,7 +65,7 @@ export const NewAccountView = () => {
                 "Currency": currency
             } ,config));
             
-            wait(300);
+            await wait(300);
 
             history.push("/accounts")
         }).catch((e) => {
@@ -106,6 +108,7 @@ export const NewAccountView = () => {
                                     <Button
                                         className="btn-round"
                                         color="danger"
+                                        onClick={cancelForm}
                                     >
                                         Cancel
                                     </Button>
