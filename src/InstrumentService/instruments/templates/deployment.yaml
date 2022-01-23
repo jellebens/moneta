@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "accounts.fullname" . }}
+  name: {{ include "instruments.fullname" . }}
   labels:
-    {{- include "accounts.labels" . | nindent 4 }}
+    {{- include "instruments.labels" . | nindent 4 }}
 spec:
-{{- if not .Values.autoscaling.enabled }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-{{- end }}
+  {{- end }}
   selector:
     matchLabels:
-      {{- include "accounts.selectorLabels" . | nindent 6 }}
+      {{- include "instruments.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       labels:
-        {{- include "accounts.labels" . | nindent 8 }}
+        {{- include "instruments.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "accounts.serviceAccountName" . }}
+      serviceAccountName: {{ include "instruments.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -39,7 +39,7 @@ spec:
           - name: JAEGER_AGENT_PORT
             value: "{{ .Values.jaeger.agent.port }}"
           - name: SERVICE_NAME
-            value: "{{ template "accounts.fullname" . }}.{{ .Release.Namespace }}"
+            value: "{{ template "instruments.fullname" . }}.{{ .Release.Namespace }}"
           - name: ASPNETCORE_URLS
             value: http://+:8080
           - name: "Accounts"

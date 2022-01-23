@@ -16,9 +16,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moneta.Core", "Moneta.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moneta.Frontend.API", "Moneta.Frontend.API\Moneta.Frontend.API.csproj", "{F056DC33-DAD1-45DA-B038-31574DF262EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moneta.Frontend.CommandProcessor", "Moneta.Frontend.CommandProcessor\Moneta.Frontend.CommandProcessor.csproj", "{88400DB2-3C12-4D23-96A3-447F34F5F902}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moneta.Frontend.CommandProcessor", "Moneta.Frontend.CommandProcessor\Moneta.Frontend.CommandProcessor.csproj", "{88400DB2-3C12-4D23-96A3-447F34F5F902}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moneta.Frontend.Commands", "Moneta.Frontend.Commands\Moneta.Frontend.Commands.csproj", "{4ADE6553-5F77-431F-A50D-CAF9DEAA3ABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moneta.Frontend.Commands", "Moneta.Frontend.Commands\Moneta.Frontend.Commands.csproj", "{4ADE6553-5F77-431F-A50D-CAF9DEAA3ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentService", "InstrumentService\InstrumentService.csproj", "{56557991-32C9-4357-BC52-7DDBB639DBD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{4ADE6553-5F77-431F-A50D-CAF9DEAA3ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ADE6553-5F77-431F-A50D-CAF9DEAA3ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ADE6553-5F77-431F-A50D-CAF9DEAA3ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56557991-32C9-4357-BC52-7DDBB639DBD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56557991-32C9-4357-BC52-7DDBB639DBD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56557991-32C9-4357-BC52-7DDBB639DBD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56557991-32C9-4357-BC52-7DDBB639DBD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

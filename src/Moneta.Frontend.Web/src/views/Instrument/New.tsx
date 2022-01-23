@@ -24,17 +24,23 @@ const wait = (ms: number): Promise<void> => {
 export const NewInstrumentView = () => {
     const { instance, accounts } = useMsal();
     const [instrumentName, setInstrumentName] = useState("");
+    const [type, setType] = useState("");
     const [isin, setIsin] = useState("");
     const [ticker, setTicker] = useState("");
     const [currency, setCurrency] = useState("EUR");
+    const [url, setUrl] = useState("EUR");
     const [IsSubmitted, setIsSubmitted] = React.useState(false);
     const history = useHistory();
+
+
+    const validateForm = () : boolean => {
+        return instrumentName !== "" && isin !== "" && ticker !== "" && type !== "";
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
-
-        if (instrumentName !== "" && isin !== "" && ticker !== "") {
+        if (validateForm()) {
             await submitForm();
         }
     };
@@ -64,9 +70,11 @@ export const NewInstrumentView = () => {
 
             await (await axios.post(url,{
                 "Name": instrumentName,
+                "Type": type,
                 "Isin": isin,
                 "Ticker": ticker,
-                "Currency": currency
+                "Currency": currency,
+                "Url": url
             } ,config));
             
             await wait(300);
@@ -95,7 +103,19 @@ export const NewInstrumentView = () => {
                                         <Input type="text" value={instrumentName} onChange={(e) => setInstrumentName(e.target.value)} />
                                     </FormGroup>
                                 </Col>
-                            </Row>
+                            </Row
+                            <Row>
+                                <Col md="12">
+                                    <FormGroup>
+                                        <label>Currency</label>
+                                        <Input type={"select"} value={type} onChange={(e) => setType(e.target.value)}>
+                                            <option>ETF</option>
+                                            <option>Fund</option>
+                                            <option>Stock</option>
+                                        </Input>
+                                    </FormGroup>
+                                </Col>
+                            </Row>>
                             <Row>
                                 <Col md="12">
                                     <FormGroup>
@@ -120,6 +140,14 @@ export const NewInstrumentView = () => {
                                             <option>EUR</option>
                                             <option>USD</option>
                                         </Input>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md="12">
+                                    <FormGroup>
+                                        <label>Url</label>
+                                        <Input type="text" value={url} onChange={(e) => setUrl(e.target.value)} />
                                     </FormGroup>
                                 </Col>
                             </Row>

@@ -19,7 +19,7 @@ export const AccountsList = async (token: string): Promise<AccountListItem[]> =>
         mode: "no-cors",
     };
 
-    return await (await axios.get(url, config)).data;
+    return (await axios.get(url, config)).data;
 }
 
 export const DeleteAccount = async (token: string, id : string) => {
