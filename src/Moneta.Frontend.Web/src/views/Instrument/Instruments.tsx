@@ -11,7 +11,7 @@ export interface InstrumentListItem {
 
 export const dummyAccounts: InstrumentListItem[] = [
     { id :"1", name: "SPDR MSCI World UCITS ETF",isin: "IE00BFY0GT14", ticker: "SWRD", currency: "EUR" },
-    { id :"1", name: "iShares Nasdaq 100 UCITS ETF (Acc)",isin: "IE00B53SZB19", ticker: "CNX1", currency: "EUR" },
+    { id :"2", name: "iShares Nasdaq 100 UCITS ETF (Acc)",isin: "IE00B53SZB19", ticker: "CNX1", currency: "EUR" },
 ]
 
 export const InstrumentList = async (token: string): Promise<InstrumentListItem[]> => {

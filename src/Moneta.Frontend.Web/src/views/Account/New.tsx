@@ -80,7 +80,7 @@ export const NewAccountView = () => {
             <Col md="12">
                 <Card>
                     <CardHeader>
-                        <CardTitle tag="h4">Create new Account</CardTitle>
+                        <CardTitle tag="h4">Create new account</CardTitle>
                     </CardHeader>
                     <CardBody>
                         <Form onSubmit={handleSubmit} noValidate={true}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { AccountsList, AccountListItem, DeleteAccount } from "views/Account/Accounts";
+import { AccountsList, AccountListItem, DeleteAccount, dummyAccounts } from "views/Account/Accounts";
 import { loginRequest } from "AuthConfig";
 import { NavLink } from "react-router-dom";
 import {
