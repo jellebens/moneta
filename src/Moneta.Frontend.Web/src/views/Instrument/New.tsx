@@ -103,7 +103,7 @@ export const NewInstrumentView = () => {
                                         <Input type="text" value={instrumentName} onChange={(e) => setInstrumentName(e.target.value)} />
                                     </FormGroup>
                                 </Col>
-                            </Row
+                            </Row>
                             <Row>
                                 <Col md="12">
                                     <FormGroup>
@@ -115,7 +115,7 @@ export const NewInstrumentView = () => {
                                         </Input>
                                     </FormGroup>
                                 </Col>
-                            </Row>>
+                            </Row>
                             <Row>
                                 <Col md="12">
                                     <FormGroup>

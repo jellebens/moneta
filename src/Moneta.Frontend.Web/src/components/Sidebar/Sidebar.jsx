@@ -23,6 +23,7 @@ import { Nav } from "reactstrap";
 import PerfectScrollbar from "perfect-scrollbar";
 
 import logo from "logo.png";
+import { AuthenticatedTemplate } from "@azure/msal-react";
 
 var ps;
 
@@ -73,6 +74,7 @@ function Sidebar(props) {
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>
         <Nav>
+        <AuthenticatedTemplate>
           {props.routes.map((prop, key) => {
             if (prop.showInSideBar === true) {
               return (
@@ -94,6 +96,7 @@ function Sidebar(props) {
               );
             }
           })}
+          </AuthenticatedTemplate>
         </Nav>
       </div>
     </div>
