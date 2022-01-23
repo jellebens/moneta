@@ -3,6 +3,8 @@ import Home from "views/Home/Index"
 import Dashboard from "views/Dashboard/Index";
 import AccountOverview from "views/Account/Index";
 import CreateAccount from "views/Account/New";
+import InstrumentOverview from "views/Instrument/Index";
+import CreateInstrument from "views/Instrument/New";
 
 
 var routes = [
@@ -32,6 +34,19 @@ var routes = [
     name: "Create Account",
     showInSideBar: false,
     component: CreateAccount
+  },
+  {
+    path: "/instruments",
+    name: "Instruments",
+    icon: "fa fa-coins",
+    showInSideBar: true,
+    component: InstrumentOverview
+  },
+  {
+    path: "/instruments/new",
+    name: "Create Account",
+    showInSideBar: false,
+    component: CreateInstrument
   }
 
 ];

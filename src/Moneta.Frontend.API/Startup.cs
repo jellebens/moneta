@@ -39,17 +39,6 @@ namespace Moneta.Frontend.API
             services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
             services.AddSingleton<IBus, RabbitMqBus>();
 
-            services.AddHeaderPropagation(o =>
-            {
-                // propagate the header if present
-                o.Headers.Add("x-request-id");
-                o.Headers.Add("x-b3-traceid");
-                o.Headers.Add("x-b3-spanid");
-                o.Headers.Add("x-b3-parentspanid");
-                o.Headers.Add("x-b3-sampled");
-                o.Headers.Add("x-b3-flags");
-                o.Headers.Add("x-ot-span-context");
-            });
 
             //https://damienbod.com/2020/11/09/implement-a-web-app-and-an-asp-net-core-secure-api-using-azure-ad-which-delegates-to-second-api/
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
