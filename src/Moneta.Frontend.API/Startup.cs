@@ -61,6 +61,9 @@ namespace Moneta.Frontend.API
                                                                                 }).SetHandlerLifetime(TimeSpan.FromMinutes(5))  
                                                                                   .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddHttpClient<IYahooFinanceClient, YahooFinanceClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                                                                       .AddPolicyHandler(GetRetryPolicy());
+
             services.AddOpenTelemetryTracing((builder) =>
             {
                 builder.AddAspNetCoreInstrumentation(
