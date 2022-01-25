@@ -84,16 +84,12 @@ export const NewAccountView = () => {
                     </CardHeader>
                     <CardBody>
                         <Form onSubmit={handleSubmit} noValidate={true}>
-                            <Row>
-                                <Col md="12">
                                     <FormGroup>
                                         <label>Name</label>
                                         <Input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} />
                                     </FormGroup>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md="12">
+                                
+                            
                                     <FormGroup>
                                         <label>Currency</label>
                                         <Input type={"select"} value={currency} onChange={(e) => setCurrency(e.target.value)}>
@@ -101,27 +97,12 @@ export const NewAccountView = () => {
                                             <option>USD</option>
                                         </Input>
                                     </FormGroup>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <div className="update ml-auto mr-auto">
-                                    <Button
-                                        className="btn-round"
-                                        color="danger"
-                                        onClick={cancelForm}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        className="btn-round"
-                                        color="primary"
-                                        type="submit"
-                                        disabled={IsSubmitted}
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                            </Row>
+                                    <FormGroup>
+                                        <div className="text-center">
+                                            <Button className="btn-round" color="danger" onClick={cancelForm}>Cancel</Button>
+                                            <Button className="btn-round" color="primary" type="submit" disabled={IsSubmitted}>Save</Button>
+                                        </div>
+                                    </FormGroup>
                         </Form>
                     </CardBody>
                 </Card>

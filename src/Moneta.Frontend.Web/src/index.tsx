@@ -23,7 +23,7 @@ import AdminLayout from "layouts/Admin";
 export const msalInstance = new PublicClientApplication(msalConfig);
 
 if (process.env.REACT_APP_API !== undefined ) {
-  axios.defaults.baseURL = process.env.REACT_APP_API + "/api/accounts";
+  axios.defaults.baseURL = process.env.REACT_APP_API;
 }
 
 

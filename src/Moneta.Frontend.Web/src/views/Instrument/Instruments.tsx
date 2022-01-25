@@ -9,6 +9,13 @@ export interface InstrumentListItem {
 
 }
 
+export interface InstrumentSearchResult {
+    exchange: string
+    symbol: string
+    type : string
+    name: string
+}
+
 export const dummyAccounts: InstrumentListItem[] = [
     { id :"1", name: "SPDR MSCI World UCITS ETF",isin: "IE00BFY0GT14", ticker: "SWRD", currency: "EUR" },
     { id :"2", name: "iShares Nasdaq 100 UCITS ETF (Acc)",isin: "IE00B53SZB19", ticker: "CNX1", currency: "EUR" },
@@ -37,6 +44,19 @@ export const DeleteInstrument = async (token: string, id : string) => {
 
     await (await axios.delete(url, config));
 }
+
+
+export const Search = async (q: string, token: string): Promise<InstrumentSearchResult[]> => {
+    let url = "/api/instruments/search?q="+ q;
+
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        mode: "no-cors",
+    };
+
+    return await (await axios.get(url, config)).data;
+}
+
 
 const wait = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
