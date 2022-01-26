@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moneta.Frontend.API.Models.yfapi;
+using Moneta.Frontend.API.Models.Yfapi;
 using Moneta.Frontend.Web.Services;
 using Newtonsoft.Json;
 using System;

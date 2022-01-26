@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace Moneta.Frontend.API.Models.yfapi
+namespace Moneta.Frontend.API.Models.Yfapi
 {
-   
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Result
     {
         public string Symbol { get; set; }
         public string Name { get; set; }
         public string Exch { get; set; }
         public string Type { get; set; }
-        public string exchDisp { get; set; }
-        public string typeDisp { get; set; }
+        public string ExchDisp { get; set; }
+        public string TypeDisp { get; set; }
     }
 
     public class ResultSet

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moneta.Frontend.API.Models;
-using Moneta.Frontend.API.Models.yfapi;
+using Moneta.Frontend.API.Models.Yfapi;
 using Moneta.Frontend.API.Services;
 using System;
 using System.Collections.Generic;
