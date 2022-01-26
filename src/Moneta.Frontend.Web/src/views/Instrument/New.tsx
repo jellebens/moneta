@@ -7,10 +7,10 @@ import {
     Row,
     Col,
     Button,
-    Label,
+    Label, Spinner,
     Form, FormGroup,
     Input, InputGroup, InputGroupAddon,
-    Table
+    Table, Fade
 
 } from "reactstrap";
 import axios from "axios";
@@ -32,9 +32,12 @@ export const NewInstrumentView = () => {
     const history = useHistory();
 
     const [searchValue, setSearchValue] = useState("");
-    const [searchResults, setSearchResults] = React.useState<InstrumentSearchResult[]>([]);
+    const [searchResults, setSearchResults] = useState<InstrumentSearchResult[]>([]);
+    const [hasSearchResults, setHasSearchResults] = useState(false)
+    const [isLoading, setIsLoading] = React.useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             if(searchValue.length > 1){
                 const request = {
@@ -44,13 +47,16 @@ export const NewInstrumentView = () => {
         
                 instance.acquireTokenSilent(request).then(async (response) => {
                     const r = await Search(searchValue, response.accessToken);
+                    setHasSearchResults(r.length > 0)
                     setSearchResults(r);
+                    setIsLoading(false);
                 }).catch((e) => {
                     console.log(e);
                 });
             }
 
-        }, 300);
+        }, 150);
+        
         return () => clearTimeout(timeoutId);
     }, [searchValue]);
 
@@ -59,8 +65,8 @@ export const NewInstrumentView = () => {
     };
 
     return (
-        <Row>
-            <Col md="12">
+                <>
+
                 <Card>
                     <CardHeader>
                         <CardTitle tag="h4">Create new instrument</CardTitle>
@@ -75,6 +81,13 @@ export const NewInstrumentView = () => {
                                 </InputGroup>
                             </FormGroup>
                         </Form>
+                    </CardBody>
+                </Card>
+                <Fade timeout={150} in={hasSearchResults}>
+                <Card>
+                        <CardBody>
+                        {
+                                isLoading ? <p className="text-center"><Spinner color="primary" /></p> :
                         <Table striped>
                                         <thead className="text-primary">
                                             <tr>
@@ -94,7 +107,7 @@ export const NewInstrumentView = () => {
                                                     <td>{instrument.type}</td>
                                                     <td>
                                                         <Button className="btn btn-icon btn-round" color="primary" type="button" onClick={() => {}}>
-                                                        <i className="fa fa-plus"></i>
+                                                        <i className="fa fa-arrow-right"></i>
                                                         </Button>
                                                     </td>
                                                         
@@ -102,11 +115,11 @@ export const NewInstrumentView = () => {
                                             ))}
                                         </tbody>
                                     </Table>
-                    </CardBody>
-                </Card>
-            </Col>
-        </Row>
-
+                            }
+                        </CardBody>
+                    </Card>
+                    </Fade>
+                    </>
     );
 }
 

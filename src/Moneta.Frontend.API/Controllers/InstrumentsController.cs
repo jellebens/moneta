@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moneta.Frontend.API.Models;
 using Moneta.Frontend.API.Models.rapidapi;
 using Moneta.Frontend.API.Services;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Controllers
@@ -19,6 +21,8 @@ namespace Moneta.Frontend.API.Controllers
         }
 
         [HttpGet("search")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(InstrumentSearchResult[]), StatusCodes.Status200OK)]
         public async Task<IActionResult> Search(string q) {
             AutoCompleteResponse result = await _YahooFinanceClient.Search(q);
 
