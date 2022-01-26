@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Moneta.Frontend.API.Models.rapidapi;
+using Moneta.Frontend.API.Models.yfapi;
 using Moneta.Frontend.Web.Services;
 using Newtonsoft.Json;
 using System;
@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Services
 {
-    public interface IYahooFinanceClient  {
+    public interface IYahooFinanceClient
+    {
         public Task<AutoCompleteResponse> Search(string query);
     }
 
@@ -27,22 +28,23 @@ namespace Moneta.Frontend.API.Services
         }
         public async Task<AutoCompleteResponse> Search(string query)
         {
-            var request = new HttpRequestMessage
+            HttpRequestMessage request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://yh-finance.p.rapidapi.com/auto-complete?q={query}"),
-                Headers = {
-                            { "x-rapidapi-host", "yh-finance.p.rapidapi.com" },
-                            { "x-rapidapi-key", _Configuration.GetValue<string>("rapidapi-key") },
-                },
+                RequestUri = new Uri($"https://yfapi.net/v6/finance/autocomplete?lang=en&query={query}"),
+                Headers ={
+                            { "x-api-key", _Configuration.GetValue<string>("financeapi-key") },
+                         },
             };
 
-            using (HttpResponseMessage response = await _Client.SendAsync(request)) { 
+
+            using (HttpResponseMessage response = await _Client.SendAsync(request))
+            {
                 response.EnsureSuccessStatusCode();
 
                 string json = await response.Content.ReadAsStringAsync();
 
-                AutoCompleteResponse autoCompleteResponse = JsonConvert.DeserializeObject<AutoCompleteResponse>(json); 
+                AutoCompleteResponse autoCompleteResponse = JsonConvert.DeserializeObject<AutoCompleteResponse>(json);
 
                 return autoCompleteResponse;
             }
