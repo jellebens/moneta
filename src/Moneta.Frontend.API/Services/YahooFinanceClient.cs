@@ -11,6 +11,7 @@ namespace Moneta.Frontend.API.Services
 {
     public interface IYahooFinanceClient
     {
+        public Task<QuoteResults> Detail(string symbol);
         public Task<AutoCompleteResponse> Search(string query);
     }
 
@@ -47,6 +48,31 @@ namespace Moneta.Frontend.API.Services
                 AutoCompleteResponse autoCompleteResponse = JsonConvert.DeserializeObject<AutoCompleteResponse>(json);
 
                 return autoCompleteResponse;
+            }
+
+        }
+
+        public async Task<QuoteResults> Detail(string symbol)
+        {
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols={symbol}"),
+                Headers ={
+                            { "x-api-key", _Configuration.GetValue<string>("financeapi-key") },
+                         },
+            };
+
+
+            using (HttpResponseMessage response = await _Client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+
+                string json = await response.Content.ReadAsStringAsync();
+
+                QuoteResults results = JsonConvert.DeserializeObject<QuoteResults>(json);
+
+                return results;
             }
 
         }

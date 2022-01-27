@@ -4,7 +4,8 @@ import Dashboard from "views/Dashboard/Index";
 import AccountOverview from "views/Account/Index";
 import CreateAccount from "views/Account/New";
 import InstrumentOverview from "views/Instrument/Index";
-import CreateInstrument from "views/Instrument/New";
+import SearchInstrument from "views/Instrument/Search";
+import CreateInstrument from "views/Instrument/Create";
 
 
 var routes = [
@@ -43,8 +44,14 @@ var routes = [
     component: InstrumentOverview
   },
   {
+    path: "/instruments/search",
+    name: "Create Instrument",
+    showInSideBar: false,
+    component: SearchInstrument
+  },
+  {
     path: "/instruments/new",
-    name: "Create Account",
+    name: "Create Instrument",
     showInSideBar: false,
     component: CreateInstrument
   }

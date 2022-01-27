@@ -2,7 +2,7 @@
 
 namespace Moneta.Frontend.API.Models.Yfapi
 {
-    public class Result
+    public class AutoCompleteResult
     {
         public string Symbol { get; set; }
         public string Name { get; set; }
@@ -15,7 +15,7 @@ namespace Moneta.Frontend.API.Models.Yfapi
     public class ResultSet
     {
         public string Query { get; set; }
-        public List<Result> Result { get; set; }
+        public List<AutoCompleteResult> Result { get; set; }
     }
 
     public class AutoCompleteResponse

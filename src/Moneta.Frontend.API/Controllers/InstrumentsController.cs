@@ -21,15 +21,15 @@ namespace Moneta.Frontend.API.Controllers
             _YahooFinanceClient = yahooFinanceClient;
         }
 
-        [HttpGet("search")]
+        [HttpGet("search/{symbol}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(InstrumentSearchResult[]), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Search(string q) {
-            AutoCompleteResponse response = await _YahooFinanceClient.Search(q);
+        public async Task<IActionResult> Search(string symbol) {
+            AutoCompleteResponse response = await _YahooFinanceClient.Search(symbol);
 
             List<InstrumentSearchResult> results = new List<InstrumentSearchResult>();
 
-            foreach (Result result in response.ResultSet.Result)
+            foreach (AutoCompleteResult result in response.ResultSet.Result)
             {
                 InstrumentSearchResult r = new InstrumentSearchResult();
                 r.Exchange = result.Exch;
@@ -41,6 +41,46 @@ namespace Moneta.Frontend.API.Controllers
             }
 
             return Ok(results.ToArray());
+        }
+
+        [HttpGet("{symbol}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(InstrumentSearchResult[]), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Detail(string symbol)
+        {
+            QuoteResults responses = await _YahooFinanceClient.Detail(symbol);
+
+            if (responses.QuoteResponse.Result.Count != 1) {
+                BadRequest($"Only one result was expected bu got {responses.QuoteResponse.Result.Count}");
+            }
+
+            QuoteResult result = responses.QuoteResponse.Result[0];
+
+            InstrumentDetailResult retVal = new InstrumentDetailResult();
+            retVal.Name = result.LongName;
+            retVal.Symbol = result.Symbol;
+            retVal.Type = MapQuoteType(result.QuoteType);
+            retVal.Exchange = result.Exchange;
+            retVal.Currency = result.Currency;
+
+            return Ok(retVal);
+        }
+
+        private string MapQuoteType(string quoteType)
+        {
+            switch (quoteType.ToUpper())
+            {
+                case "EFT":
+                    return "EFT";
+                case "EQUITY":
+                    return "Stock";
+                case "INDEX":
+                    return "Index";
+                case "MUTUALFUND":
+                    return "Mutual Fund";
+                default:
+                    return quoteType.ToUpper();
+            }
         }
 
         private string MapType(string type)

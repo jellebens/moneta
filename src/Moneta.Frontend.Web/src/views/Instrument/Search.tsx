@@ -13,9 +13,8 @@ import {
     Table, Fade
 
 } from "reactstrap";
-import axios from "axios";
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
-import { AccountInfo, NavigationClient } from "@azure/msal-browser";
+import {  useMsal } from "@azure/msal-react";
+import { AccountInfo } from "@azure/msal-browser";
 import { loginRequest } from "AuthConfig";
 import { useHistory } from "react-router-dom";
 import { InstrumentSearchResult, Search } from "views/Instrument/Instruments";
@@ -27,7 +26,7 @@ const wait = (ms: number): Promise<void> => {
 
 
 
-export const NewInstrumentView = () => {
+export const SearchInstrumentView = () => {
     const { instance, accounts } = useMsal();
     const history = useHistory();
 
@@ -35,6 +34,10 @@ export const NewInstrumentView = () => {
     const [searchResults, setSearchResults] = useState<InstrumentSearchResult[]>([]);
     const [hasSearchResults, setHasSearchResults] = useState(false)
     const [isLoading, setIsLoading] = React.useState(true);
+
+    function onButtonClicked(item: InstrumentSearchResult){
+        history.push("/instruments/new",item);
+    }
 
     useEffect(() => {
         setIsLoading(true);
@@ -55,7 +58,7 @@ export const NewInstrumentView = () => {
                 });
             }
 
-        }, 150);
+        }, 300);
         
         return () => clearTimeout(timeoutId);
     }, [searchValue]);
@@ -69,12 +72,12 @@ export const NewInstrumentView = () => {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle tag="h4">Create new instrument</CardTitle>
+                        <CardTitle tag="h4">Search new instrument</CardTitle>
                     </CardHeader>
                     <CardBody>
                         <Form>
                             <FormGroup>
-                                <Label for="exampsearchleDate">Search by ticker</Label>
+                                <Label for="search">Search by ticker</Label>
                                 <InputGroup>
                                     <Input type="search" name="search" id="search" placeholder="ticker" onChange={onChange} />
                                     <InputGroupAddon addonType="append"><span className="input-group-text"><i className="fa fa-search" /></span></InputGroupAddon>
@@ -106,8 +109,8 @@ export const NewInstrumentView = () => {
                                                     <td>{instrument.exchange}</td>
                                                     <td>{instrument.type}</td>
                                                     <td>
-                                                        <Button className="btn btn-icon btn-round" color="primary" type="button" onClick={() => {}}>
-                                                        <i className="fa fa-arrow-right"></i>
+                                                        <Button className="btn btn-icon btn-round" color="primary" type="button" onClick={() => onButtonClicked(instrument) }>
+                                                            <i className="fa fa-arrow-right"></i>
                                                         </Button>
                                                     </td>
                                                         
@@ -124,4 +127,4 @@ export const NewInstrumentView = () => {
 }
 
 
-export default NewInstrumentView
+export default SearchInstrumentView

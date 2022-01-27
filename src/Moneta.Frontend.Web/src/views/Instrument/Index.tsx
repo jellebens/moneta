@@ -75,7 +75,7 @@ export const InstrumentOverview = () => {
                             <CardTitle tag="h4">Instruments</CardTitle>
                         </CardHeader>
                         <CardBody>
-                            <NavLink className="btn btn-icon btn-round btn-primary" to="/instruments/new"><i className="fa fa-plus"></i></NavLink>
+                            <NavLink className="btn btn-icon btn-round btn-primary" to="/instruments/search"><i className="fa fa-plus"></i></NavLink>
                             {
                                 isLoading ? <p className="text-center"><Spinner color="primary" /></p> :
                                     <Table striped>
