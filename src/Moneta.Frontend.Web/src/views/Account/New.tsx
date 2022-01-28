@@ -12,8 +12,8 @@ import {
 
 } from "reactstrap";
 import axios from "axios";
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
-import { AccountInfo, NavigationClient } from "@azure/msal-browser";
+import { useMsal } from "@azure/msal-react";
+import { AccountInfo } from "@azure/msal-browser";
 import { loginRequest } from "AuthConfig";
 import { useHistory } from "react-router-dom";
 

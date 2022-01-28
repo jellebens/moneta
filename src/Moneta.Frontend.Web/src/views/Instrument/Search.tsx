@@ -4,8 +4,6 @@ import {
     CardHeader,
     CardBody,
     CardTitle,
-    Row,
-    Col,
     Button,
     Label, Spinner,
     Form, FormGroup,
@@ -90,7 +88,7 @@ export const SearchInstrumentView = () => {
                 <Card>
                         <CardBody>
                         {
-                                isLoading ? <p className="text-center"><Spinner color="primary" /></p> :
+                                isLoading ? <div className="text-center"><Spinner color="primary" /></div> :
                         <Table striped>
                                         <thead className="text-primary">
                                             <tr>
