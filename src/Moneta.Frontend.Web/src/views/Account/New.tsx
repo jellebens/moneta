@@ -18,6 +18,8 @@ import { loginRequest } from "AuthConfig";
 import { useHistory } from "react-router-dom";
 import { v4 as uuid } from 'uuid';
 
+import { HubConnectionBuilder } from '@microsoft/signalr';
+
 const wait = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -28,6 +30,11 @@ export const NewAccountView = () => {
     const [currency, setCurrency] = useState("EUR");
     const [IsSubmitted, setIsSubmitted] = React.useState(false);
     const history = useHistory();
+
+    const connection = new HubConnectionBuilder()
+        .withUrl(process.env.REACT_APP_API + "/hubs/commands")
+        .withAutomaticReconnect()
+        .build();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
@@ -60,16 +67,19 @@ export const NewAccountView = () => {
                 headers: { Authorization: `Bearer ${response.accessToken}` },
                 mode: "no-cors",
             };
+            var id = uuid();
 
-            await (await axios.post(url,{
-                "Id": uuid(),
+            connection.start().then(() => connection.on(id, msg => {
+                if(msg.status === 'Completed'){
+                    history.push("/accounts")
+                }
+            }));
+            await wait(300);
+            await axios.post(url,{
+                "Id": id,
                 "Name": accountName,
                 "Currency": currency
-            } ,config));
-            
-            await wait(300);
-
-            history.push("/accounts")
+            } ,config);
         }).catch((e) => {
             console.log(e);
         });

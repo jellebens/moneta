@@ -1,8 +1,5 @@
-﻿using Autofac;
-using Azure.Storage.Queues;
-using Azure.Storage.Queues.Models;
+﻿using System;
 using Moneta.Core;
-using Moneta.Frontend.CommandProcessor.Handlers;
 using Moneta.Frontend.Commands;
 using Newtonsoft.Json;
 using OpenTelemetry;
@@ -10,7 +7,8 @@ using OpenTelemetry.Context.Propagation;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Diagnostics;
-using System.Reflection;
+using Microsoft.AspNetCore.SignalR.Client;
+
 using System.Text;
 
 namespace Moneta.Frontend.CommandProcessor
@@ -25,6 +23,8 @@ namespace Moneta.Frontend.CommandProcessor
         private IConnection _Connection;
         private IModel _Channel;
         private EventingBasicConsumer consumer;
+
+        private HubConnection _HubConnection;
 
         private static readonly ActivitySource Activity = new(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
@@ -59,8 +59,7 @@ namespace Moneta.Frontend.CommandProcessor
         }
 
 
-
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _Logger.LogInformation($"Starting service");
 
@@ -87,7 +86,12 @@ namespace Moneta.Frontend.CommandProcessor
 
             consumer = new EventingBasicConsumer(_Channel);
 
-            consumer.Received += (model, ea) =>
+            _HubConnection = new HubConnectionBuilder()
+                .WithUrl(_Configuration.GetValue<string>("COMMANDS_HUB"))
+                                    .WithAutomaticReconnect()
+                                    .Build() ;
+            await _HubConnection.StartAsync();
+            consumer.Received += async (model, ea) =>
             {
                 IBasicProperties properties = ea.BasicProperties;
                 var parentContext = Propagator.Extract(default, properties, ExtractTraceContextFromBasicProperties);
@@ -114,16 +118,24 @@ namespace Moneta.Frontend.CommandProcessor
                         SerializationBinder = CommandsBinder.Instance()
                     });
 
-                     
+                    Guid id = ((ICommand)command).Id;
                     try
                     {
+
+                        CommandStatus start = CommandStatus.Start(command.Id);
+                        await _HubConnection.SendAsync("Update", id , start);
                         _Dispatcher.Dispatch(token, command);
+                        Thread.Sleep(10000);
                         _Channel.BasicAck(ea.DeliveryTag, false);
+                        CommandStatus complete = CommandStatus.Complete(command.Id);
+                        await _HubConnection.SendAsync("Update", id, complete);
                     }
                     catch (Exception exc)
                     {
                         _Logger.LogError($"Exception occured when executing command ({exc.Message}), deadlettering message.");
                         _Channel.BasicNack(ea.DeliveryTag, false, false);
+                        CommandStatus complete = CommandStatus.Complete(command.Id, exc.Message);
+                        await _HubConnection.SendAsync("Update", id, complete);
                     }
 
 
@@ -134,20 +146,17 @@ namespace Moneta.Frontend.CommandProcessor
             _Channel.BasicConsume(Queues.Frontend.Commands, false, consumer);
 
             _Logger.LogInformation($"Listening for messages");
-
-            return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
+            _Logger.LogInformation($"Shutting down service");
+
             _Channel.Dispose();
             
             _Connection.Dispose();
 
-
-            _Logger.LogInformation($"Shutting down service");
-            return Task.CompletedTask;
-
+            await _HubConnection.DisposeAsync();
         }
     }
 }

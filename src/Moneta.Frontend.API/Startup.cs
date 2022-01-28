@@ -18,6 +18,7 @@ using Moneta.Core.Jwt;
 using Moneta.Frontend.API.Bus;
 using System.Diagnostics;
 using Moneta.Core;
+using Moneta.Frontend.API.Hubs;
 
 namespace Moneta.Frontend.API
 {
@@ -51,6 +52,7 @@ namespace Moneta.Frontend.API
 
 
             services.AddControllers();
+            services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Moneta.Frontend.API", Version = "v1" });
@@ -123,6 +125,7 @@ namespace Moneta.Frontend.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers().RequireAuthorization();
+                endpoints.MapHub<CommandHub>("/hubs/commands");
             });
         }
     }
