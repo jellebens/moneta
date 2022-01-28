@@ -8,6 +8,7 @@ namespace Moneta.Frontend.Commands
 {
     public class CreateAccountCommand: ICommand
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
         public string Currency { get; set; }

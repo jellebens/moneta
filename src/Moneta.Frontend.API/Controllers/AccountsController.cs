@@ -54,9 +54,9 @@ namespace Moneta.Frontend.API.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            DeleteAccountCommand deleteAccount = new DeleteAccountCommand() { Id = id };
+            DeleteAccountCommand deleteAccount = new DeleteAccountCommand() { Id=Guid.NewGuid(), AccountId = id };
             string token = _JwtTokenBuilder.Build(this.User);
-            //https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
+            
             await _Bus.SendAsync(Queues.Frontend.Commands, token, deleteAccount);
 
             return Ok();

@@ -9,5 +9,6 @@ namespace Moneta.Frontend.Commands
     public class DeleteAccountCommand: ICommand
     {
         public Guid Id { get; set; }
+        public Guid AccountId { get; set; }
     }
 }

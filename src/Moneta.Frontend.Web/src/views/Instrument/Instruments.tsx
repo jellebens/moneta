@@ -24,6 +24,15 @@ export interface InstrumentDetailResult {
     currency: string
 }
 
+export interface NewInstrument {
+    exchange: string
+    symbol: string
+    type : string
+    name: string
+    isin: string
+    currency: string
+}
+
 export const dummyAccounts: InstrumentListItem[] = [
     { id :"1", name: "***DUMMY*** SPDR MSCI World UCITS ETF",isin: "IE00BFY0GT14", ticker: "SWRD", currency: "EUR" },
     { id :"2", name: "***DUMMY*** iShares Nasdaq 100 UCITS ETF (Acc)",isin: "IE00B53SZB19", ticker: "CNX1", currency: "EUR" },

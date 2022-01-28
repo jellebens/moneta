@@ -16,6 +16,7 @@ import { useMsal } from "@azure/msal-react";
 import { AccountInfo } from "@azure/msal-browser";
 import { loginRequest } from "AuthConfig";
 import { useHistory } from "react-router-dom";
+import { v4 as uuid } from 'uuid';
 
 const wait = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -61,6 +62,7 @@ export const NewAccountView = () => {
             };
 
             await (await axios.post(url,{
+                "Id": uuid(),
                 "Name": accountName,
                 "Currency": currency
             } ,config));

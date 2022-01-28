@@ -42,7 +42,7 @@ export const InstrumentOverview = () => {
         }
 
         doListAccounts();
-    }, []);
+    });
 
     function handleRemove(id: string) {
         setIsLoading(true);

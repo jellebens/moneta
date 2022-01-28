@@ -77,7 +77,7 @@ export const AccountOverview = () => {
                         <CardBody>
                             <NavLink className="btn btn-icon btn-round btn-primary" to="/accounts/new"><i className="fa fa-plus"></i></NavLink>
                             {
-                                isLoading ? <p className="text-center"><Spinner color="primary" /></p> :
+                                isLoading ? <div className="text-center"><Spinner color="primary" /></div> :
                                     <Table striped>
                                         <thead className="text-primary">
                                             <tr>

@@ -45,7 +45,7 @@ namespace Moneta.Frontend.CommandProcessor.Services
         {
             Authenticate(jwtToken);
 
-            HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{deleteAccount.Id}");
+            HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{deleteAccount.AccountId}");
 
             response.EnsureSuccessStatusCode();
         }
