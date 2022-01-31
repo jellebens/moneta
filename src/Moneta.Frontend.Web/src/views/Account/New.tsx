@@ -31,8 +31,13 @@ export const NewAccountView = () => {
     const [IsSubmitted, setIsSubmitted] = React.useState(false);
     const history = useHistory();
 
+    let host = ""
+    if(process.env.REACT_APP_API){
+        host = process.env.REACT_APP_API;
+    }
+
     const connection = new HubConnectionBuilder()
-        .withUrl(process.env.REACT_APP_API + "/hubs/commands")
+        .withUrl(host + "/hubs/commands")
         .withAutomaticReconnect()
         .build();
 
@@ -50,8 +55,6 @@ export const NewAccountView = () => {
     }
 
     const submitForm = async () => {
-        
-
         const request = {
             scopes: loginRequest.scopes,
             account: accounts[0] as AccountInfo

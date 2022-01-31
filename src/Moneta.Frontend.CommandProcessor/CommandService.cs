@@ -86,6 +86,7 @@ namespace Moneta.Frontend.CommandProcessor
 
             consumer = new EventingBasicConsumer(_Channel);
 
+            _Logger.LogInformation($"Connecting to WebSockets");
             _HubConnection = new HubConnectionBuilder()
                 .WithUrl(_Configuration.GetValue<string>("COMMANDS_HUB"))
                                     .WithAutomaticReconnect()
@@ -125,7 +126,6 @@ namespace Moneta.Frontend.CommandProcessor
                         CommandStatus start = CommandStatus.Start(command.Id);
                         await _HubConnection.SendAsync("Update", id , start);
                         _Dispatcher.Dispatch(token, command);
-                        Thread.Sleep(10000);
                         _Channel.BasicAck(ea.DeliveryTag, false);
                         CommandStatus complete = CommandStatus.Complete(command.Id);
                         await _HubConnection.SendAsync("Update", id, complete);

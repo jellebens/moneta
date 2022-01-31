@@ -1,13 +1,13 @@
 ﻿apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
-  name: moneta-egress
+  name: api-egress
 spec:
   hosts:
   - '*.microsoft.com'
   - '*.microsoftonline.com'
   - '*.windows.net'
-  - 'yfapi.net'''
+  - 'yfapi.net'
   location: MESH_EXTERNAL
   ports:
   - name: https

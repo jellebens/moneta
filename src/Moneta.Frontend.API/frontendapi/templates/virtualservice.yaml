@@ -17,3 +17,11 @@ spec:
             port:
               number: {{ $svcPort }}
             host: {{ include "frontendapi.fullname" . }}
+    - match:
+        - uri:
+            prefix: /hubs
+      route:
+        - destination:
+            port:
+              number: {{ $svcPort }}
+            host: {{ include "frontendapi.fullname" . }}
