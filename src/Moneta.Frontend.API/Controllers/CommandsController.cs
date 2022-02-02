@@ -21,9 +21,5 @@ namespace Moneta.Frontend.API.Controllers
             this._Logger = logger;
             this._Hub = hub;
         }
-        [HttpPut("status")]
-        public async Task Complete(CommandStatus status) {
-            await _Hub.Clients.All.SendAsync(status.CommandId.ToString(), status);
-        }
     }
 }

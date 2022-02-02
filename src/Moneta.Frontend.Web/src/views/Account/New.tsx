@@ -71,13 +71,14 @@ export const NewAccountView = () => {
                 mode: "no-cors",
             };
             var id = uuid();
-
-            connection.start().then(() => connection.on(id, msg => {
+            connection.on(id, msg => {
+                console.log('Update received: ' + msg.status)
                 if(msg.status === 'Completed'){
                     history.push("/accounts")
                 }
-            }));
-            await wait(300);
+            });
+            connection.start();
+
             await axios.post(url,{
                 "Id": id,
                 "Name": accountName,

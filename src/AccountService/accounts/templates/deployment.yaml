@@ -47,6 +47,11 @@ spec:
               secretKeyRef:
                 name: mssql
                 key: AccountsDb
+          - name: "CLIENT_SECRET"
+            valueFrom:
+              secretKeyRef:
+                name: azure
+                key: ClientSecret
           - name: "CLIENT_ID"
             valueFrom:
               secretKeyRef:

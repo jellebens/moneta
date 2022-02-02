@@ -60,30 +60,39 @@ namespace AccountService
                 o.Headers.Add("x-ot-span-context");
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(jwt =>
-            {
-                byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
 
-                jwt.SaveToken = true;
-                jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
-                jwt.Authority = "https://login.microsoftonline.com/common";
-                jwt.RequireHttpsMetadata = false;
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                                        .AddMicrosoftIdentityWebApi(options => { }, options =>
+                                        {
+                                            options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
+                                            options.Instance = "https://login.microsoftonline.com/";
+                                            options.TenantId = "common";
+                                            options.ClientSecret = Configuration.GetValue<string>("CLIENT_SECRET");
+                                        });
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(jwt =>
+            //{
+            //    byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
 
-                jwt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = "https://login.microsoftonline.com/common",
-                    ValidateAudience = true,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
-                };
-            });
+            //    jwt.SaveToken = true;
+            //    jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
+            //    jwt.Authority = "https://login.microsoftonline.com/common";
+            //    jwt.RequireHttpsMetadata = false;
+
+            //    jwt.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(key),
+            //        ValidateIssuer = true,
+            //        ValidIssuer = "https://login.microsoftonline.com/common",
+            //        ValidateAudience = true,
+            //        RequireExpirationTime = false,
+            //        ValidateLifetime = true
+            //    };
+            //});
 
             services.AddControllers();
 

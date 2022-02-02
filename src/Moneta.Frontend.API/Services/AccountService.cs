@@ -17,7 +17,7 @@ namespace Moneta.Frontend.API.Services
 
     public interface IAccountsService
     {
-        Task<AccountListItem[]> GetAsync(ClaimsPrincipal user);
+        Task<AccountListItem[]> GetAsync(string token);
     }
 
 
@@ -37,9 +37,8 @@ namespace Moneta.Frontend.API.Services
 
        
 
-        public async Task<AccountListItem[]> GetAsync(ClaimsPrincipal user)
+        public async Task<AccountListItem[]> GetAsync(string token)
         {
-            var token = _TokenBuilder.Build(user);
             _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             HttpResponseMessage response = await _Client.GetAsync($"/accounts");

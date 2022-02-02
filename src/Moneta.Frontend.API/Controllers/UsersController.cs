@@ -38,6 +38,7 @@ namespace Moneta.Frontend.API.Controllers
                 }
                 catch(Exception)
                 {
+                    
                     _Logger.LogInformation($"Logged on as: {this.User.Identity.Name}");
                     _Logger.LogInformation($"Printing Claims");
                     ClaimsPrincipal principal = this.User as ClaimsPrincipal;

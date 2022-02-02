@@ -1,11 +1,14 @@
-using OpenTelemetry.Trace;
-using OpenTelemetry.Resources;
+using InstrumentService.Sql;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Moneta.Core;
 using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Polly;
 using Polly.Extensions.Http;
-using Moneta.Core;
-using InstrumentService.Sql;
-using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,15 @@ builder.Services.AddDbContext<InstrumentsDbContext>(options =>
                        });
 
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                                        .AddMicrosoftIdentityWebApi(options => { }, options =>
+                                        {
+                                            options.ClientId = builder.Configuration["CLIENT_ID"];
+                                            options.Instance = "https://login.microsoftonline.com/";
+                                            options.TenantId = "common";
+                                            options.ClientSecret = builder.Configuration["CLIENT_SECRET"];
+                                        });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

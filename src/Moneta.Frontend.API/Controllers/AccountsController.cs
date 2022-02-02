@@ -40,8 +40,9 @@ namespace Moneta.Frontend.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            
-            var accounts = await _AccountService.GetAsync(this.User);
+            var token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+
+            var accounts = await _AccountService.GetAsync(token);
 
             return Ok(accounts);
         }
@@ -49,15 +50,14 @@ namespace Moneta.Frontend.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CreateAccountCommand createAccount)
         {
-            string token = _JwtTokenBuilder.Build(this.User);
-            
+            var token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+
 
             await _Bus.SendAsync(Queues.Frontend.Commands, token, createAccount);
 
             CommandStatus status = CommandStatus.Queue(createAccount.Id);
             
             await _Hub.Clients.All.SendAsync(createAccount.Id.ToString(), status);
-
 
             return Ok();
         }
@@ -66,8 +66,8 @@ namespace Moneta.Frontend.API.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             DeleteAccountCommand deleteAccount = new DeleteAccountCommand() { Id=Guid.NewGuid(), AccountId = id };
-            string token = _JwtTokenBuilder.Build(this.User);
-            
+            var token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+
             await _Bus.SendAsync(Queues.Frontend.Commands, token, deleteAccount);
 
             return Ok();
