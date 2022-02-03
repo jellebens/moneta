@@ -80,7 +80,7 @@ namespace TransactionService.Controllers
                 return StatusCode(StatusCodes.Status404NotFound);
             }
 
-            _AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
+            //_AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
             AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
 
 
@@ -123,7 +123,7 @@ namespace TransactionService.Controllers
             Cost stockMarketTax = new Cost(updateCosts.StockMarketTax, "Stock market tax");
             buyOrder.With(stockMarketTax);
 
-            _AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
+            //_AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
             AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
 
             if (string.Equals(account.Currency, buyOrder.Currency, StringComparison.InvariantCultureIgnoreCase))
@@ -144,7 +144,7 @@ namespace TransactionService.Controllers
         {
             var buyOrder = _TransactionsDbContext.BuyOrders.Where(bo => bo.Id == transactionId).Single();
 
-            _AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
+            //_AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
 
              AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
 
@@ -167,7 +167,7 @@ namespace TransactionService.Controllers
             BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.Where(bo => bo.Id == transactionId)
                                                                 .Include(bo => bo.Costs)
                                                                 .Single();
-            _AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
+            //_AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
 
             AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
 
@@ -189,7 +189,7 @@ namespace TransactionService.Controllers
             BuyOrder buyOrder = _TransactionsDbContext.BuyOrders.Where(bo => bo.Id == transactionId)
                                                                 .Single();
 
-            _AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
+            //_AccountService.Authenticate(_JwtTokenBuilder.Build(this.User));
             
             AccountInfo account = await _AccountService.GetAsync(buyOrder.AccountId);
 

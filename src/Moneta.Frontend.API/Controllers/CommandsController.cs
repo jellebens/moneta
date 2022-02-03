@@ -18,8 +18,24 @@ namespace Moneta.Frontend.API.Controllers
 
         public CommandsController(ILogger<CommandsController> logger, IHubContext<CommandHub> hub)
         {
-            this._Logger = logger;
-            this._Hub = hub;
+            _Logger = logger;
+            _Hub = hub;
+        }
+
+        [HttpPost("complete/{id}")]
+        public IActionResult Complete(Guid id)
+        {
+            _Hub.Clients.All.SendAsync(id.ToString(), CommandStatus.Complete(id));
+
+            return StatusCode(StatusCodes.Status202Accepted);
+        }
+
+        [HttpPost("start/{id}")]
+        public IActionResult Started(Guid id)
+        {
+            _Hub.Clients.All.SendAsync(id.ToString(), CommandStatus.Start(id));
+
+            return StatusCode(StatusCodes.Status202Accepted);
         }
     }
 }

@@ -11,8 +11,8 @@ namespace Moneta.Frontend.CommandProcessor.Services
 {
     public interface IApiClient : IService
     {
-        Task Complete(Guid id, string jwtToken);
-        Task Start(Guid id, string jwtToken);
+        Task Complete(Guid id);
+        Task Start(Guid id);
     }
 
     public class ApiClient : ServiceBase, IApiClient
@@ -25,33 +25,18 @@ namespace Moneta.Frontend.CommandProcessor.Services
             _Logger = logger;
         }
 
-        public async Task Start(Guid id, string jwtToken)
-        {
-            Authenticate(jwtToken);
 
-            CommandStatus status = CommandStatus.Start(id);
 
-            string json = JsonConvert.SerializeObject(status);
-
-            StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _Client.PutAsync($"api/commands/status", httpContent);
-
-            response.EnsureSuccessStatusCode();
+        public async Task Start(Guid id)
+        {            
+            StringContent httpContent = new StringContent("", Encoding.UTF8, "application/json");
+            _Client.PostAsync($"api/commands/start/{id}", httpContent);
         }
 
-        public async Task Complete(Guid id, string jwtToken)
+        public async Task Complete(Guid id)
         {
-            Authenticate(jwtToken);
-
-            CommandStatus status = CommandStatus.Complete(id);
-
-            string json = JsonConvert.SerializeObject(status);
-
-            StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await _Client.PutAsync($"api/commands/status", httpContent);
-
-            response.EnsureSuccessStatusCode();
+            StringContent httpContent = new StringContent("", Encoding.UTF8, "application/json");
+            _Client.PostAsync($"api/commands/complete/{id}", httpContent);
         }
 
     }

@@ -10,12 +10,14 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.SignalR.Client;
 
 using System.Text;
+using Moneta.Frontend.CommandProcessor.Services;
 
 namespace Moneta.Frontend.CommandProcessor
 {
     public class CommandService : IHostedService
     {
         private readonly ICommandDispatcher _Dispatcher;
+        private readonly IApiClient _ApiClient;
         private readonly IConfiguration _Configuration;
         private readonly ILogger<CommandService> _Logger;
         private readonly ILoggerFactory _LoggerFactory;
@@ -24,17 +26,15 @@ namespace Moneta.Frontend.CommandProcessor
         private IModel _Channel;
         private EventingBasicConsumer consumer;
 
-        private HubConnection _HubConnection;
-
         private static readonly ActivitySource Activity = new(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
 
-        public CommandService(ICommandDispatcher dispatcher, IConfiguration configuration, ILoggerFactory loggerFactory)
+        public CommandService(ICommandDispatcher dispatcher, IApiClient apiClient,IConfiguration configuration ,ILoggerFactory loggerFactory)
         {
             _Logger = loggerFactory.CreateLogger<CommandService>();
             _LoggerFactory = loggerFactory;
             _Dispatcher = dispatcher;
-            
+            _ApiClient = apiClient;
             _Configuration = configuration;
 
         }
@@ -86,12 +86,7 @@ namespace Moneta.Frontend.CommandProcessor
 
             consumer = new EventingBasicConsumer(_Channel);
 
-            _Logger.LogInformation($"Connecting to WebSockets");
-            _HubConnection = new HubConnectionBuilder()
-                .WithUrl(_Configuration.GetValue<string>("COMMANDS_HUB"))
-                                    .WithAutomaticReconnect()
-                                    .Build() ;
-            await _HubConnection.StartAsync();
+            
             consumer.Received += async (model, ea) =>
             {
                 IBasicProperties properties = ea.BasicProperties;
@@ -122,20 +117,18 @@ namespace Moneta.Frontend.CommandProcessor
                     Guid id = ((ICommand)command).Id;
                     try
                     {
+                        _ApiClient.Authenticate(token);
 
-                        CommandStatus start = CommandStatus.Start(command.Id);
-                        await _HubConnection.SendAsync("Update", id , start);
+                        _ApiClient.Start(command.Id);
                         _Dispatcher.Dispatch(token, command);
                         _Channel.BasicAck(ea.DeliveryTag, false);
-                        CommandStatus complete = CommandStatus.Complete(command.Id);
-                        await _HubConnection.SendAsync("Update", id, complete);
+                        _ApiClient.Complete(command.Id);
                     }
                     catch (Exception exc)
                     {
                         _Logger.LogError($"Exception occured when executing command ({exc.Message}), deadlettering message.");
                         _Channel.BasicNack(ea.DeliveryTag, false, false);
-                        CommandStatus complete = CommandStatus.Complete(command.Id, exc.Message);
-                        await _HubConnection.SendAsync("Update", id, complete);
+                        _ApiClient.Complete(command.Id);
                     }
 
 
@@ -155,8 +148,6 @@ namespace Moneta.Frontend.CommandProcessor
             _Channel.Dispose();
             
             _Connection.Dispose();
-
-            await _HubConnection.DisposeAsync();
         }
     }
 }

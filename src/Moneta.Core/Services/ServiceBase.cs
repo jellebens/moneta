@@ -24,9 +24,9 @@ namespace Moneta.Frontend.Web.Services
             _Client = client;
         }
 
-        public void Authenticate(string jwtToken)
+        public void Authenticate(string token)
         {
-            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, jwtToken);
+            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
         }
     }
 }
