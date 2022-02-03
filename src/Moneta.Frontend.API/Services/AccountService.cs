@@ -17,7 +17,8 @@ namespace Moneta.Frontend.API.Services
 
     public interface IAccountsService
     {
-        Task<AccountListItem[]> GetAsync(string token);
+        Task<AccountListItem[]> GetAsync();
+        void Authenticate(string token);
     }
 
 
@@ -26,21 +27,20 @@ namespace Moneta.Frontend.API.Services
 
         private readonly ILogger<AccountsService> _Logger;
         private readonly HttpClient _Client;
-        private readonly IJwtTokenBuilder _TokenBuilder;
-
-        public AccountsService(IConfiguration configuration, HttpClient client, IJwtTokenBuilder tokenBuilder, ILogger<AccountsService> logger)
+        
+        public AccountsService(IConfiguration configuration, HttpClient client, ILogger<AccountsService> logger)
         {
             _Logger = logger;
             _Client = client;
-            _TokenBuilder = tokenBuilder;
         }
 
-       
+        public void Authenticate(string token)
+        {
+            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
 
         public async Task<AccountListItem[]> GetAsync(string token)
         {
-            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             HttpResponseMessage response = await _Client.GetAsync($"/accounts");
             if (response.IsSuccessStatusCode)
             {
@@ -53,6 +53,11 @@ namespace Moneta.Frontend.API.Services
 
             _Logger.LogError($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
             throw new Exception($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
+        }
+
+        public Task<AccountListItem[]> GetAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 

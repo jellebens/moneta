@@ -26,23 +26,23 @@ namespace Moneta.Frontend.API.Controllers
         private readonly IHubContext<CommandHub> _Hub;
         private readonly IAccountsService _AccountService;
         private readonly IBus _Bus;
-        private readonly IJwtTokenBuilder _JwtTokenBuilder;
 
-        public AccountsController(ILogger<AccountsController> logger, IHubContext<CommandHub> hub, IAccountsService accountService, IBus bus, IJwtTokenBuilder jwtTokenBuilder)
+        public AccountsController(ILogger<AccountsController> logger, IHubContext<CommandHub> hub, IAccountsService accountService, IBus bus)
         {
             _Logger = logger;
             _Hub = hub;
             _AccountService = accountService;
             _Bus = bus;
-            _JwtTokenBuilder = jwtTokenBuilder;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+            string token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
 
-            var accounts = await _AccountService.GetAsync(token);
+            _AccountService.Authenticate(token);
+
+            var accounts = await _AccountService.GetAsync();
 
             return Ok(accounts);
         }
