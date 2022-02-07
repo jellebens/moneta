@@ -19,11 +19,12 @@ import {
 
 } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
-
-
+import axios from "axios";
+import { v4 as uuid } from 'uuid';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 export const CreateInstrumentView = () => {
-    const { register,handleSubmit,setValue, reset,control ,formState: { errors } } = useForm<NewInstrument>();
+    const { register, handleSubmit, setValue, reset, watch, control , formState: { errors } } = useForm<NewInstrument>();
     
 
     const { instance, accounts } = useMsal();
@@ -32,7 +33,20 @@ export const CreateInstrumentView = () => {
     
     const [instrumentDetail, setInstrumentDetail] = useState<InstrumentDetailResult>();
     const [isLoading, setIsLoading] = useState(false);
+    const [IsSubmitted, setIsSubmitted] = React.useState(false);
 
+    const type = watch('type');
+
+    let host = ""
+    if(process.env.REACT_APP_API){
+        host = process.env.REACT_APP_API;
+    }
+
+    useEffect(() => {
+        if(type !== 'Stock'){
+            setValue('sector', 0);
+        }
+    },[type]);
 
     useEffect(() => {
         setIsLoading(true);
@@ -59,7 +73,45 @@ export const CreateInstrumentView = () => {
     }, [location]);
 
     
-    const onSubmit = async (data:NewInstrument) => console.log(data);
+    const onSubmit = async (data:NewInstrument) => {
+        
+        const request = {
+            scopes: loginRequest.scopes,
+            account: accounts[0] as AccountInfo
+        };
+
+        instance.acquireTokenSilent(request).then(async (response) => {
+            setIsSubmitted(true);
+
+            let url = "/api/instruments";
+
+            const config = {
+                headers: { Authorization: `Bearer ${response.accessToken}` },
+                mode: "no-cors",
+            };
+
+            const connection = new HubConnectionBuilder()
+            .withUrl(host + "/hubs/commands", {
+                accessTokenFactory: () => {
+                    return `${response.accessToken}`
+                }
+            })
+            .withAutomaticReconnect()
+            .build();
+
+            var id = uuid();
+            connection.on(id, msg => {
+                if(msg.status === 'Completed'){
+                    history.push("/instruments")
+                }
+            });
+            await connection.start();
+
+            await axios.post(url, data ,config);
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
 
     function onCancel(){
         history.push("/instruments/");
@@ -100,6 +152,28 @@ export const CreateInstrumentView = () => {
                                 <Input {...register("isin")} onChange={(e) => setValue('isin', e.target.value)} />
                             </FormGroup>
                             <FormGroup>
+                                <Label for="sector">Sector</Label>
+                                <Controller
+                                    name="sector"
+                                    control={control}
+                                    render={({ field }) => <Input type={"select"} {...field} disabled={watch("type") !== 'Stock'}>
+                                        <option value="0">None</option>
+                                        <option value="1">Energy</option>
+                                        <option value="2">Materials</option>
+                                        <option value="3">Industrials</option>
+                                        <option value="4">Utilities</option>
+                                        <option value="5">Healthcare</option>
+                                        <option value="6">Financials</option>
+                                        <option value="7">Consumer Discretionary</option>
+                                        <option value="8">Consumer Staples</option>
+                                        <option value="9">Information Technology</option>
+                                        <option value="10">Communication Services</option>
+                                        <option value="11">Real Estate</option>
+                                    </Input>                                   
+                                    }
+                                />
+                            </FormGroup>
+                            <FormGroup>
                                 <Label for="type">Type</Label>
                                 <Controller
                                     name="type"
@@ -121,7 +195,7 @@ export const CreateInstrumentView = () => {
                             <FormGroup>
                                 <div className="text-center">
                                     <Button className="btn-round" color="danger" onClick={onCancel} >Cancel</Button>
-                                    <Button className="btn-round" color="primary" type="submit" >Save</Button>
+                                    <Button className="btn-round" color="primary" type="submit" disabled={IsSubmitted} >Save</Button>
                                 </div>
                             </FormGroup>
                         </Form>

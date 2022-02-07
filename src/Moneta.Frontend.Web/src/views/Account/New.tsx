@@ -36,11 +36,6 @@ export const NewAccountView = () => {
         host = process.env.REACT_APP_API;
     }
 
-    const connection = new HubConnectionBuilder()
-        .withUrl(host + "/hubs/commands")
-        .withAutomaticReconnect()
-        .build();
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
@@ -65,11 +60,21 @@ export const NewAccountView = () => {
             setIsSubmitted(true);
 
             let url = "/api/accounts";
-
+            
             const config = {
                 headers: { Authorization: `Bearer ${response.accessToken}` },
                 mode: "no-cors",
             };
+            
+            const connection = new HubConnectionBuilder()
+            .withUrl(host + "/hubs/commands", {
+                accessTokenFactory: () => {
+                    return `${response.accessToken}`
+                }
+            })
+            .withAutomaticReconnect()
+            .build();
+
             var id = uuid();
             connection.on(id, msg => {
                 console.log('Update received: ' + msg.status)
@@ -77,7 +82,7 @@ export const NewAccountView = () => {
                     history.push("/accounts")
                 }
             });
-            connection.start();
+            await connection.start();
 
             await axios.post(url,{
                 "Id": id,

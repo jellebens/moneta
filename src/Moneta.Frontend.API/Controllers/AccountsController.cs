@@ -39,7 +39,7 @@ namespace Moneta.Frontend.API.Controllers
         public async Task<IActionResult> Get()
         {
             string token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
-
+            
             _AccountService.Authenticate(token);
 
             var accounts = await _AccountService.GetAsync();

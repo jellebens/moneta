@@ -50,6 +50,7 @@ namespace Moneta.Frontend.API
                     options.TenantId = "common";
                 });
 
+            
 
             services.AddControllers();
             services.AddSignalR();
@@ -118,7 +119,8 @@ namespace Moneta.Frontend.API
                       .AllowAnyMethod());
 
             app.UseRouting();
-
+            
+            app.UseMiddleware<WebSocketsMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
 

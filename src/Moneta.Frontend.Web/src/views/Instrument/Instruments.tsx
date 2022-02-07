@@ -30,6 +30,7 @@ export interface NewInstrument {
     type : string
     name: string
     isin: string
+    sector: number
     currency: string
 }
 

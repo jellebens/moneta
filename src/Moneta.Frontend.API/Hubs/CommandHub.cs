@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.API.Hubs
 {
+    [Authorize]
     public class CommandHub : Hub
     {
         public async Task Update(Guid id, CommandStatus status)

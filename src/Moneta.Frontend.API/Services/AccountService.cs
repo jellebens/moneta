@@ -39,7 +39,7 @@ namespace Moneta.Frontend.API.Services
             _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public async Task<AccountListItem[]> GetAsync(string token)
+        public async Task<AccountListItem[]> GetAsync()
         {
             HttpResponseMessage response = await _Client.GetAsync($"/accounts");
             if (response.IsSuccessStatusCode)
@@ -53,11 +53,6 @@ namespace Moneta.Frontend.API.Services
 
             _Logger.LogError($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
             throw new Exception($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
-        }
-
-        public Task<AccountListItem[]> GetAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 
