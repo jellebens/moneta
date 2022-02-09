@@ -19,6 +19,7 @@ using Moneta.Frontend.API.Bus;
 using System.Diagnostics;
 using Moneta.Core;
 using Moneta.Frontend.API.Hubs;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Moneta.Frontend.API
 {
@@ -66,6 +67,8 @@ namespace Moneta.Frontend.API
 
             services.AddHttpClient<IYahooFinanceClient, YahooFinanceClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5))
                                                                        .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddTransient<IClaimsTransformation, AdminUserTransformation>();
 
             services.AddOpenTelemetryTracing((builder) =>
             {

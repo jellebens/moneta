@@ -58,7 +58,7 @@ export const NewAccountView = () => {
         instance.acquireTokenSilent(request).then(async (response) => {
             
             setIsSubmitted(true);
-
+            console.log(response.accessToken);
             let url = "/api/accounts";
             
             const config = {
