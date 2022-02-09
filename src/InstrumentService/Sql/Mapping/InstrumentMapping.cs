@@ -18,17 +18,11 @@ namespace InstrumentService.Sql.Mapping
                    .HasDefaultValueSql("newsequentialid()")
                    .IsRequired();
 
-
-
             builder.HasOne(i => i.Currency)
                 .WithMany();
-                
-
             
-
-            builder.Property(i => i.Url)
-                .HasColumnName("Url")
-                .HasMaxLength(255);
+            builder.HasOne(i => i.Sector)
+                .WithMany();
 
             builder.Property(i => i.Isin)
                 .HasColumnName("Isin")

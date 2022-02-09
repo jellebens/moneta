@@ -21,7 +21,6 @@ namespace Moneta.Frontend.CommandProcessor.Services
 
         public ApiClient(ILogger<ApiClient> logger, IConfiguration configuration, HttpClient client) : base(configuration, client)
         {
-            _Client.BaseAddress = new Uri(configuration["API_SERVICE"]);
             _Logger = logger;
         }
 

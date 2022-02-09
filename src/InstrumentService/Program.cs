@@ -8,9 +8,14 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Polly;
 using Polly.Extensions.Http;
-
+using Microsoft.Extensions.Logging;
+using Moneta.Core.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddProvider(new MonetaLoggerProvider());
+
 
 // Add services to the container.
 

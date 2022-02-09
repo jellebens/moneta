@@ -82,8 +82,7 @@ export const InstrumentOverview = () => {
                                         <thead className="text-primary">
                                             <tr>
                                                 <th>Name</th>
-                                                <th>Isin</th>
-                                                <th>Ticker</th>
+                                                <th>Symbol</th>
                                                 <th>Currency</th>
                                                 <th></th>
                                             </tr>
@@ -92,8 +91,7 @@ export const InstrumentOverview = () => {
                                             {instruments.map((instrument) => (
                                                 <tr key={instrument.id}>
                                                     <td>{instrument.name}</td>
-                                                    <td>{instrument.isin}</td>
-                                                    <td>{instrument.ticker}</td>
+                                                    <td>{instrument.symbol}</td>
                                                     <td>{instrument.currency}</td>
                                                     <td>
                                                         <Button className="btn btn-icon btn-round btn-danger" color="danger" type="button" onClick={() => handleRemove(instrument.id)}>

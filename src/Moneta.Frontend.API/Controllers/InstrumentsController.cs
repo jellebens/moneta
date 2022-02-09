@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Moneta.Core;
+using Moneta.Frontend.API.Bus;
+using Moneta.Frontend.API.Hubs;
 using Moneta.Frontend.API.Models;
 using Moneta.Frontend.API.Models.Yfapi;
 using Moneta.Frontend.API.Services;
+using Moneta.Frontend.Commands;
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -15,10 +20,14 @@ namespace Moneta.Frontend.API.Controllers
     public class InstrumentsController : ControllerBase
     {
         private readonly IYahooFinanceClient _YahooFinanceClient;
+        private readonly IHubContext<CommandHub> _Hub;
+        private readonly IBus _Bus;
 
-        public InstrumentsController(IYahooFinanceClient yahooFinanceClient)
+        public InstrumentsController(IYahooFinanceClient yahooFinanceClient, IHubContext<CommandHub> hub, IBus bus)
         {
             _YahooFinanceClient = yahooFinanceClient;
+            _Hub = hub;
+            _Bus = bus;
         }
 
         [HttpGet("search/{symbol}")]
@@ -66,6 +75,19 @@ namespace Moneta.Frontend.API.Controllers
             return Ok(retVal);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Index(CreateInstrumentCommand createInstrument) {
+            var token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+
+
+            await _Bus.SendAsync(Queues.Frontend.Commands, token, createInstrument);
+
+            CommandStatus status = CommandStatus.Queue(createInstrument.Id);
+
+            await _Hub.Clients.All.SendAsync(createInstrument.Id.ToString(), status);
+
+            return Ok();
+        }
         private string MapQuoteType(string quoteType)
         {
             switch (quoteType.ToUpper())

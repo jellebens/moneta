@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.CommandProcessor.Handlers
+namespace Moneta.Frontend.CommandProcessor.Handlers.Accounts
 {
     public class DeleteAccountHandler : ICommandHandler<DeleteAccountCommand>
     {
@@ -21,7 +21,8 @@ namespace Moneta.Frontend.CommandProcessor.Handlers
 
         public void Execute(string token, DeleteAccountCommand command)
         {
-            _AccountService.Delete(command, token);
+            _AccountService.Authenticate(token);
+            _AccountService.Delete(command);
         }
     }
 }

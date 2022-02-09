@@ -11,9 +11,9 @@ namespace Moneta.Frontend.CommandProcessor.Services
 {
     public interface IAccountsService : IService
     {
-        Task Create(CreateAccountCommand newAccount, string jwtToken);
+        Task Create(CreateAccountCommand newAccount);
 
-        void Delete(DeleteAccountCommand deleteAccount, string jwtToken);
+        void Delete(DeleteAccountCommand deleteAccount);
 
     }
     public class AccountsService : ServiceBase, IAccountsService
@@ -25,12 +25,10 @@ namespace Moneta.Frontend.CommandProcessor.Services
         {
             _Logger = logger;
 
-            _Client.BaseAddress = new Uri(configuration["ACCOUNTS_SERVICE"]);
         }
 
-        public async Task Create(CreateAccountCommand newAccount, string jwtToken)
+        public async Task Create(CreateAccountCommand newAccount)
         {
-            Authenticate(jwtToken);
 
             string json = JsonConvert.SerializeObject(newAccount);
 
@@ -41,10 +39,8 @@ namespace Moneta.Frontend.CommandProcessor.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async void Delete(DeleteAccountCommand deleteAccount, string jwtToken)
+        public async void Delete(DeleteAccountCommand deleteAccount)
         {
-            Authenticate(jwtToken);
-
             HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{deleteAccount.AccountId}");
 
             response.EnsureSuccessStatusCode();

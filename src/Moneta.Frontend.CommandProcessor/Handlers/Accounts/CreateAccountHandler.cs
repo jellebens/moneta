@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.CommandProcessor.Handlers
+namespace Moneta.Frontend.CommandProcessor.Handlers.Accounts
 {
     public class CreateAccountHandler : ICommandHandler<CreateAccountCommand>
     {
@@ -20,7 +20,8 @@ namespace Moneta.Frontend.CommandProcessor.Handlers
         }
         public void Execute(string token, CreateAccountCommand command)
         {
-            _AccountService.Create(command, token);
+            _AccountService.Authenticate(token);
+            _AccountService.Create(command);
         }
     }
 }

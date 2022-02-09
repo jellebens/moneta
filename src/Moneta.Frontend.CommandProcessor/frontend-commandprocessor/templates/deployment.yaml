@@ -44,6 +44,8 @@ spec:
             value: "{{ template "frontend-commandprocessor.fullname" . }}.{{ .Release.Namespace }}"
           - name: "ACCOUNTS_SERVICE"
             value: "http://accounts.moneta.svc.cluster.local/"
+          - name: "INSTRUMENTS_SERVICE"
+            value: "http://instruments.svc.cluster.local"
           - name: "API_SERVICE"
             value: "http://frontend-api.moneta.svc.cluster.local"
           - name: "COMMANDS_HUB"

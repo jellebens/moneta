@@ -71,7 +71,7 @@ namespace AccountService.Controllers
             Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id && a.Owner == owner.Value);
 
             if (account == null) {
-                return Ok();
+                return BadRequest($"Account with Id {id} for {owner} does not exist");
             }
 
             _AccountsDbContext.Accounts.Remove(account);

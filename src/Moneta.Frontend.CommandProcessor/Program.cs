@@ -48,7 +48,12 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHttpClient<IAccountsService, AccountsService>(client => {
             client.BaseAddress = new Uri(hostContext.Configuration["ACCOUNTS_SERVICE"]);
         }).SetHandlerLifetime(TimeSpan.FromMinutes(5))
-                        .AddPolicyHandler(GetRetryPolicy());
+          .AddPolicyHandler(GetRetryPolicy());
+        
+        services.AddHttpClient<IInstrumentService, InstrumentService>(client => {
+            client.BaseAddress = new Uri(hostContext.Configuration["INSTRUMENTS_SERVICE"]);
+        }).SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                       .AddPolicyHandler(GetRetryPolicy());
 
         services.AddHttpClient<IApiClient, ApiClient>(client => {
             client.BaseAddress = new Uri(hostContext.Configuration["API_SERVICE"]);

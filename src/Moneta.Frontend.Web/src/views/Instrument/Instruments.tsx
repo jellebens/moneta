@@ -3,7 +3,6 @@ import axios from "axios";
 export interface InstrumentListItem {
     id: string
     name: string
-    isin : string
     ticker: string
     currency: string
 
@@ -25,6 +24,7 @@ export interface InstrumentDetailResult {
 }
 
 export interface NewInstrument {
+    id: string
     exchange: string
     symbol: string
     type : string

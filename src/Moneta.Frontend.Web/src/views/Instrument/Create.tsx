@@ -32,6 +32,7 @@ export const CreateInstrumentView = () => {
     const history = useHistory();
     
     const [instrumentDetail, setInstrumentDetail] = useState<InstrumentDetailResult>();
+    const [id, setId] = useState(uuid());
     const [isLoading, setIsLoading] = useState(false);
     const [IsSubmitted, setIsSubmitted] = React.useState(false);
 
@@ -63,6 +64,8 @@ export const CreateInstrumentView = () => {
                 setInstrumentDetail(r);
                 
                 reset(r)
+                setValue("id", id);
+                setValue("sector", 0);
                 setIsLoading(false);
             }).catch((e) => {
                 console.log(e);
@@ -99,14 +102,14 @@ export const CreateInstrumentView = () => {
             .withAutomaticReconnect()
             .build();
 
-            var id = uuid();
             connection.on(id, msg => {
                 if(msg.status === 'Completed'){
                     history.push("/instruments")
                 }
             });
-            await connection.start();
 
+            await connection.start();
+            console.log(data);
             await axios.post(url, data ,config);
         }).catch((e) => {
             console.log(e);
@@ -126,6 +129,7 @@ export const CreateInstrumentView = () => {
                     <CardBody>
                         { isLoading ? <div className="text-center"><Spinner color="primary" /></div> :
                         <Form onSubmit={handleSubmit(onSubmit)}>
+                            <Input type="hidden" defaultValue={id} {...register("id")} />
                             <FormGroup>
                                 <Label for="name">Name</Label>
                                 <Input defaultValue={instrumentDetail?.name } {...register("name")} onChange={(e) => setValue('name', e.target.value)} />

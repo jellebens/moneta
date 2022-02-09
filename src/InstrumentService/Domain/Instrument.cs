@@ -11,8 +11,10 @@
 
         public Currency Currency { get; set; }
 
-        public string Url { get; set; }
         public bool IsDeleted { get; set; }
-        
+
+        public string Exchange { get; set; }
+
+        public Sector Sector { get; set; }
     }
 }

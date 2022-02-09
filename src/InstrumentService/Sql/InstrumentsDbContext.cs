@@ -18,10 +18,13 @@ namespace InstrumentService.Sql
 
             modelBuilder.ApplyConfiguration(new InstrumentMapping());
             modelBuilder.ApplyConfiguration(new CurrencyMapping());
+            modelBuilder.ApplyConfiguration(new SectorMapping());
         }
 
         public DbSet<Currency> Currencies { get; set; }
 
         public DbSet<Instrument> Instruments { get; set; }
+
+        public DbSet<Sector> Sectors { get; set; }
     }
 }
