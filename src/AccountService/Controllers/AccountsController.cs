@@ -2,6 +2,7 @@
 using AccountService.Domain;
 using AccountService.Sql;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moneta.Core.Jwt;
@@ -71,7 +72,9 @@ namespace AccountService.Controllers
             Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id && a.Owner == owner.Value);
 
             if (account == null) {
-                return BadRequest($"Account with Id {id} for {owner} does not exist");
+                string errMsg = $"Account with Id {id} for {owner} does not exist";
+                _Logger.LogCritical(errMsg);
+                return StatusCode(StatusCodes.Status404NotFound, errMsg);
             }
 
             _AccountsDbContext.Accounts.Remove(account);

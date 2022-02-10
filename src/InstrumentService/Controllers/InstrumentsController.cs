@@ -89,7 +89,7 @@ namespace InstrumentService.Controllers
 
             if (instrument == null) {
                 _Logger.LogCritical($"Error deleting instrument with id {id}. Instrument with Id {id} does not exist");
-                BadRequest($"Instrrument with Id {id} does not exist");
+                StatusCode(StatusCodes.Status404NotFound ,$"Instrrument with Id {id} does not exist");
             }
 
             _InstrumentsDbContext.Remove(instrument);

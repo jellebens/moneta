@@ -1,7 +1,7 @@
 export const msalConfig = {
     auth: {
         clientId: "d6d03eda-82b7-4298-8940-7f72805cf398",
-        authority: `https://login.microsoftonline.com/common`,
+        authority: `https://login.microsoftonline.com/6e37ccb0-a61f-4da3-a953-9cde6306d7eb`,
         redirectUri: window.location.origin + '/',
         validateAuthority: true
     },
@@ -12,5 +12,5 @@ export const msalConfig = {
 }
 
 export const loginRequest = {
-    scopes: ["Users.Read", "api://3652d22c-6197-44a5-9334-da5a8c45182d/access_as_user"]
+    scopes: ["api://3652d22c-6197-44a5-9334-da5a8c45182d/access_as_user"]
    };
