@@ -34,8 +34,6 @@ namespace Moneta.Frontend.API.Controllers
                         Id = this.User.Claims.Single(x => x.Type.Equals("preferred_username")).Value
                     };
 
-                    _Logger.LogInformation($"{this.User.IsInRole("admin")}");
-
                     return Ok(user);
                 }
                 catch(Exception)

@@ -46,6 +46,11 @@ spec:
             value: http://+:8080
           - name: ACCOUNTS_SERVICE
             value: http://accounts.moneta.svc.cluster.local/
+          - name: "financeapi-key"
+            valueFrom:
+              secretKeyRef:
+                name: api
+                key: financeapi-key
           - name: "CLIENT_SECRET"
             valueFrom:
               secretKeyRef:
