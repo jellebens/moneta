@@ -37,6 +37,8 @@ namespace InstrumentService.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CreateInstrumentCommand createInstrument) {
 
+            _Logger.LogInformation($"Creating instrument with ticker symbol {createInstrument.Symbol}");
+
             bool exists = _InstrumentsDbContext.Instruments.Any(i => i.Symbol == createInstrument.Symbol);
 
             if (exists)

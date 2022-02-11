@@ -1,0 +1,16 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "instruments.name" . }}-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "instruments.name" . }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/moneta/sa/frontend-api", "cluster.local/ns/moneta/sa/frontend-commandprocessor"]
+    to:
+    - operation:
+        paths: ["/instruments", "/instruments/*"]
