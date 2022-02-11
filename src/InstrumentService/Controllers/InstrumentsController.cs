@@ -28,7 +28,7 @@ namespace InstrumentService.Controllers
                 Id = i.Id,
                 Name = i.Name,
                 Currency =  i.Currency.Symbol,
-                Ticker = i.Ticker
+                Symbol = i.Symbol
             }).ToArray();
 
             return Ok(results);
@@ -37,7 +37,7 @@ namespace InstrumentService.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CreateInstrumentCommand createInstrument) {
 
-            bool exists = _InstrumentsDbContext.Instruments.Any(i => i.Ticker == createInstrument.Symbol);
+            bool exists = _InstrumentsDbContext.Instruments.Any(i => i.Symbol == createInstrument.Symbol);
 
             if (exists)
             {
@@ -66,7 +66,7 @@ namespace InstrumentService.Controllers
 
             Instrument instrument = new Instrument
             {
-                Ticker = createInstrument.Symbol,
+                Symbol = createInstrument.Symbol,
                 Name = createInstrument.Name,
                 Currency = currency,
                 IsDeleted = false,

@@ -7,7 +7,7 @@
 
         public string Isin { get; set; }
 
-        public string Ticker { get; set; }
+        public string Symbol { get; set; }
 
         public Currency Currency { get; set; }
 

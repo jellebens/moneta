@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Moneta.Core.Jwt;
-using Moneta.Frontend.API.Models;
+using Moneta.Frontend.API.Models.Accounts;
 using Moneta.Frontend.Web.Services;
 using Newtonsoft.Json;
 using System;
@@ -15,28 +15,21 @@ using System.Threading.Tasks;
 namespace Moneta.Frontend.API.Services
 {
 
-    public interface IAccountsService
+    public interface IAccountsService: IService
     {
         Task<AccountListItem[]> GetAsync();
-        void Authenticate(string token);
+        
     }
 
 
-    public class AccountsService : IAccountsService
+    public class AccountsService : ServiceBase, IAccountsService
     {
 
         private readonly ILogger<AccountsService> _Logger;
-        private readonly HttpClient _Client;
         
-        public AccountsService(IConfiguration configuration, HttpClient client, ILogger<AccountsService> logger)
+        public AccountsService(IConfiguration configuration, HttpClient client, ILogger<AccountsService> logger): base(configuration, client)
         {
             _Logger = logger;
-            _Client = client;
-        }
-
-        public void Authenticate(string token)
-        {
-            _Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         public async Task<AccountListItem[]> GetAsync()

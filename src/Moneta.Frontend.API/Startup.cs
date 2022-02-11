@@ -38,7 +38,6 @@ namespace Moneta.Frontend.API
         {
             services.AddOptions();
 
-            services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
             services.AddSingleton<IBus, RabbitMqBus>();
 
 
@@ -68,11 +67,14 @@ namespace Moneta.Frontend.API
             services.AddHttpClient<IYahooFinanceClient, YahooFinanceClient>().SetHandlerLifetime(TimeSpan.FromMinutes(5))
                                                                        .AddPolicyHandler(GetRetryPolicy());
 
+            services.AddHttpClient<IInstrumentService, InstrumentService>(client => {
+                client.BaseAddress = new Uri(Configuration["INSTRUMENTS_SERVICE"]);
+            }).SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                                                                                  .AddPolicyHandler(GetRetryPolicy());
 
             services.AddOpenTelemetryTracing((builder) =>
             {
-                builder.AddAspNetCoreInstrumentation(
-                    (options) => options.Filter = httpContext =>
+                builder.AddAspNetCoreInstrumentation((options) => options.Filter = httpContext =>
                     {
                         return !httpContext.Request.Path.StartsWithSegments("/api/sys", StringComparison.OrdinalIgnoreCase);
                     }

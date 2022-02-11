@@ -40,8 +40,8 @@ namespace InstrumentService.Sql.Mapping
                 .HasMaxLength(255)
                 .IsRequired();
 
-            builder.Property(i => i.Ticker)
-                .HasColumnName("Ticker")
+            builder.Property(i => i.Symbol)
+                .HasColumnName("Symbol")
                 .HasMaxLength(255)
                 .IsRequired();
         }

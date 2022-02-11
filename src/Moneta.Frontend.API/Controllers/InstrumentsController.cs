@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Moneta.Core;
 using Moneta.Frontend.API.Bus;
 using Moneta.Frontend.API.Hubs;
-using Moneta.Frontend.API.Models;
+using Moneta.Frontend.API.Models.Instruments;
 using Moneta.Frontend.API.Models.Yfapi;
 using Moneta.Frontend.API.Services;
 using Moneta.Frontend.Commands;
@@ -20,12 +20,14 @@ namespace Moneta.Frontend.API.Controllers
     public class InstrumentsController : ControllerBase
     {
         private readonly IYahooFinanceClient _YahooFinanceClient;
+        private readonly IInstrumentService _InstrumentService;
         private readonly IHubContext<CommandHub> _Hub;
         private readonly IBus _Bus;
 
-        public InstrumentsController(IYahooFinanceClient yahooFinanceClient, IHubContext<CommandHub> hub, IBus bus)
+        public InstrumentsController(IYahooFinanceClient yahooFinanceClient,IInstrumentService instrumentService ,IHubContext<CommandHub> hub, IBus bus)
         {
             _YahooFinanceClient = yahooFinanceClient;
+            _InstrumentService = instrumentService;
             _Hub = hub;
             _Bus = bus;
         }
@@ -88,6 +90,29 @@ namespace Moneta.Frontend.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+
+            _InstrumentService.Authenticate(token);
+            try
+            {
+                InstrumentListItem[] instrumentListItems = await _InstrumentService.GetAsync();
+                return Ok(instrumentListItems);
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc);
+                throw;
+            }
+            
+            
+            
+        }
+
+
         private string MapQuoteType(string quoteType)
         {
             switch (quoteType.ToUpper())

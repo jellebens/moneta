@@ -21,7 +21,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { v4 as uuid } from 'uuid';
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 export const CreateInstrumentView = () => {
     const { register, handleSubmit, setValue, reset, watch, control , formState: { errors } } = useForm<NewInstrument>();
@@ -94,6 +94,7 @@ export const CreateInstrumentView = () => {
             };
 
             const connection = new HubConnectionBuilder()
+            .configureLogging(LogLevel.Warning)
             .withUrl(host + "/hubs/commands", {
                 accessTokenFactory: () => {
                     return `${response.accessToken}`

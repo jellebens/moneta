@@ -3,7 +3,7 @@ import axios from "axios";
 export interface InstrumentListItem {
     id: string
     name: string
-    ticker: string
+    symbol: string
     currency: string
 
 }
@@ -51,16 +51,14 @@ export const dummyDetail: InstrumentDetailResult =
     { "exchange": "AMS",    "symbol": "SWRD.AS", "type": "ETF", "name": "***DUMMY*** SSGA SPDR ETFS Europe I Public Limited Company - SPDR MSCI World UCITS ETF", "currency": "USD" }
 
 export const InstrumentList = async (token: string): Promise<InstrumentListItem[]> => {
-    // let url = "/api/instruments";
+    let url = "/api/instruments";
 
-    // const config = {
-    //     headers: { Authorization: `Bearer ${token}` },
-    //     mode: "no-cors",
-    // };
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        mode: "no-cors",
+    };
 
-    // return await (await axios.get(url, config)).data;
-    await wait(150)
-    return dummyAccounts;
+    return await (await axios.get(url, config)).data;
 }
 
 export const DeleteInstrument = async (token: string, id : string) => {

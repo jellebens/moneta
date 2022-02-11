@@ -18,7 +18,7 @@ import { loginRequest } from "AuthConfig";
 import { useHistory } from "react-router-dom";
 import { v4 as uuid } from 'uuid';
 
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 const wait = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -67,6 +67,7 @@ export const NewAccountView = () => {
             };
             
             const connection = new HubConnectionBuilder()
+            .configureLogging(LogLevel.Warning)
             .withUrl(host + "/hubs/commands", {
                 accessTokenFactory: () => {
                     return `${response.accessToken}`

@@ -1,12 +1,15 @@
-﻿namespace InstrumentService.Contracts.Data
+﻿using System;
+
+namespace Moneta.Frontend.API.Models.Instruments
 {
-    public class InstrumentInfo
+    public class InstrumentListItem
     {
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public string Symbol { get; set; }
 
         public string Currency { get; set; }
-        public Guid Id { get; internal set; }
     }
 }
