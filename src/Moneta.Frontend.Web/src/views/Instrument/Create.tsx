@@ -78,24 +78,16 @@ export const CreateInstrumentView = () => {
     
     const onSubmit = async (data:NewInstrument) => {
         
-
-
         const request = {
             scopes: loginRequest.scopes,
             account: accounts[0] as AccountInfo
         };
 
         instance.acquireTokenSilent(request).then(async (response) => {
-            setIsSubmitted(true);
+            setIsSubmitted(false);
 
             let url = "/api/instruments";
-
-            // if(data.type === "Stock" && data.sector === 0){
-            //     setIsSubmitted(false);
-
-            //     console.log(errors.symbol);
-            //     return;
-            // }
+            
 
             const config = {
                 headers: { Authorization: `Bearer ${response.accessToken}` },
@@ -142,7 +134,7 @@ export const CreateInstrumentView = () => {
                             <Input type="hidden" defaultValue={id} {...register("id")} />
                             <FormGroup>
                                 <Label for="name">Name</Label>
-                                <Input defaultValue={instrumentDetail?.name } {...register("name")} onChange={(e) => setValue('name', e.target.value)} />
+                                <Input defaultValue={instrumentDetail?.name } {...register("name")} onChange={(e) => setValue('name', e.target.value)} invalid={!!errors.name} />
                             </FormGroup>
                             <FormGroup>
                                 <Label for="currency">Currency</Label>

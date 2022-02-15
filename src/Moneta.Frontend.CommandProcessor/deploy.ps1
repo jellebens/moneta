@@ -1,6 +1,6 @@
 $project="Moneta.Frontend.CommandProcessor"
 $helmRelease="frontend-commandprocessor"
-$chart="frontend-commandprocessor"
+$chart="01.commandprocessor"
 
 $ScriptDirectory = Split-Path -Path $PSScriptRoot -Parent
 

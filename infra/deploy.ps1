@@ -28,7 +28,7 @@
 # kubectl delete secret mssql -n moneta
 # kubectl create secret generic mssql --from-literal=SA_PWD=$SA_PWD --from-literal=AccountsDb=$AccountsDb --from-literal=TransactionsDb=$TransactionsDb --from-literal=InstrumentsDb=$InstrumentsDb -n moneta
 
-$API_KEY=(Read-Host "Enter Microsoft ClientSecret" -AsSecureString)
-$API_SECRET=ConvertFrom-SecureString -SecureString $API_KEY -AsPlainText
- kubectl delete secret api -n moneta
- kubectl create secret generic api --from-literal=financeapi-key=$API_SECRET -n moneta
+# $API_KEY=(Read-Host "Enter Microsoft ClientSecret" -AsSecureString)
+# $API_SECRET=ConvertFrom-SecureString -SecureString $API_KEY -AsPlainText
+#  kubectl delete secret api -n moneta
+#  kubectl create secret generic api --from-literal=financeapi-key=$API_SECRET -n moneta

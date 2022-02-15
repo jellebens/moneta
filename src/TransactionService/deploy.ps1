@@ -1,6 +1,6 @@
 $project="TransactionService"
 $helmRelease="transactions-service"
-$chart="transactions"
+$chart="01.transactions"
 
 $ScriptDirectory = Split-Path -Path $PSScriptRoot -Parent
 
