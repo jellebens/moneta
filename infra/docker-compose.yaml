@@ -7,7 +7,7 @@ services:
      ports: 
       - 1433:1433
      volumes:
-       - F:\MSSQL\:/var/opt/sqlserver
+       - f:/volumes/data:/var/opt/mssql/data
   rabbitmq:
     image: rabbitmq:3.9-management
     ports:

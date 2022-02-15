@@ -31,3 +31,8 @@ kubectl apply -f infra/jaeger/allinone.yaml -n observability
 
 # Configure Istio
 ./istioctl install --set values.global.tracer.zipkin.address=jaeger-collector.observability:9411 --set meshConfig.defaultConfig.tracing.sampling=100
+
+# Configure ns
+kubectl create ns moneta
+
+kubectl label namespace moneta istio-injection=enabled --overwrite

@@ -62,7 +62,7 @@ namespace AccountService.Controllers
                 _Logger.LogWarning("Account allready exists, not creating a new one");
             }
 
-            return Ok();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         [HttpDelete("{id}")]

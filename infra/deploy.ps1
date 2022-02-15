@@ -9,12 +9,11 @@
 # kubectl delete secret dockerhub -n moneta
 # kubectl create secret docker-registry dockerhub --docker-server=$DOCKER_REGISTRY_SERVER --docker-username=$DOCKER_USER --docker-password=$DOCKER_PASSWORD --docker-email=$DOCKER_EMAIL -n moneta
 
-  $CLIENT_ID=""
-  $TENANT_ID=""
+#   $CLIENT_ID=""
 #   $SECRET=(Read-Host "Enter Microsoft ClientSecret" -AsSecureString)
 #   $CLIENT_SECRET=ConvertFrom-SecureString -SecureString $SECRET -AsPlainText
- kubectl delete secret frontend -n moneta
- kubectl create secret generic frontend --from-literal=ClientId=$CLIENT_ID --from-literal=TenantId=$TENANT_ID -n moneta
+#  kubectl delete secret azure -n moneta
+#  kubectl create secret generic azure --from-literal=ClientId=$CLIENT_ID --from-literal=ClientSecret=$CLIENT_SECRET -n moneta
 
 #  $SECRET=(Read-Host "Enter JWT Secret" -AsSecureString)
 #  $JWT_SECRET=ConvertFrom-SecureString -SecureString $SECRET -AsPlainText
@@ -25,5 +24,11 @@
 # $SA_PWD=ConvertFrom-SecureString -SecureString $PASSWORD -AsPlainText
 # $AccountsDb="Data Source=tcp:mssql,1433;Initial Catalog=AccountsDb;User Id=sa;Password=$SA_PWD"
 # $TransactionsDb="Data Source=tcp:mssql,1433;Initial Catalog=TransactionsDb;User Id=sa;Password=$SA_PWD"
+# $InstrumentsDb="Data Source=tcp:mssql,1433;Initial Catalog=InstrumentsDb;User Id=sa;Password=$SA_PWD"
 # kubectl delete secret mssql -n moneta
-# kubectl create secret generic mssql --from-literal=SA_PWD=$SA_PWD --from-literal=AccountsDb=$AccountsDb --from-literal=TransactionsDb=$TransactionsDb -n moneta
+# kubectl create secret generic mssql --from-literal=SA_PWD=$SA_PWD --from-literal=AccountsDb=$AccountsDb --from-literal=TransactionsDb=$TransactionsDb --from-literal=InstrumentsDb=$InstrumentsDb -n moneta
+
+$API_KEY=(Read-Host "Enter Microsoft ClientSecret" -AsSecureString)
+$API_SECRET=ConvertFrom-SecureString -SecureString $API_KEY -AsPlainText
+ kubectl delete secret api -n moneta
+ kubectl create secret generic api --from-literal=financeapi-key=$API_SECRET -n moneta
