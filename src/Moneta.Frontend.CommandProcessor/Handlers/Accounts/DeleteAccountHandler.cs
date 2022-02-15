@@ -19,10 +19,10 @@ namespace Moneta.Frontend.CommandProcessor.Handlers.Accounts
             _Logger = logger;
         }
 
-        public void Execute(string token, DeleteAccountCommand command)
+        public async void Execute(string token, DeleteAccountCommand command)
         {
             _AccountService.Authenticate(token);
-            _AccountService.Delete(command);
+            await _AccountService.Delete(command);
         }
     }
 }

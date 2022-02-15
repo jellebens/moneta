@@ -29,13 +29,13 @@ namespace Moneta.Frontend.CommandProcessor.Services
         public async Task Start(Guid id)
         {            
             StringContent httpContent = new StringContent("", Encoding.UTF8, "application/json");
-            _Client.PostAsync($"api/commands/start/{id}", httpContent);
+            await _Client.PostAsync($"api/commands/start/{id}", httpContent);
         }
 
         public async Task Complete(Guid id)
         {
             StringContent httpContent = new StringContent("", Encoding.UTF8, "application/json");
-            _Client.PostAsync($"api/commands/complete/{id}", httpContent);
+            await _Client.PostAsync($"api/commands/complete/{id}", httpContent);
         }
 
     }

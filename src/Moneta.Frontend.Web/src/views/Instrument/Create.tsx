@@ -14,8 +14,8 @@ import {
     CardTitle,
     Button,
     Label, Spinner,
-    Form, FormGroup,
-    Input,
+    Form, FormGroup, FormFeedback,
+    Input,InputGroup
 
 } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
@@ -24,7 +24,7 @@ import { v4 as uuid } from 'uuid';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 export const CreateInstrumentView = () => {
-    const { register, handleSubmit, setValue, reset, watch, control , formState: { errors } } = useForm<NewInstrument>();
+    const { register, handleSubmit, setValue, reset, watch, control , formState: { errors }, setError } = useForm<NewInstrument>();
     
 
     const { instance, accounts } = useMsal();
@@ -78,6 +78,8 @@ export const CreateInstrumentView = () => {
     
     const onSubmit = async (data:NewInstrument) => {
         
+
+
         const request = {
             scopes: loginRequest.scopes,
             account: accounts[0] as AccountInfo
@@ -87,6 +89,13 @@ export const CreateInstrumentView = () => {
             setIsSubmitted(true);
 
             let url = "/api/instruments";
+
+            // if(data.type === "Stock" && data.sector === 0){
+            //     setIsSubmitted(false);
+
+            //     console.log(errors.symbol);
+            //     return;
+            // }
 
             const config = {
                 headers: { Authorization: `Bearer ${response.accessToken}` },
@@ -161,7 +170,16 @@ export const CreateInstrumentView = () => {
                                 <Controller
                                     name="sector"
                                     control={control}
-                                    render={({ field }) => <Input type={"select"} {...field} disabled={watch("type") !== 'Stock'}>
+                                    rules={{
+                                        validate: value => {
+                                            if(watch("type") === 'Stock' && value ===0 ){
+                                                return false;
+                                            }
+                                            return true;
+                                        }
+
+                                    }}
+                                    render={({ field }) => <Input type={"select"} {...field} disabled={watch("type") !== 'Stock'} invalid={!!errors.sector } >
                                         <option value="0">None</option>
                                         <option value="1">Energy</option>
                                         <option value="2">Materials</option>
@@ -177,6 +195,7 @@ export const CreateInstrumentView = () => {
                                     </Input>                                   
                                     }
                                 />
+                                <FormFeedback invalid >Sector is mandatory for stocks</FormFeedback>
                             </FormGroup>
                             <FormGroup>
                                 <Label for="type">Type</Label>
