@@ -18,13 +18,13 @@ namespace Moneta.Frontend.CommandProcessor.Handlers.Instruments
             _InstrumentService = instrumentService;
             _Logger = logger;
         }
-        public void Execute(string token, CreateInstrumentCommand command)
+        public async Task Execute(string token, CreateInstrumentCommand command)
         {
             _Logger.LogInformation($"Creating instrument with symbol: {command.Symbol}");
             try
             {
                 _InstrumentService.Authenticate(token);
-                _InstrumentService.Create(command);
+                await _InstrumentService.Create(command);
             }
             catch (Exception exc)
             {

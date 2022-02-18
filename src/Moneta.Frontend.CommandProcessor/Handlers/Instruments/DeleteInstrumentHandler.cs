@@ -17,10 +17,10 @@ namespace Moneta.Frontend.CommandProcessor.Handlers.Instruments
         {
             _InstrumentService = instrumentService;
         }
-        public void Execute(string token, DeleteInstrumentCommand command)
+        public async Task Execute(string token, DeleteInstrumentCommand command)
         {
             _InstrumentService.Authenticate(token);
-            _InstrumentService.Delete(command);
+            await _InstrumentService.Delete(command);
         }
     }
 }

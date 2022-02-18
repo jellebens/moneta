@@ -18,7 +18,7 @@ namespace Moneta.Frontend.CommandProcessor.Handlers.Accounts
             _Logger = logger.CreateLogger<CreateAccountHandler>();
             _AccountService = accountService;
         }
-        public async void Execute(string token, CreateAccountCommand command)
+        public async Task Execute(string token, CreateAccountCommand command)
         {
             _AccountService.Authenticate(token);
             await _AccountService.Create(command);

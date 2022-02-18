@@ -9,7 +9,7 @@ namespace Moneta.Frontend.CommandProcessor.Handlers
 {
     public interface ICommandHandler<in TCommand> where TCommand : ICommand
     {
-        void Execute(string token, TCommand command);
+        Task Execute(string token, TCommand command);
     }
 
 }

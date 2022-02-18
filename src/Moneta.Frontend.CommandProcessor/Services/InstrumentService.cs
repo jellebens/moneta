@@ -12,7 +12,7 @@ namespace Moneta.Frontend.CommandProcessor.Services
     public interface IInstrumentService: IService
     {
         Task Create(CreateInstrumentCommand newInstrument);
-        void Delete(DeleteInstrumentCommand deleteInstrument);
+        Task Delete(DeleteInstrumentCommand deleteInstrument);
     }
 
     public class InstrumentService : ServiceBase, IInstrumentService
@@ -33,7 +33,7 @@ namespace Moneta.Frontend.CommandProcessor.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async void Delete(DeleteInstrumentCommand deleteInstrument)
+        public async Task Delete(DeleteInstrumentCommand deleteInstrument)
         {
             HttpResponseMessage response = await _Client.DeleteAsync($"/instruments/{deleteInstrument.InstrumentId}");
 

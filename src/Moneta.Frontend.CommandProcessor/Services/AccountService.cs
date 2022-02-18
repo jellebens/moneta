@@ -13,7 +13,7 @@ namespace Moneta.Frontend.CommandProcessor.Services
     {
         Task Create(CreateAccountCommand newAccount);
 
-        void Delete(DeleteAccountCommand deleteAccount);
+        Task Delete(DeleteAccountCommand deleteAccount);
 
     }
     public class AccountsService : ServiceBase, IAccountsService
@@ -39,7 +39,7 @@ namespace Moneta.Frontend.CommandProcessor.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async void Delete(DeleteAccountCommand deleteAccount)
+        public async Task Delete(DeleteAccountCommand deleteAccount)
         {
             HttpResponseMessage response = await _Client.DeleteAsync($"/accounts/{deleteAccount.AccountId}");
 
