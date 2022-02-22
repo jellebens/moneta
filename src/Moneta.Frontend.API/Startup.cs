@@ -38,7 +38,7 @@ namespace Moneta.Frontend.API
         {
             services.AddOptions();
 
-            services.AddSingleton<IBus, RabbitMqBus>();
+            services.AddScoped<IBus, RabbitMqBus>();
 
 
             //https://damienbod.com/2020/11/09/implement-a-web-app-and-an-asp-net-core-secure-api-using-azure-ad-which-delegates-to-second-api/

@@ -35,8 +35,8 @@ export interface NewInstrument {
 }
 
 export const dummyAccounts: InstrumentListItem[] = [
-    { id :"1", name: "***DUMMY*** SPDR MSCI World UCITS ETF",isin: "IE00BFY0GT14", ticker: "SWRD", currency: "EUR" },
-    { id :"2", name: "***DUMMY*** iShares Nasdaq 100 UCITS ETF (Acc)",isin: "IE00B53SZB19", ticker: "CNX1", currency: "EUR" },
+    { id :"1", name: "***DUMMY*** SPDR MSCI World UCITS ETF", symbol: "SWRD", currency: "EUR" },
+    { id :"2", name: "***DUMMY*** iShares Nasdaq 100 UCITS ETF (Acc)", symbol: "CNX1", currency: "EUR" },
 ]
 
 
@@ -74,7 +74,7 @@ export const DeleteInstrument = async (token: string, id : string) => {
 
 
 export const Search = async (q: string, token: string): Promise<InstrumentSearchResult[]> => {
-    let url = "/api/instruments/search/"+ q;
+    let url = "/api/instruments/autocomplete/"+ q;
 
     const config = {
         headers: { Authorization: `Bearer ${token}` },

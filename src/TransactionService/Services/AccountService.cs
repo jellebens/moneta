@@ -31,7 +31,7 @@ namespace TransactionService.Services
         public async Task<AccountInfo> GetAsync(Guid id)
         {
             HttpResponseMessage response = await _Client.GetAsync($"/accounts/{id}");
-            
+            response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
 
             AccountInfo account = JsonConvert.DeserializeObject<AccountInfo>(result);

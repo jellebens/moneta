@@ -1,4 +1,4 @@
-﻿using Moneta.Frontend.Commands;
+﻿using Moneta.Frontend.Commands.Instruments;
 using Moneta.Frontend.Web.Services;
 using Newtonsoft.Json;
 using System;

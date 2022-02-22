@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.Commands
+namespace Moneta.Frontend.Commands.Accounts
 {
-    public class DeleteInstrumentCommand:ICommand
+    public class DeleteAccountCommand : ICommand
     {
         public Guid Id { get; set; }
-        public Guid InstrumentId { get; set; }
-        
+        public Guid AccountId { get; set; }
     }
 }

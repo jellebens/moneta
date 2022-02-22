@@ -1,5 +1,5 @@
 ﻿using Moneta.Frontend.CommandProcessor.Services;
-using Moneta.Frontend.Commands;
+using Moneta.Frontend.Commands.Instruments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace Moneta.Frontend.CommandProcessor.Handlers.Instruments
 {
 
-    class DeleteInstrumentHandler : ICommandHandler<DeleteInstrumentCommand>
+    class DeleteInstrumentComandHandler : ICommandHandler<DeleteInstrumentCommand>
     {
         private readonly IInstrumentService _InstrumentService;
 
-        public DeleteInstrumentHandler(IInstrumentService instrumentService)
+        public DeleteInstrumentComandHandler(IInstrumentService instrumentService)
         {
             _InstrumentService = instrumentService;
         }

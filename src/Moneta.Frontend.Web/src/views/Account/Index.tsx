@@ -1,5 +1,5 @@
-import React from "react";
-import { AccountsList, AccountListItem, DeleteAccount, dummyAccounts } from "views/Account/Accounts";
+import React, { useState } from "react";
+import { AccountsList, AccountListItem, DeleteAccount, GetSelected, SetSelected } from "views/Account/Accounts";
 import { loginRequest } from "AuthConfig";
 import { NavLink } from "react-router-dom";
 import {
@@ -23,8 +23,12 @@ export const AccountOverview = () => {
     const { instance, accounts } = useMsal();
     const [accountItems, setAccountItems] = React.useState<AccountListItem[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [activeAccount, setActiveAccount] = useState<AccountListItem>();
 
     React.useEffect(() => {
+        
+        GetSelected().then(a => setActiveAccount(a));
+        
         const doListAccounts = async () => {
             const request = {
                 scopes: loginRequest.scopes,
@@ -43,6 +47,11 @@ export const AccountOverview = () => {
 
         doListAccounts();
     }, []);
+
+    function setActive(account: AccountListItem){
+        SetSelected(account);
+        setActiveAccount(account);
+    } 
 
     function handleRemove(id: string) {
         setIsLoading(true);
@@ -81,6 +90,7 @@ export const AccountOverview = () => {
                                     <Table striped>
                                         <thead className="text-primary">
                                             <tr>
+                                                <th>Active</th>
                                                 <th>Name</th>
                                                 <th>Currency</th>
                                                 <th></th>
@@ -89,11 +99,16 @@ export const AccountOverview = () => {
                                         <tbody>
                                             {accountItems.map((account) => (
                                                 <tr key={account.id}>
+                                                    <td>
+                                                        <Button className="btn btn-icon btn-square" color="primary" type="button" onClick={() => setActive(account)} >
+                                                            {account.id == activeAccount?.id ? <i className="fa fa-check" aria-hidden="true"></i>: <></>
+                                                            }
+                                                        </Button></td>
                                                     <td>{account.name}</td>
                                                     <td>{account.currency}</td>
                                                     <td>
                                                         <Button className="btn btn-icon btn-round btn-danger" color="danger" type="button" onClick={() => handleRemove(account.id)}>
-                                                        <i className="fa fa-trash"></i>
+                                                            <i className="fa fa-trash"></i>
                                                         </Button>
                                                     </td>
                                                         

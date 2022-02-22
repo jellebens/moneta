@@ -126,7 +126,7 @@ export const CreateInstrumentView = () => {
             
          <Card>
                     <CardHeader>
-                        <CardTitle tag="h4">Search new instrument</CardTitle>
+                        <CardTitle tag="h4">Create new instrument</CardTitle>
                     </CardHeader>
                     <CardBody>
                         { isLoading ? <div className="text-center"><Spinner color="primary" /></div> :

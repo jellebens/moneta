@@ -11,6 +11,7 @@ using Moneta.Frontend.API.Bus;
 using Moneta.Frontend.API.Hubs;
 using Moneta.Frontend.API.Services;
 using Moneta.Frontend.Commands;
+using Moneta.Frontend.Commands.Accounts;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;

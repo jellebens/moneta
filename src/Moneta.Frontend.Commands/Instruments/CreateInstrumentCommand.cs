@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moneta.Frontend.Commands
+namespace Moneta.Frontend.Commands.Instruments
 {
-    public class CreateInstrumentCommand: ICommand
+    public class CreateInstrumentCommand : ICommand
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

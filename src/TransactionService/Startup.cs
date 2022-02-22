@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Moneta.Core.Jwt;
 using Polly;
 using Polly.Extensions.Http;
 using System;
@@ -17,6 +15,9 @@ using TransactionService.Sql;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry;
+using Microsoft.Identity.Web;
+using TransactionService.Bus;
+using Moneta.Core;
 
 namespace TransactionService
 {
@@ -42,37 +43,22 @@ namespace TransactionService
 
             });
 
+            services.AddScoped<IBus, RabbitMqBus>();
+
             services.AddHttpClient<IAccountsService, AccountsService>(client => {
                 client.BaseAddress = new Uri(Configuration["ACCOUNTS_SERVICE"]);
             }).SetHandlerLifetime(TimeSpan.FromMinutes(5))
                         .AddPolicyHandler(GetRetryPolicy());
 
-            services.AddTransient<IJwtTokenBuilder, JwtTokenBuilder>();
-
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(jwt =>
-            {
-                byte[] key = Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWT_SECRET"));
-
-                jwt.SaveToken = true;
-                jwt.Audience = Configuration.GetValue<string>("CLIENT_ID");
-                jwt.Authority = "https://login.microsoftonline.com/common";
-                jwt.RequireHttpsMetadata = false;
-
-                jwt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = "https://login.microsoftonline.com/common",
-                    ValidateAudience = true,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
-                };
-            });
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                                        .AddMicrosoftIdentityWebApi(options => { }, options =>
+                                        {
+                                            options.ClientId = Configuration.GetValue<string>("CLIENT_ID");
+                                            options.Instance = "https://login.microsoftonline.com/";
+                                            options.TenantId = "common";
+                                            options.ClientSecret = Configuration.GetValue<string>("CLIENT_SECRET");
+                                        });
 
             services.AddControllers();
 
@@ -86,9 +72,10 @@ namespace TransactionService
                     options.SetDbStatementForStoredProcedure = true;
                 });
                 builder.AddHttpClientInstrumentation();
-                builder.AddSource("Moneta.Frontend.Web");
+                builder.AddSource(Telemetry.Source);
                 builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["SERVICE_NAME"]));
-                builder.AddJaegerExporter(options => {
+                builder.AddJaegerExporter(options =>
+                {
                     options.AgentHost = Configuration["JAEGER_AGENT_HOST"];
                     options.AgentPort = Convert.ToInt32(Configuration["JAEGER_AGENT_PORT"]);
                     options.ExportProcessorType = ExportProcessorType.Simple;

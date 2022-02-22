@@ -8,6 +8,7 @@ using Moneta.Frontend.API.Models.Instruments;
 using Moneta.Frontend.API.Models.Yfapi;
 using Moneta.Frontend.API.Services;
 using Moneta.Frontend.Commands;
+using Moneta.Frontend.Commands.Instruments;
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -32,7 +33,7 @@ namespace Moneta.Frontend.API.Controllers
             _Bus = bus;
         }
 
-        [HttpGet("search/{symbol}")]
+        [HttpGet("autocomplete/{symbol}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(InstrumentSearchResult[]), StatusCodes.Status200OK)]
         public async Task<IActionResult> Search(string symbol) {

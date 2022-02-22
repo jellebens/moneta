@@ -6,7 +6,8 @@ import CreateAccount from "views/Account/New";
 import InstrumentOverview from "views/Instrument/Index";
 import SearchInstrument from "views/Instrument/Search";
 import CreateInstrument from "views/Instrument/Create";
-
+import CreateTransaction from "views/Transaction/New"
+import CreateCashDeposit from "views/Transaction/CashTransfer"
 
 var routes = [
   {
@@ -54,7 +55,21 @@ var routes = [
     name: "Create Instrument",
     showInSideBar: false,
     component: CreateInstrument
-  }
+  },
+  {
+    path: "/transactions/",
+    name: "Transactions",
+    icon: "fa fa-solid fa-money-check",
+    showInSideBar: true,
+    component: CreateTransaction
+  },
+
+  {
+    path: "/transactions/transfer",
+    name: "Cash deposit",
+    showInSideBar: false,
+    component: CreateCashDeposit
+  },
 
 ];
 

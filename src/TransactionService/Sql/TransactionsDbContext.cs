@@ -22,15 +22,15 @@ namespace TransactionService.Sql
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new CurrencyMapping());
+            modelBuilder.ApplyConfiguration(new CashTransferMapping());
 
-            modelBuilder.ApplyConfiguration(new BuyOrderMapping());
-            modelBuilder.ApplyConfiguration(new CostsMapping());
         }
 
-        public DbSet<BuyOrder> BuyOrders { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
 
+        public DbSet<CashTransfer> CashTransfers { get; set; }
 
-        public DbSet<Cost> Costs { get; set; }
 
     }
 }
