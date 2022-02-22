@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Moneta.Events.Transactions
 {
-    public class CashDepositedEvent
+    public class CashDepositedEvent:IEvent
     {
         public Guid Id { get; set; }
 

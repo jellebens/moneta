@@ -21,6 +21,7 @@ using OpenTelemetry;
 using Microsoft.Identity.Web;
 using Moneta.Core.Jwt;
 using Moneta.Core;
+using AccountService.Events;
 
 namespace AccountService
 {
@@ -46,6 +47,9 @@ namespace AccountService
 
             });
 
+
+
+            services.AddHostedService<EventHandlerService>();
 
             services.AddHeaderPropagation(o =>
             {

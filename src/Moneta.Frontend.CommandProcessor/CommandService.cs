@@ -24,8 +24,7 @@ namespace Moneta.Frontend.CommandProcessor
 
         private IConnection _Connection;
         private IModel _Channel;
-        private EventingBasicConsumer consumer;
-
+        
         private static readonly ActivitySource Activity = new(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
 
@@ -83,10 +82,9 @@ namespace Moneta.Frontend.CommandProcessor
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: args);
-
-            consumer = new EventingBasicConsumer(_Channel);
-
             
+            EventingBasicConsumer consumer = new EventingBasicConsumer(_Channel);
+
             consumer.Received += async (model, ea) =>
             {
                 IBasicProperties properties = ea.BasicProperties;
@@ -144,7 +142,6 @@ namespace Moneta.Frontend.CommandProcessor
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             _Logger.LogInformation($"Shutting down service");
-
             _Channel.Dispose();
             
             _Connection.Dispose();

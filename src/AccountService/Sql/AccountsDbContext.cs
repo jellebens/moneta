@@ -21,9 +21,12 @@ namespace AccountService.Sql
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new AccountMapping());
+            modelBuilder.ApplyConfiguration(new DepositMapping());
         }
 
         public DbSet<Account> Accounts { get; set; }
+
+        public DbSet<Deposit> Deposits { get; set; }
 
     }
 }

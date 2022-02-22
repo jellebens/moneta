@@ -65,6 +65,11 @@ namespace Moneta.Frontend.API.Bus
                 {
                     IBasicProperties props = _Channel.CreateBasicProperties();
 
+                    ActivityContext context = activity.Context;
+                    if (context == null) {
+                        context = _ActivitySource.CreateActivity("Publish message", ActivityKind.Producer).Context;
+                    }
+
                     Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
 
                     props.Headers.Add("token",token);

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Moneta.Frontend.CommandProcessor
 {
-    internal class CommandDispatcher : ICommandDispatcher
+    public class CommandDispatcher : ICommandDispatcher
     {
         private static readonly ActivitySource Activity = new(nameof(CommandDispatcher));
 

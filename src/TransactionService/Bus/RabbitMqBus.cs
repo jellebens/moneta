@@ -35,7 +35,7 @@ namespace TransactionService.Bus
             _Logger = logger;
         }
 
-        public Task SendAsync<T>(T message)
+        public async Task SendAsync<T>(T message)
         {
             string exchange = Topics.Transactions;
             try
@@ -56,7 +56,7 @@ namespace TransactionService.Bus
                     };
 
                    
-                    _Channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Fanout);
+                    _Channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Fanout, arguments: args);
 
                     string json = JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings
                     {
@@ -77,11 +77,6 @@ namespace TransactionService.Bus
                 _Logger?.LogError($"Error while sending message {exc.Message}\r\n{exc.StackTrace}");
                 throw;
             }
-
-
-
-
-            return Task.CompletedTask;
         }
 
         private void InjectContextIntoHeader(IBasicProperties props, string key, string value)
