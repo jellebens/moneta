@@ -9,6 +9,7 @@ using Moneta.Core;
 using Moneta.Core.Jwt;
 using Moneta.Frontend.API.Bus;
 using Moneta.Frontend.API.Hubs;
+using Moneta.Frontend.API.Models.Accounts;
 using Moneta.Frontend.API.Services;
 using Moneta.Frontend.Commands;
 using Moneta.Frontend.Commands.Accounts;
@@ -46,6 +47,18 @@ namespace Moneta.Frontend.API.Controllers
             var accounts = await _AccountService.GetAsync();
 
             return Ok(accounts);
+        }
+
+        [HttpGet("deposits/summary/year/{id}")]
+        public async Task<IActionResult> DepositsPerYear(Guid id)
+        {
+            string token = this.Request.Headers["Authorization"].ToString().Substring("Bearer ".Length);
+
+            _AccountService.Authenticate(token);
+
+            var results = await _AccountService.GetSummaryByYear(id);
+
+            return Ok(results);
         }
 
         [HttpPost]

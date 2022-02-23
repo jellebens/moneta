@@ -44,6 +44,20 @@ namespace AccountService.Controllers
             return Ok(accounts.ToList());
         }
 
+        [HttpGet("deposits/summary/year/{id}")]
+        public IActionResult DepositsPerYear(Guid id)
+        {
+            Claim user = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
+
+            var results = _AccountsDbContext.Deposits.Where(d => d.Account.Id == id && d.Account.Owner == user.Value).Select(d => new
+            {
+                Year = d.Year,
+                Amount = d.Amount 
+            }).OrderBy(x => x.Year);
+
+            return Ok(results);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Index(CreateAccountCommand command) {
             Claim nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);

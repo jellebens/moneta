@@ -18,7 +18,7 @@ namespace Moneta.Frontend.API.Services
     public interface IAccountsService: IService
     {
         Task<AccountListItem[]> GetAsync();
-        
+        Task<AccountSummaryByYear[]> GetSummaryByYear(Guid id);
     }
 
 
@@ -40,6 +40,22 @@ namespace Moneta.Frontend.API.Services
                 string result = await response.Content.ReadAsStringAsync();
 
                 AccountListItem[] accounts = JsonConvert.DeserializeObject<AccountListItem[]>(result);
+
+                return accounts;
+            }
+
+            _Logger.LogError($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
+            throw new Exception($"Error retrieving accounts -> {response.StatusCode}: {response.ReasonPhrase}");
+        }
+
+        public async Task<AccountSummaryByYear[]> GetSummaryByYear(Guid id)
+        {
+            HttpResponseMessage response = await _Client.GetAsync($"/accounts/deposits/summary/year/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                string result = await response.Content.ReadAsStringAsync();
+
+                AccountSummaryByYear[] accounts = JsonConvert.DeserializeObject<AccountSummaryByYear[]>(result);
 
                 return accounts;
             }

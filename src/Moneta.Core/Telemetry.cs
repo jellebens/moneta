@@ -9,5 +9,6 @@ namespace Moneta.Core
     public static class Telemetry
     {
         public const string Source = "moneta";
+        public const string API = "moneta-api";
     }
 }

@@ -33,7 +33,7 @@ namespace AccountService.Events.Handlers.Transactions
             }
             else
             {
-                d.Amount += evnt.Amount;
+                d.Amount -= evnt.Amount;
             }
 
             _DbContext.SaveChanges();

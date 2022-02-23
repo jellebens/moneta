@@ -61,16 +61,14 @@ namespace Moneta.Frontend.API.Bus
             //FROM: https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
             try
             {
-                using (Activity activity = _ActivitySource.StartActivity("Publish message", ActivityKind.Producer))
+                using (Activity activity = _ActivitySource.StartActivity("Publish message"))
                 {
                     IBasicProperties props = _Channel.CreateBasicProperties();
 
-                    ActivityContext context = activity.Context;
-                    if (context == null) {
-                        context = _ActivitySource.CreateActivity("Publish message", ActivityKind.Producer).Context;
+                    if (activity != null) {
+                        Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
                     }
-
-                    Propagator.Inject(new PropagationContext(activity.Context, Baggage.Current), props, InjectContextIntoHeader);
+                    
 
                     props.Headers.Add("token",token);
 

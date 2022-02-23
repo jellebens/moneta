@@ -43,6 +43,22 @@ export const DeleteAccount = async (token: string, id : string) => {
     await (await axios.delete(url, config));
 }
 
+export interface AccountSummary {
+    year: number
+    amount: number
+}
+
+export const Summary = async (accountId: string, token: string): Promise<AccountSummary[]> => {
+    let url = "/api/accounts/deposits/summary/year/"+ accountId;
+
+    const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        mode: "no-cors",
+    };
+
+    return await (await axios.get(url, config)).data    
+}
+
 const wait = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
