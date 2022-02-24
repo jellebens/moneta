@@ -35,6 +35,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          - name: RABBITMQ_HOST
+            value: "{{ .Values.rabbitmq.host }}"
           - name: JAEGER_AGENT_HOST
             value: "{{ .Values.jaeger.agent.host }}"
           - name: JAEGER_AGENT_PORT
@@ -43,6 +45,8 @@ spec:
             value: "{{ template "transactions.fullname" . }}.{{ .Release.Namespace }}"
           - name: ASPNETCORE_URLS
             value: http://+:8080
+          - name: ACCOUNTS_SERVICE
+            value: http://accounts.moneta.svc.cluster.local/
           - name: "Transactions"
             valueFrom:
               secretKeyRef:
@@ -53,11 +57,6 @@ spec:
               secretKeyRef:
                 name: azure
                 key: ClientId
-          - name: "JWT_SECRET"
-            valueFrom:
-              secretKeyRef:
-                name: jwt
-                key: Secret
           ports:
             - name: http
               containerPort: 8080

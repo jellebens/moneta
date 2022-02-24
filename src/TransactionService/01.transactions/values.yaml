@@ -48,6 +48,9 @@ jaeger:
     host: "jaeger-agent.observability"
     port: 6831
 
+rabbitmq:
+    host: "rabbitmq.rabbitmq-cluster.svc.cluster.local"
+
 resources: 
   limits:
     cpu: 500m

@@ -43,7 +43,7 @@ namespace TransactionService
 
             });
 
-            services.AddScoped<IBus, RabbitMqBus>();
+            services.AddSingleton<IBus, RabbitMqBus>();
 
             services.AddHttpClient<IAccountsService, AccountsService>(client => {
                 client.BaseAddress = new Uri(Configuration["ACCOUNTS_SERVICE"]);

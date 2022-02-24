@@ -48,6 +48,8 @@ spec:
             value: http://instruments.moneta.svc.cluster.local/
           - name: API_SERVICE
             value: "http://frontend-api.moneta.svc.cluster.local"
+          - name: TRANSACTION_SERVICE
+            value: "http://transactions.moneta.svc.cluster.local"
           - name: COMMANDS_HUB
             value: "http://frontend-api.moneta.svc.cluster.local/hubs/commands"
           resources:

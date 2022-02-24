@@ -1,6 +1,6 @@
 $project="InstrumentService"
 $helmRelease="instruments-service"
-$chart="instruments"
+$chart="01.instruments"
 
 $ScriptDirectory = Split-Path -Path $PSScriptRoot -Parent
 
