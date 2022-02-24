@@ -26,13 +26,13 @@ namespace AccountService.Events.Handlers.Transactions
                 {
                     Account = a,
                     Year = evnt.Date.Year,
-                    Amount = evnt.Amount,
+                    Amount = 0,
                 };
                 _DbContext.Deposits.Add(d);
             }
-            else {
-                d.Amount += evnt.Amount;
-            }
+            
+            d.Amount += evnt.Amount;
+            
 
             _DbContext.SaveChanges();
         }
