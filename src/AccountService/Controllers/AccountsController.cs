@@ -31,7 +31,7 @@ namespace AccountService.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            
+
             Claim id = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             var accounts = _AccountsDbContext.Accounts.Where(a => a.Owner == id.Value).Select(a => new AccountInfo()
@@ -49,17 +49,32 @@ namespace AccountService.Controllers
         {
             Claim user = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
-            var results = _AccountsDbContext.Deposits.Where(d => d.Account.Id == id && d.Account.Owner == user.Value).Select(d => new
-            {
-                Year = d.Year,
-                Amount = d.Amount 
-            }).OrderBy(x => x.Year);
+            Account account = _AccountsDbContext.Accounts.Single(a => a.Id == id && a.Owner == user.Value);
 
-            return Ok(results);
+            var lines = _AccountsDbContext.Deposits.Where(d => d.Account.Id == id && d.Account.Owner == user.Value).Select(d =>
+                new SummaryLine()
+                {
+                    Year = d.Year,
+                    Amount = d.Amount
+                }
+            ).OrderBy(x => x.Year).ToArray();
+
+            AccountSummary accountSummary = new AccountSummary()
+            {
+                Currency = account.Currency,
+                Name = account.Name,
+                Id = account.Id,
+                Total = lines.Sum(d => d.Amount),
+                Lines = lines
+            };
+
+
+            return Ok(accountSummary);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(CreateAccountCommand command) {
+        public async Task<IActionResult> Index(CreateAccountCommand command)
+        {
             Claim nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
             Claim id = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
@@ -67,7 +82,8 @@ namespace AccountService.Controllers
 
             bool accountExists = _AccountsDbContext.Accounts.Any(a => a.Name == account.Name && a.Currency.ToUpper() == account.Currency.ToUpper() && a.Owner == account.Owner);
 
-            if (!accountExists) {
+            if (!accountExists)
+            {
                 await _AccountsDbContext.Accounts.AddAsync(account);
                 await _AccountsDbContext.SaveChangesAsync();
             }
@@ -80,12 +96,14 @@ namespace AccountService.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id) {
+        public async Task<IActionResult> Delete(Guid id)
+        {
             Claim owner = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             Account account = _AccountsDbContext.Accounts.SingleOrDefault(a => a.Id == id && a.Owner == owner.Value);
 
-            if (account == null) {
+            if (account == null)
+            {
                 string errMsg = $"Account with Id {id} for {owner} does not exist";
                 _Logger.LogCritical(errMsg);
                 return StatusCode(StatusCodes.Status404NotFound, errMsg);
@@ -104,11 +122,12 @@ namespace AccountService.Controllers
             Claim userId = User.Claims.FirstOrDefault(c => c.Type == MyClaimTypes.UserName);
 
             var account = _AccountsDbContext.Accounts.Where(a => a.Id == id && a.Owner == userId.Value)
-                                                      .Select(a => new AccountInfo(){
-                                                                        Currency = a.Currency,
-                                                                        Id = a.Id,
-                                                                        Name = a.Name
-                                                                    })
+                                                      .Select(a => new AccountInfo()
+                                                      {
+                                                          Currency = a.Currency,
+                                                          Id = a.Id,
+                                                          Name = a.Name
+                                                      })
                                                       .Single();
 
             return Ok(account);

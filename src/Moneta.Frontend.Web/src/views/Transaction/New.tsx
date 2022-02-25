@@ -19,15 +19,11 @@ import { AccountInfo } from "@azure/msal-browser";
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { AccountListItem , GetSelected, Summary, AccountSummary } from "views/Account/Accounts";
-
-
-interface chartData{
-
-}
+import NumberFormat from 'react-number-format';
 
 
 export const NewTransaction = () => {
-    const [accountSummary, setAccountSummary] = useState<AccountSummary[]>()
+    const [accountSummary, setAccountSummary] = useState<AccountSummary>()
 
     const [activeAccount, setActiveAccount] = useState<AccountListItem>();
     const { instance, accounts } = useMsal();
@@ -62,18 +58,19 @@ export const NewTransaction = () => {
                 <Col md="4">
                     <Card body>
                           <CardTitle className="text-center">Transfer funds</CardTitle>
+                          <div className="text-center">Total funds deposited: <NumberFormat value={accountSummary?.total} displayType={'text'} thousandSeparator={true} decimalScale={2} /> &nbsp;{accountSummary?.currency}</div>
                           <ResponsiveContainer width="100%" height={300}>
                           <BarChart
                             width={500}
                             height={300}
-                            data={accountSummary}
+                            data={accountSummary?.lines}
                             >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="year" />
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="amount" fill="#8884d8" />
+                            <Bar dataKey="amount" label="test" fill="#8884d8" />
                             
                             </BarChart>
                             </ResponsiveContainer>

@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Moneta.Frontend.API.Models.Accounts
+namespace AccountService.Contracts.Data
 {
     public class AccountSummary
     {
-        public Guid Id { get; set; }
+        public  Guid Id { get; set; }
 
         public string Name { get; set; }
 

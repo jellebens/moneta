@@ -43,12 +43,20 @@ export const DeleteAccount = async (token: string, id : string) => {
     await (await axios.delete(url, config));
 }
 
-export interface AccountSummary {
+export interface summaryline{
     year: number
     amount: number
 }
 
-export const Summary = async (accountId: string, token: string): Promise<AccountSummary[]> => {
+export interface AccountSummary {
+    id: string
+    name: string
+    currency: string
+    total: number
+    lines: summaryline[]
+}
+
+export const Summary = async (accountId: string, token: string): Promise<AccountSummary> => {
     let url = "/api/accounts/deposits/summary/year/"+ accountId;
 
     const config = {
