@@ -57,7 +57,7 @@ export const NewTransaction = () => {
             <Row>
                 <Col md="4">
                     <Card body>
-                          <CardTitle className="text-center">Transfer funds</CardTitle>
+                          <CardTitle className="text-center">{activeAccount?.name}</CardTitle>
                           <div className="text-center">Total funds deposited: <NumberFormat value={accountSummary?.total} displayType={'text'} thousandSeparator={true} decimalScale={2} /> &nbsp;{accountSummary?.currency}</div>
                           <ResponsiveContainer width="100%" height={300}>
                           <BarChart
@@ -70,7 +70,7 @@ export const NewTransaction = () => {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="amount" label="test" fill="#8884d8" />
+                            <Bar dataKey="amount" fill="#8884d8" />
                             
                             </BarChart>
                             </ResponsiveContainer>
@@ -80,7 +80,7 @@ export const NewTransaction = () => {
                     <Col md="4">
                     <Card body>
                           <CardTitle className="text-center">New Trade</CardTitle>
-                          <Button>Trade</Button>
+                          <NavLink className="btn btn-default" to="trade">Trade</NavLink>
                     </Card>
                 </Col>
                 <Col md="4">

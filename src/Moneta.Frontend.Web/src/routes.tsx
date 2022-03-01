@@ -7,7 +7,8 @@ import InstrumentOverview from "views/Instrument/Index";
 import SearchInstrument from "views/Instrument/Search";
 import CreateInstrument from "views/Instrument/Create";
 import CreateTransaction from "views/Transaction/New"
-import CreateCashDeposit from "views/Transaction/CashTransfer"
+import CreateCashTransfer from "views/Transaction/CashTransfer"
+import CreateSecurityTrade from "views/Transaction/Trade"
 
 var routes = [
   {
@@ -63,12 +64,17 @@ var routes = [
     showInSideBar: true,
     component: CreateTransaction
   },
-
   {
     path: "/transactions/transfer",
     name: "Cash deposit",
     showInSideBar: false,
-    component: CreateCashDeposit
+    component: CreateCashTransfer
+  },
+  {
+    path: "/transactions/trade",
+    name: "Trade security",
+    showInSideBar: false,
+    component: CreateSecurityTrade
   },
 
 ];

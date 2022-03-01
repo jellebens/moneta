@@ -68,7 +68,7 @@ namespace Moneta.Frontend.CommandProcessor
 
             _Logger.LogInformation($"Creating Client");
 
-            var factory = new ConnectionFactory() { HostName = connectionString };
+            var factory = new ConnectionFactory() { HostName = connectionString, UserName = _Configuration.GetValue<string>("RABBITMQ_USER"), Password = _Configuration.GetValue<string>("RABBITMQ_PASSWORD") };
             _Connection = factory.CreateConnection();
             _Channel = _Connection.CreateModel();
 

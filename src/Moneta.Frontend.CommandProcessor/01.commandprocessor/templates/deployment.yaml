@@ -40,6 +40,16 @@ spec:
             value: "{{ .Values.jaeger.agent.port }}"
           - name: RABBITMQ_HOST
             value: "{{ .Values.rabbitmq.host }}"
+          - name: RABBITMQ_USER
+            valueFrom:
+                secretKeyRef:
+                    name: rabbitmq
+                    key: username
+          - name: RABBITMQ_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                    name: rabbitmq
+                    key: password
           - name: SERVICE_NAME
             value: "{{ template "frontend-commandprocessor.fullname" . }}.{{ .Release.Namespace }}"
           - name: ACCOUNTS_SERVICE

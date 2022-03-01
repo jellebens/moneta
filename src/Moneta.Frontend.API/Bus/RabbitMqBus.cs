@@ -17,7 +17,9 @@ namespace Moneta.Frontend.API.Bus
     public class RabbitMqBus : IBus, IDisposable
     {
         private readonly CommandsBinder _CommandsBinder = CommandsBinder.Instance();
+        private readonly IConfiguration _Configuration;
         private readonly ILogger<RabbitMqBus> _Logger;
+        private readonly bool _IsConnected = false;
         private ConnectionFactory _Factory;
         private IConnection _Connection;
         private IModel _Channel;
@@ -27,12 +29,12 @@ namespace Moneta.Frontend.API.Bus
 
         public RabbitMqBus(IConfiguration configuration, ILogger<RabbitMqBus> logger)
         {
-            string connectionString = configuration.GetValue<string>("RABBITMQ_HOST");
-
-            _Factory = new ConnectionFactory() { HostName = connectionString };
+            _Factory = new ConnectionFactory() { HostName = configuration.GetValue<string>("RABBITMQ_HOST"), UserName = configuration.GetValue<string>("RABBITMQ_USER"), Password = configuration.GetValue<string>("RABBITMQ_PASSWORD") };
             _Connection = _Factory.CreateConnection();
             _Channel = _Connection.CreateModel();
+            
             _Logger = logger;
+            _IsConnected = true;
         }
 
         public void Dispose()
@@ -112,6 +114,11 @@ namespace Moneta.Frontend.API.Bus
 
             return Task.CompletedTask;
 
+        }
+
+        public bool IsConnected()
+        {
+            return _IsConnected;
         }
     }
 }

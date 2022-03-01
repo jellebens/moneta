@@ -60,11 +60,11 @@ namespace AccountService.Events
         {
             _Logger.LogInformation($"Starting eventhandler service");
 
-            string connectionString = _Configuration.GetValue<string>("RABBITMQ_HOST");
+            
 
             _Logger.LogInformation($"Creating Client");
 
-            var factory = new ConnectionFactory() { HostName = connectionString };
+            var factory = new ConnectionFactory() { HostName = _Configuration.GetValue<string>("RABBITMQ_HOST"), UserName = _Configuration.GetValue<string>("RABBITMQ_USER"), Password = _Configuration.GetValue<string>("RABBITMQ_PASSWORD") };
             _Connection = factory.CreateConnection();
             _Channel = _Connection.CreateModel();
 

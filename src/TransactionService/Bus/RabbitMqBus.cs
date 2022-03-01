@@ -24,15 +24,15 @@ namespace TransactionService.Bus
         private IModel _Channel;
         private static readonly ActivitySource _ActivitySource = new ActivitySource(Telemetry.Source);
         private static readonly TextMapPropagator Propagator = Propagators.DefaultTextMapPropagator;
+        private readonly bool _IsConnected = false;
 
         public RabbitMqBus(IConfiguration configuration, ILogger<RabbitMqBus> logger)
         {
-            string connectionString = configuration.GetValue<string>("RABBITMQ_HOST");
-
-            _Factory = new ConnectionFactory() { HostName = connectionString };
+            _Factory = new ConnectionFactory() { HostName = configuration.GetValue<string>("RABBITMQ_HOST"), UserName = configuration.GetValue<string>("RABBITMQ_USER"), Password = configuration.GetValue<string>("RABBITMQ_PASSWORD") };
             _Connection = _Factory.CreateConnection();
             _Channel = _Connection.CreateModel();
             _Logger = logger;
+            _IsConnected = true;
         }
 
         public async Task SendAsync<T>(T message)
@@ -98,6 +98,11 @@ namespace TransactionService.Bus
             _Channel.Dispose();
             _Connection.Dispose();
             _ActivitySource.Dispose();
+        }
+
+        public bool IsConnected()
+        {
+            return _IsConnected;
         }
     }
 }

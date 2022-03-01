@@ -15,10 +15,6 @@
 #  kubectl delete secret azure -n moneta
 #  kubectl create secret generic azure --from-literal=ClientId=$CLIENT_ID --from-literal=ClientSecret=$CLIENT_SECRET -n moneta
 
-#  $SECRET=(Read-Host "Enter JWT Secret" -AsSecureString)
-#  $JWT_SECRET=ConvertFrom-SecureString -SecureString $SECRET -AsPlainText
-#  kubectl delete secret jwt -n moneta
-#  kubectl create secret generic jwt --from-literal=Secret=$JWT_SECRET -n moneta
 
 # $PASSWORD=(Read-Host "Enter Microsoft SQL SA password" -AsSecureString)
 # $SA_PWD=ConvertFrom-SecureString -SecureString $PASSWORD -AsPlainText
@@ -32,3 +28,7 @@
 # $API_SECRET=ConvertFrom-SecureString -SecureString $API_KEY -AsPlainText
 #  kubectl delete secret api -n moneta
 #  kubectl create secret generic api --from-literal=financeapi-key=$API_SECRET -n moneta
+
+#$RABBITMQ_USER=
+#$RABBITMQ_PASSWORD=
+#kubectl create secret generic rabbitmq --from-literal=username=$RABBITMQ_USER --from-literal=password=$RABBITMQ_PASSWORD  -n moneta

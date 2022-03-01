@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moneta.Frontend.API.Bus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace Moneta.Frontend.API.Controllers
     [AllowAnonymous]
     public class SystemController : ControllerBase
     {
+        private readonly IBus bus;
+
+        public SystemController(IBus bus)
+        {
+            this.bus = bus;
+        }
+
         [HttpGet]
         [Route("live")]
         public ActionResult IsLive()
@@ -23,7 +31,10 @@ namespace Moneta.Frontend.API.Controllers
         [HttpGet]
         [Route("ready")]
         public ActionResult IsReady() {
-            return Ok();
+            if (bus.IsConnected()) { 
+                return Ok();
+            }
+            return BadRequest("Bus Not connected");
         }
     }
 }

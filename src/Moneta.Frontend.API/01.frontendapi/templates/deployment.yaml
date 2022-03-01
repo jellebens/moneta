@@ -48,6 +48,16 @@ spec:
             value: http://accounts.moneta.svc.cluster.local/
           - name: INSTRUMENTS_SERVICE
             value: http://instruments.moneta.svc.cluster.local/
+          - name: RABBITMQ_USER
+            valueFrom:
+                secretKeyRef:
+                    name: rabbitmq
+                    key: username
+          - name: RABBITMQ_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                    name: rabbitmq
+                    key: password
           - name: "financeapi-key"
             valueFrom:
               secretKeyRef:
